@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Téléchargeur Universel — Colle n'importe quel code d'intégration ou URL vidéo et télécharge en un clic. 100% gratuit, open source, 1800+ sites supportés.">
+<meta property="og:title" content="Téléchargeur Universel — 1800+ sites supportés">
+<meta property="og:description" content="Colle n'importe quel code d'intégration ou URL vidéo. Gratuit, open source, sans inscription.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<title>📥 Téléchargeur Universel — Gratuit & Open Source</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --accent-1:#6366f1; --accent-2:#a855f7; --accent-3:#ec4899;
+    --ok:#10b981; --err:#ef4444; --warn:#f59e0b; --btc:#f7931a;
+    --text:#e2e8f0; --text-dim:#94a3b8;
+  }
+  html,body{height:100%}
+  body{
+    background:radial-gradient(ellipse at top,#2d1b69 0%,#1a1440 35%,#0a0a1a 75%);
+    background-attachment:fixed;
+    font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+    color:var(--text); min-height:100vh; padding:2rem 1rem;
+    display:flex; flex-direction:column; align-items:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  body.locked{overflow:hidden}
+  .bg-orbs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+  .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35}
+  .orb-1{width:500px;height:500px;background:var(--accent-1);top:-150px;left:-100px;animation:float 20s ease-in-out infinite}
+  .orb-2{width:400px;height:400px;background:var(--accent-3);bottom:-100px;right:-100px;animation:float 25s ease-in-out infinite reverse}
+  .orb-3{width:300px;height:300px;background:var(--accent-2);top:40%;left:60%;animation:float 30s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-40px) scale(1.1)}}
+
+  /* GATE */
+  .gate{position:fixed;inset:0;z-index:9999;background:rgba(10,10,26,.94);backdrop-filter:blur(20px);display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;opacity:1;transition:opacity .4s ease}
+  .gate.hidden{opacity:0;pointer-events:none;visibility:hidden}
+  .gate-box{width:100%;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:2rem;box-shadow:0 40px 100px -30px rgba(0,0,0,.9);margin:auto 0}
+  .gate-title{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:.4rem;background:linear-gradient(135deg,#a78bfa,#60a5fa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .gate-sub{text-align:center;color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem;line-height:1.5}
+  .gate-progress{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:1.8rem}
+  .step-dot{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.12);display:grid;place-items:center;font-weight:800;font-size:.95rem;color:#64748b;transition:.3s}
+  .step-dot.done{background:linear-gradient(135deg,#6366f1,#a855f7);border-color:transparent;color:#fff;box-shadow:0 0 20px rgba(99,102,241,.6);transform:scale(1.05)}
+  .step-dot.current{border-color:#a855f7;color:#a855f7;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.6)}50%{box-shadow:0 0 0 12px rgba(168,85,247,0)}}
+  .gate-ads{display:grid;grid-template-columns:1fr;gap:.8rem;margin-bottom:1.5rem}
+  @media(min-width:640px){.gate-ads{grid-template-columns:1fr 1fr}}
+  .gate-ad{min-height:120px;background:rgba(0,0,0,.35);border:1px dashed rgba(255,255,255,.12);border-radius:14px;padding:1rem;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.75rem;color:#64748b;position:relative}
+  .gate-ad::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.6rem;letter-spacing:.15em;color:#475569;font-weight:700}
+  .gate-action{text-align:center;margin-bottom:1.2rem}
+  .gate-btn{padding:1.1rem 2.4rem;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer;transition:.2s;box-shadow:0 16px 40px -12px #6366f1;letter-spacing:.02em;min-width:280px}
+  .gate-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 24px 50px -14px #6366f1}
+  .gate-btn:disabled{opacity:.55;cursor:wait;transform:none;background:rgba(255,255,255,.1);box-shadow:none}
+  .gate-btn .timer{display:inline-block;background:rgba(0,0,0,.3);padding:.15rem .55rem;border-radius:6px;margin-left:.5rem;font-variant-numeric:tabular-nums;font-size:.9rem}
+  .gate-hint{color:#64748b;font-size:.78rem;text-align:center;line-height:1.5}
+  .gate-hint strong{color:#a5b4fc}
+
+  /* APP */
+  .wrap{position:relative;z-index:1;width:100%;max-width:920px}
+  header{text-align:center;margin-bottom:2rem}
+  .logo-full{max-width:420px;width:90%;height:auto;display:block;margin:0 auto .6rem;filter:drop-shadow(0 12px 30px rgba(99,102,241,.4))}
+  .tagline{color:var(--text-dim);font-size:.95rem;line-height:1.5;margin-top:.5rem}
+  .tagline strong{color:#c7d2fe;font-weight:600}
+  .pills{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+  .pill{padding:.35rem .9rem;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text-dim)}
+  .pill.ok{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:#4ade80}
+  .pill.ko{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#f87171}
+  .pill.checking{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3);color:#a5b4fc}
+
+  .ad-slot{width:100%;max-width:920px;margin:0 auto 1.5rem;min-height:100px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);border:1px dashed rgba(255,255,255,.12);border-radius:16px;padding:1rem;position:relative;overflow:hidden}
+  .ad-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.62rem;letter-spacing:.15em;color:#64748b;font-weight:700}
+  .ad-slot.placeholder{color:#64748b;font-size:.8rem;text-align:center;line-height:1.6}
+
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:1.8rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06)}
+  label{display:block;font-size:.78rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+  textarea,input,select{width:100%;background:rgba(0,0,0,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:.9rem 1.1rem;font-family:'SF Mono','JetBrains Mono',monospace;font-size:.87rem;color:var(--text);outline:none;transition:.2s;resize:vertical}
+  input,select{font-family:inherit;font-size:.9rem;resize:none}
+  textarea{min-height:130px;line-height:1.5}
+  textarea:focus,input:focus,select:focus{border-color:var(--accent-1);box-shadow:0 0 0 4px rgba(99,102,241,.15);background:rgba(0,0,0,.55)}
+  textarea::placeholder,input::placeholder{color:#64748b}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  @media(max-width:640px){.grid-2{grid-template-columns:1fr}}
+  .actions{display:flex;gap:.7rem;margin-top:1.3rem;flex-wrap:wrap}
+  .btn{flex:1 1 160px;border:none;border-radius:14px;padding:1rem 1.4rem;font-size:.95rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;transition:.15s;color:#fff;text-decoration:none}
+  .btn-primary{background:linear-gradient(135deg,var(--accent-1),var(--accent-2));box-shadow:0 14px 30px -10px var(--accent-1),inset 0 1px 0 rgba(255,255,255,.2)}
+  .btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 22px 40px -12px var(--accent-1),inset 0 1px 0 rgba(255,255,255,.2)}
+  .btn-ghost{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--text)}
+  .btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.1)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+  .status{margin-top:1.2rem;padding:1rem 1.2rem;border-radius:14px;font-size:.88rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;background:rgba(99,102,241,.08);border-left:4px solid var(--accent-1);color:#c7d2fe;display:none}
+  .status.on{display:block;animation:fadeIn .3s ease}
+  .status.err{background:rgba(239,68,68,.08);border-color:var(--err);color:#fca5a5}
+  .status.ok{background:rgba(16,185,129,.08);border-color:var(--ok);color:#6ee7b7}
+  .status.warn{background:rgba(245,158,11,.08);border-color:var(--warn);color:#fcd34d}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .result{margin-top:1.5rem;display:none}
+  .result.on{display:block;animation:fadeIn .4s ease}
+  .video-wrap{border-radius:16px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px -15px rgba(0,0,0,.9)}
+  .video-wrap video{width:100%;display:block;max-height:520px}
+  .dl-bar{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+  .dl-bar .btn{flex:1 1 200px}
+  .btn-dl{background:linear-gradient(135deg,var(--ok),#059669);box-shadow:0 14px 30px -10px var(--ok)}
+  .btn-dl:hover{transform:translateY(-2px);box-shadow:0 22px 40px -12px var(--ok)}
+  .btn-copy{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--text)}
+  .log{margin-top:1rem;background:#000;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;font-family:'SF Mono',monospace;font-size:.72rem;color:#64748b;max-height:200px;overflow-y:auto;white-space:pre-wrap;line-height:1.5;display:none}
+  .log.on{display:block}
+  .steps{display:none;margin-top:1rem;padding:.9rem 1.1rem;background:rgba(0,0,0,.3);border-radius:12px;border-left:3px solid var(--accent-2);font-size:.82rem;color:#c7d2fe}
+  .steps.on{display:block}
+  .steps ol{margin-left:1.2rem;margin-top:.4rem}
+  .steps li{margin:.3rem 0}
+  details{margin-top:1.5rem;background:rgba(0,0,0,.25);border-radius:14px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
+  details summary{padding:.9rem 1.2rem;cursor:pointer;font-weight:600;font-size:.9rem;color:#c7d2fe;user-select:none;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:'▾';transition:.2s;color:var(--text-dim)}
+  details[open] summary::after{transform:rotate(180deg)}
+  details .content{padding:0 1.2rem 1.2rem;font-size:.85rem;line-height:1.7;color:var(--text-dim)}
+  details .content code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.15rem .4rem;border-radius:5px;font-family:'SF Mono',monospace;font-size:.85em}
+  details .content a{color:#a5b4fc;text-decoration:none;border-bottom:1px dotted}
+
+  /* PREMIUM */
+  .premium{margin-top:2rem;background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(168,85,247,.08),rgba(236,72,153,.08));border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:1.8rem;position:relative;overflow:hidden}
+  .premium::before{content:'';position:absolute;top:-50%;right:-20%;width:400px;height:400px;background:radial-gradient(circle,rgba(236,72,153,.2),transparent 70%);pointer-events:none}
+  .prem-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;position:relative}
+  .prem-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:grid;place-items:center;font-size:1.5rem;box-shadow:0 10px 30px -8px #a855f7}
+  .prem-title{font-size:1.2rem;font-weight:800;color:#fff}
+  .prem-sub{font-size:.82rem;color:#e9d5ff;margin-top:.15rem}
+  .prem-features{list-style:none;margin:1rem 0 1.3rem;display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+  @media(max-width:640px){.prem-features{grid-template-columns:1fr}}
+  .prem-features li{color:#e2e8f0;font-size:.85rem;display:flex;align-items:flex-start;gap:.5rem;line-height:1.4}
+  .prem-features li::before{content:'✦';color:#f0abfc;font-weight:800;flex-shrink:0}
+  .prem-price{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:1rem 1.2rem;background:rgba(0,0,0,.35);border-radius:14px;border:1px solid rgba(168,85,247,.25)}
+  .prem-price-num{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+  .prem-price-label{font-size:.85rem;color:#c7d2fe;line-height:1.4}
+  .prem-price-label strong{color:#fff}
+  .prem-note{font-size:.75rem;color:#94a3b8;margin-top:.6rem;text-align:center;line-height:1.5}
+
+  /* TERMINAL */
+  .terminal-section{margin-top:2rem;background:linear-gradient(180deg,rgba(15,15,35,.9),rgba(10,10,26,.95));border:1px solid rgba(99,102,241,.25);border-radius:24px;padding:1.8rem;box-shadow:0 30px 80px -30px rgba(0,0,0,.9);position:relative;overflow:hidden}
+  .terminal-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,#a855f7,#ec4899,transparent);opacity:.7}
+  .term-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+  .term-icon{width:52px;height:52px;flex-shrink:0;border-radius:14px;background:linear-gradient(135deg,#0f172a,#1e1b4b);border:1px solid rgba(99,102,241,.3);display:grid;place-items:center;font-size:1.6rem;box-shadow:0 12px 30px -8px #6366f1}
+  .term-title{font-size:1.2rem;font-weight:800;color:#fff}
+  .term-sub{font-size:.8rem;color:#a5b4fc;margin-top:.15rem;font-weight:500}
+  .term-intro{color:#cbd5e1;font-size:.9rem;line-height:1.65;margin-bottom:1.4rem}
+  .term-intro strong{color:#f0abfc;font-weight:700}
+  .term-details{margin-top:.8rem;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
+  .term-details[open]{border-color:rgba(99,102,241,.4);box-shadow:0 8px 30px -12px rgba(99,102,241,.5)}
+  .term-details summary{padding:1rem 1.2rem;cursor:pointer;font-weight:700;font-size:.92rem;color:#e0e7ff;user-select:none;list-style:none;display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.02)}
+  .term-details summary:hover{background:rgba(255,255,255,.05)}
+  .term-details summary::-webkit-details-marker{display:none}
+  .term-details summary::after{content:'▾';margin-left:auto;transition:.2s;color:#818cf8;font-size:1.1rem}
+  .term-details[open] summary::after{transform:rotate(180deg)}
+  .term-content{padding:.4rem 1.2rem 1.2rem;font-size:.86rem;line-height:1.65;color:#cbd5e1}
+  .term-content p{margin:.6rem 0}
+  .term-tabs{display:flex;gap:.4rem;margin:.8rem 0 1rem;background:rgba(0,0,0,.35);padding:.3rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);width:fit-content}
+  .term-tab{padding:.5rem 1rem;border:none;border-radius:8px;background:transparent;color:#94a3b8;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s}
+  .term-tab:hover{color:#e2e8f0}
+  .term-tab.active{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;box-shadow:0 6px 16px -6px #6366f1}
+  .term-pane{display:none}
+  .term-pane.active{display:block;animation:fadeIn .25s ease}
+  .cmd{display:flex;align-items:stretch;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.6rem 0;overflow:hidden;font-family:'SF Mono','JetBrains Mono','Consolas',monospace;position:relative}
+  .cmd::before{content:'$';color:#22d3ee;padding:.75rem .6rem .75rem .9rem;font-weight:700;font-size:.95rem;user-select:none}
+  .cmd code{flex:1;padding:.75rem .6rem;color:#e0e7ff;font-size:.82rem;line-height:1.5;word-break:break-all;display:flex;align-items:center;background:transparent}
+  .cmd-copy{background:rgba(255,255,255,.04);border:none;border-left:1px solid rgba(255,255,255,.08);color:#a5b4fc;cursor:pointer;padding:0 1rem;font-size:1rem;transition:.15s}
+  .cmd-copy:hover{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+  .cmd-copy.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+  .term-note{font-size:.78rem;color:#94a3b8;margin:.4rem 0 .8rem;padding-left:.8rem;border-left:2px solid rgba(99,102,241,.4);line-height:1.55}
+  .term-note code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.1rem .35rem;border-radius:4px;font-family:'SF Mono',monospace;font-size:.9em}
+  .cmd-table{width:100%;border-collapse:collapse;margin-top:.8rem;font-size:.82rem}
+  .cmd-table thead th{text-align:left;padding:.6rem .5rem;color:#a5b4fc;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid rgba(255,255,255,.08)}
+  .cmd-table tbody tr{border-bottom:1px solid rgba(255,255,255,.04)}
+  .cmd-table tbody tr:hover{background:rgba(99,102,241,.06)}
+  .cmd-table td{padding:.6rem .5rem;vertical-align:middle;color:#cbd5e1}
+  .cmd-table td:first-child{color:#e0e7ff;font-weight:500}
+  .cmd-table code{background:rgba(0,0,0,.4);color:#67e8f9;padding:.25rem .5rem;border-radius:6px;font-family:'SF Mono',monospace;font-size:.75rem;display:inline-block;max-width:100%;word-break:break-all}
+  .cmd-table .cmd-copy{border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.35rem .6rem;background:rgba(255,255,255,.03);font-size:.85rem}
+  .term-steps{margin:.8rem 0;padding-left:1.4rem;color:#cbd5e1;line-height:1.75}
+  .term-steps li{margin:.4rem 0}
+  .term-steps li::marker{color:#a855f7;font-weight:700}
+  .term-steps kbd{background:#1e1b4b;border:1px solid rgba(99,102,241,.4);border-bottom-width:2px;padding:.1rem .45rem;border-radius:5px;font-family:'SF Mono',monospace;font-size:.78rem;color:#c7d2fe}
+  .term-steps code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.1rem .35rem;border-radius:4px;font-family:'SF Mono',monospace;font-size:.88em}
+  .term-steps em{color:#f0abfc;font-style:normal;font-weight:600}
+  .term-warn{margin-top:1.4rem;padding:1rem 1.2rem;background:rgba(251,191,36,.08);border-left:4px solid #fbbf24;border-radius:12px;font-size:.82rem;color:#fde68a;line-height:1.6}
+  .term-warn strong{color:#fcd34d}
+
+  /* BITCOIN */
+  .support{margin-top:2rem;background:linear-gradient(180deg,rgba(247,147,26,.08),rgba(247,147,26,.02));border:1px solid rgba(247,147,26,.25);border-radius:24px;padding:1.8rem;box-shadow:0 20px 60px -20px rgba(247,147,26,.3);position:relative;overflow:hidden}
+  .support-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+  .btc-logo{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f7931a,#ffb347);display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#fff;box-shadow:0 10px 25px -6px #f7931a}
+  .support-title{font-size:1.15rem;font-weight:800;color:#fff}
+  .support-sub{font-size:.82rem;color:#fbbf24;margin-top:.1rem}
+  .support-body{position:relative;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start}
+  @media(max-width:640px){.support-body{flex-direction:column;align-items:stretch}}
+  .qr-wrap{flex:0 0 auto;background:#fff;padding:.7rem;border-radius:14px;box-shadow:0 12px 30px -10px rgba(247,147,26,.5);display:flex;flex-direction:column;align-items:center;gap:.5rem}
+  .qr-wrap img{width:160px;height:160px;display:block;border-radius:6px}
+  .qr-wrap small{color:#0a0a1a;font-size:.65rem;font-weight:700;letter-spacing:.05em}
+  .support-info{flex:1 1 280px;min-width:0}
+  .support-info p{color:#fde68a;font-size:.85rem;line-height:1.6;margin-bottom:.8rem}
+  .addr-box{display:flex;gap:.5rem;align-items:stretch;background:rgba(0,0,0,.4);border:1px solid rgba(247,147,26,.3);border-radius:12px;padding:.5rem;margin-bottom:.8rem}
+  .addr-box code{flex:1;min-width:0;color:#fbbf24;font-family:'SF Mono',monospace;font-size:.75rem;line-height:1.4;word-break:break-all;padding:.5rem .6rem;display:flex;align-items:center}
+  .addr-box button{background:linear-gradient(135deg,#f7931a,#ffb347);border:none;border-radius:8px;padding:0 1rem;color:#fff;font-weight:700;font-size:.8rem;cursor:pointer;transition:.15s;white-space:nowrap;font-family:inherit}
+  .addr-box button:hover{transform:scale(1.03);box-shadow:0 8px 20px -6px #f7931a}
+  .addr-box button.ok{background:linear-gradient(135deg,#10b981,#059669)}
+  .support-note{font-size:.78rem;color:#94a3b8;line-height:1.6;background:rgba(0,0,0,.25);border-left:3px solid #f7931a;padding:.7rem .9rem;border-radius:8px;margin-top:.6rem}
+  .illustration{margin-top:1.5rem;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.3)}
+  .illustration img{width:100%;display:block;height:auto}
+
+  footer{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);color:#64748b;font-size:.8rem;line-height:1.7}
+  footer a{color:#a5b4fc;text-decoration:none}
+  footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body class="locked">
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- ═══════════════ GATE (4 étapes) ═══════════════ -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <div class="gate-title">🔓 Débloquer l'accès</div>
+    <div class="gate-sub">
+      <strong>Téléchargeur Universel</strong> est 100% gratuit et financé par la publicité.<br>
+      Pour continuer, laisse-toi guider à travers <strong>4 étapes</strong>.<br>
+      <span style="color:#64748b">(environ 40 secondes)</span>
+    </div>
+    <div class="gate-progress">
+      <div class="step-dot current" data-step="1">1</div>
+      <div class="step-dot" data-step="2">2</div>
+      <div class="step-dot" data-step="3">3</div>
+      <div class="step-dot" data-step="4">4</div>
+    </div>
+    <div class="gate-ads">
+      <div class="gate-ad" id="gate-ad-1">
+        <div>📢 Emplacement pub 1<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div>
+      </div>
+      <div class="gate-ad" id="gate-ad-2">
+        <div>📢 Emplacement pub 2<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div>
+      </div>
+    </div>
+    <div class="gate-action">
+      <button class="gate-btn" id="gateBtn" disabled>
+        ⏳ Patiente un instant…
+        <span class="timer" id="gateTimer">8 s</span>
+      </button>
+    </div>
+    <div class="gate-hint">Étape <strong id="stepLabel">1</strong> sur 4 · Merci pour ta patience ❤️</div>
+  </div>
+</div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div class="wrap">
+
+  <div class="ad-slot placeholder" id="ad-top">
+    <div>📢 Emplacement publicitaire (728×90)<br><small style="opacity:.7">Colle ton code pub ici</small></div>
+  </div>
+
+  <header>
+    <img src="logo-full.png" alt="Téléchargeur Universel" class="logo-full">
+    <div class="tagline">
+      Colle <strong>n'importe quel code d'intégration</strong> ou URL vidéo.<br>
+      Télécharge en un clic. <strong>Open source</strong>, gratuit, sans inscription.
+    </div>
+    <div class="pills" id="pills">
+      <span class="pill checking" id="pill-api">API : vérification…</span>
+      <span class="pill">Open source</span>
+      <span class="pill">1800+ sites</span>
+    </div>
+  </header>
+
+  <div class="card">
+    <label for="code">Code d'intégration ou URL</label>
+    <textarea id="code" placeholder='Colle ici :
+• Un code <iframe src="https://www.tokyvideo.com/fr/embed/875919" ...></iframe>
+• Un lien YouTube, Vimeo, TikTok, Twitter, Instagram…
+• Ou une URL directe .mp4 / .m3u8'></textarea>
+
+    <div class="grid-2">
+      <div>
+        <label for="quality">Qualité</label>
+        <select id="quality">
+          <option value="max">Maximale</option>
+          <option value="1080">1080p</option>
+          <option value="720" selected>720p</option>
+          <option value="480">480p</option>
+          <option value="360">360p</option>
+        </select>
+      </div>
+      <div>
+        <label for="audioOnly">Format</label>
+        <select id="audioOnly">
+          <option value="false">Vidéo (mp4)</option>
+          <option value="true">Audio seulement (mp3)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="go">🚀 Télécharger</button>
+      <button class="btn btn-ghost" id="clear">🗑️ Effacer</button>
+      <button class="btn btn-ghost" id="settings">⚙️ API</button>
+    </div>
+
+    <div class="steps" id="steps">
+      <strong>💡 Comment faire :</strong>
+      <ol>
+        <li>Va sur la page de la vidéo</li>
+        <li>Clique sur <strong>Partager → Intégrer</strong> (ou F12 → onglet Réseau)</li>
+        <li>Copie le code <code>&lt;iframe&gt;</code> ou l'URL</li>
+        <li>Colle-le ci-dessus et clique <strong>Télécharger</strong></li>
+      </ol>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="log" id="log"></div>
+
+    <div class="result" id="result">
+      <div class="video-wrap">
+        <video id="player" controls playsinline preload="metadata"></video>
+      </div>
+      <div class="dl-bar">
+        <a class="btn btn-dl" id="dl" href="#" download>⬇️ Télécharger la vidéo</a>
+        <button class="btn btn-copy" id="copy">📋 Copier le lien</button>
+      </div>
+    </div>
+
+    <details>
+      <summary>🌐 API personnalisée (backend self-hosted)</summary>
+      <div class="content">
+        <p>Par défaut, on utilise une instance publique de
+        <a href="https://github.com/imputnet/cobalt" target="_blank" rel="noopener">cobalt</a>,
+        un backend open source qui gère plus de 1000 sites.</p>
+        <input id="apiUrl" style="margin-top:.6rem" placeholder="https://api.example.com/">
+        <button class="btn btn-ghost" id="saveApi" style="margin-top:.6rem;flex:0 0 auto;padding:.7rem 1.2rem">💾 Enregistrer</button>
+      </div>
+    </details>
+
+    <details>
+      <summary>📜 Mentions légales & vie privée</summary>
+      <div class="content">
+        <p><strong>Aucune donnée n'est collectée.</strong> Ton code et ton IP sont envoyés directement à l'API cobalt choisie.</p>
+        <p style="margin-top:.6rem"><strong>Usage :</strong> télécharge uniquement des vidéos dont tu as les droits, ou pour un usage strictement personnel (copie privée, art. L.122-5 CPI).</p>
+        <p style="margin-top:.6rem"><strong>Licence :</strong> MIT. Code source disponible librement.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- PREMIUM -->
+  <div class="premium">
+    <div class="prem-head">
+      <div class="prem-icon">⚡</div>
+      <div>
+        <div class="prem-title">Passe en mode PRO</div>
+        <div class="prem-sub">Accès à vie · Paiement unique · Code source inclus</div>
+      </div>
+    </div>
+
+    <ul class="prem-features">
+      <li>Vitesse maximale de téléchargement</li>
+      <li>Qualité 4K / 8K débloquée</li>
+      <li>Code source complet fourni</li>
+      <li>Zéro publicité, zéro gate</li>
+      <li>Support prioritaire par email</li>
+      <li>Utilisable sur 4 sessions maximum</li>
+    </ul>
+
+    <div class="prem-price">
+      <div class="prem-price-num">20 <span style="font-size:1.2rem">USDT</span></div>
+      <div class="prem-price-label">
+        <strong>Paiement unique</strong><br>
+        Accès à vie · Pas d'abonnement
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="buyPremium" style="width:100%">🚀 Acheter maintenant — 20 USDT</button>
+    <div class="prem-note">
+      Après paiement confirmé, tu recevras un <strong>code d'accès unique</strong> par email.<br>
+      Ce code est utilisable sur <strong>4 sessions maximum</strong>. Ne le partage pas.
+    </div>
+  </div>
+
+  <!-- SECTION TERMINAL -->
+  <div class="terminal-section">
+    <div class="term-head">
+      <div class="term-icon">⌨️</div>
+      <div>
+        <div class="term-title">Méthode Pro : Terminal (yt-dlp)</div>
+        <div class="term-sub">Puissance maximale · 1800+ sites · 100% gratuit · Sans limite</div>
+      </div>
+    </div>
+
+    <p class="term-intro">
+      Tu veux télécharger en <strong>4K, 8K, playlist entière, audio seul</strong>, ou depuis des sites
+      que les APIs bloquent ? <strong>yt-dlp</strong> est l'outil open source utilisé par tous les pros.
+      Une commande, un téléchargement. Aucune limite, aucune pub, aucun compte.
+    </p>
+
+    <details class="term-details" open>
+      <summary>📦 Étape 1 — Installer yt-dlp (une seule fois)</summary>
+      <div class="term-content">
+        <div class="term-tabs">
+          <button class="term-tab active" data-os="win">🪟 Windows</button>
+          <button class="term-tab" data-os="mac">🍎 macOS</button>
+          <button class="term-tab" data-os="linux">🐧 Linux</button>
+        </div>
+
+        <div class="term-pane active" data-pane="win">
+          <p>Ouvre <strong>l'invite de commandes</strong> (Windows + R, tape <code>cmd</code>) et colle :</p>
+          <div class="cmd"><code>winget install yt-dlp</code><button class="cmd-copy" data-cmd="winget install yt-dlp">📋</button></div>
+          <p class="term-note">Et pour fusionner audio + vidéo :</p>
+          <div class="cmd"><code>winget install Gyan.FFmpeg</code><button class="cmd-copy" data-cmd="winget install Gyan.FFmpeg">📋</button></div>
+        </div>
+
+        <div class="term-pane" data-pane="mac">
+          <p>Ouvre <strong>Terminal</strong> (Cmd + Espace, tape <code>Terminal</code>) et colle :</p>
+          <div class="cmd"><code>brew install yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="brew install yt-dlp ffmpeg">📋</button></div>
+          <p class="term-note">Sans Homebrew : <a href="https://brew.sh" target="_blank" rel="noopener" style="color:#a5b4fc">brew.sh</a></p>
+        </div>
+
+        <div class="term-pane" data-pane="linux">
+          <p>Ouvre un terminal et colle :</p>
+          <div class="cmd"><code>sudo apt install -y yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="sudo apt install -y yt-dlp ffmpeg">📋</button></div>
+          <p class="term-note">Fedora : <code>sudo dnf install yt-dlp ffmpeg</code></p>
+        </div>
+      </div>
+    </details>
+
+    <details class="term-details" open>
+      <summary>🚀 Étape 2 — Télécharger une vidéo</summary>
+      <div class="term-content">
+        <p>Remplace <code>URL</code> par le lien de ta vidéo :</p>
+        <div class="cmd"><code>yt-dlp "URL"</code><button class="cmd-copy" data-cmd='yt-dlp "URL"'>📋</button></div>
+        <p style="margin-top:1rem">Exemple avec TokyVideo :</p>
+        <div class="cmd"><code>yt-dlp "https://www.tokyvideo.com/fr/video/l-entorse"</code><button class="cmd-copy" data-cmd='yt-dlp "https://www.tokyvideo.com/fr/video/l-entorse"'>📋</button></div>
+      </div>
+    </details>
+
+    <details class="term-details">
+      <summary>🎓 Étape 3 — Commandes avancées</summary>
+      <div class="term-content">
+        <table class="cmd-table">
+          <thead><tr><th>Ce que tu veux</th><th>Commande</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>Meilleure qualité</td><td><code>yt-dlp -f "bestvideo+bestaudio" "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -f "bestvideo+bestaudio" "URL"'>📋</button></td></tr>
+            <tr><td>Limiter à 1080p</td><td><code>yt-dlp -f "bestvideo[height<=1080]+bestaudio" "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -f "bestvideo[height<=1080]+bestaudio" "URL"'>📋</button></td></tr>
+            <tr><td>Audio seul MP3</td><td><code>yt-dlp -x --audio-format mp3 "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -x --audio-format mp3 "URL"'>📋</button></td></tr>
+            <tr><td>Playlist entière</td><td><code>yt-dlp "URL_PLAYLIST"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp "URL_PLAYLIST"'>📋</button></td></tr>
+            <tr><td>Voir les formats</td><td><code>yt-dlp -F "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -F "URL"'>📋</button></td></tr>
+            <tr><td>Cookies Chrome</td><td><code>yt-dlp --cookies-from-browser chrome "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp --cookies-from-browser chrome "URL"'>📋</button></td></tr>
+            <tr><td>Mettre à jour</td><td><code>yt-dlp -U</code></td><td><button class="cmd-copy" data-cmd="yt-dlp -U">📋</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="term-details">
+      <summary>🔥 Astuce ultime — Trouver le vrai lien caché (F12)</summary>
+      <div class="term-content">
+        <ol class="term-steps">
+          <li>Ouvre la page de la vidéo dans <strong>Chrome</strong></li>
+          <li>Appuie sur <kbd>F12</kbd> → onglet <strong>Network</strong></li>
+          <li>Filtre : <code>m3u8</code> (ou <code>mp4</code>)</li>
+          <li>Recharge, lance la vidéo 2 secondes</li>
+          <li>Clic droit sur la ligne → <em>Copy link address</em></li>
+          <li>Colle dans le terminal :</li>
+        </ol>
+        <div class="cmd"><code>yt-dlp "URL_COPIÉE"</code><button class="cmd-copy" data-cmd='yt-dlp "URL_COPIÉE"'>📋</button></div>
+      </div>
+    </details>
+
+    <div class="term-warn">
+      ⚖️ <strong>Rappel légal :</strong> yt-dlp est un outil open source parfaitement légal.
+      L'utiliser pour télécharger des vidéos dont tu as les droits, ou pour un <strong>usage strictement personnel</strong>
+      (copie privée, art. L.122-5 CPI) est autorisé en France.
+    </div>
+  </div>
+
+  <!-- AD BAS -->
+  <div class="ad-slot placeholder" id="ad-bottom" style="margin-top:2rem;margin-bottom:0">
+    <div>📢 Emplacement publicitaire (728×90)<br><small style="opacity:.7">Colle ton code pub ici</small></div>
+  </div>
+
+  <!-- BITCOIN -->
+  <div class="support">
+    <div class="support-head">
+      <div class="btc-logo">₿</div>
+      <div>
+        <div class="support-title">Soutenir l'initiative ❤️</div>
+        <div class="support-sub">Fait avec passion · 100% gratuit · Aucune pub intrusive</div>
+      </div>
+    </div>
+    <div class="support-body">
+      <div class="qr-wrap">
+        <img id="qrImg" alt="QR code Bitcoin" src="">
+        <small>SCANNEZ POUR DONNER</small>
+      </div>
+      <div class="support-info">
+        <p>Ce projet est <strong>entièrement gratuit</strong> et <strong>open source</strong>. Si tu veux soutenir son développement, envoie quelques satoshis à l'adresse ci-dessous. Chaque don aide énormément. 🙏</p>
+        <div class="addr-box">
+          <code id="btcAddr">bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs</code>
+          <button id="copyAddr">📋 Copier</button>
+        </div>
+        <div class="support-note">⚠️ <strong>Bitcoin uniquement (BTC, réseau principal).</strong></div>
+      </div>
+    </div>
+    <div class="illustration">
+      <img src="illustration.png" alt="Illustration téléchargement">
+    </div>
+  </div>
+
+  <footer>
+    Téléchargeur Universel · <a href="https://github.com/imputnet/cobalt" target="_blank" rel="noopener">Propulsé par cobalt</a> · 100% open source<br>
+    <span style="font-size:.72rem;opacity:.7">Soutien : bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const DEFAULT_APIS = ['https://api.cobalt.tools/','https://co.wuk.sh/','https://cobalt-api.kwiatekmiki.com/'];
+  const BTC_ADDRESS = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
+  const GATE_STEP_DELAY = 8;
+
+  const $ = id => document.getElementById(id);
+  const codeEl = $('code'), goBtn = $('go'), clearBtn = $('clear');
+  const settingsBtn = $('settings'), stepsEl = $('steps');
+  const statusEl = $('status'), logEl = $('log');
+  const resultEl = $('result'), playerEl = $('player'), dlEl = $('dl'), copyBtn = $('copy');
+  const apiPill = $('pill-api');
+  const gate = $('gate'), gateBtn = $('gateBtn');
+  const stepLabel = $('stepLabel');
+  const stepDots = document.querySelectorAll('.step-dot');
+
+  let apiBase = localStorage.getItem('tu_api') || null;
+  let currentDownloadUrl = null;
+  let currentFilename = 'video.mp4';
+
+  /* GATE */
+  let currentStep = 1, timerInterval = null;
+
+  function startGate() {
+    document.body.classList.add('locked');
+    gate.classList.remove('hidden');
+    currentStep = 1;
+    stepDots.forEach(d => d.classList.remove('done','current'));
+    stepDots[0].classList.add('current');
+    stepLabel.textContent = '1';
+    startStepTimer();
+  }
+  function startStepTimer() {
+    let remaining = GATE_STEP_DELAY;
+    gateBtn.disabled = true;
+    gateBtn.innerHTML = '⏳ Patiente un instant… <span class="timer" id="gateTimer">' + remaining + ' s</span>';
+    const timerEl = document.getElementById('gateTimer');
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      remaining--;
+      if (timerEl) timerEl.textContent = remaining + ' s';
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        gateBtn.disabled = false;
+        gateBtn.innerHTML = currentStep < 4 ? '✅ Continuer (étape ' + currentStep + '/4)' : '🔓 Débloquer';
+      }
+    }, 1000);
+  }
+  gateBtn.addEventListener('click', () => {
+    if (gateBtn.disabled) return;
+    stepDots[currentStep - 1].classList.remove('current');
+    stepDots[currentStep - 1].classList.add('done');
+    if (currentStep < 4) {
+      currentStep++;
+      stepDots[currentStep - 1].classList.add('current');
+      stepLabel.textContent = String(currentStep);
+      startStepTimer();
+    } else {
+      gateBtn.innerHTML = '🎉 Accès débloqué !';
+      gateBtn.disabled = true;
+      setTimeout(() => {
+        gate.classList.add('hidden');
+        document.body.classList.remove('locked');
+        sessionStorage.setItem('tu_unlocked', '1');
+      }, 700);
+    }
+  });
+  if (sessionStorage.getItem('tu_unlocked') === '1') {
+    gate.classList.add('hidden');
+    document.body.classList.remove('locked');
+  } else { startGate(); }
+
+  /* APP */
+  function setStatus(msg, cls='') { statusEl.textContent = msg; statusEl.className = 'status on ' + cls; }
+  function hideStatus() { statusEl.className = 'status'; statusEl.textContent = ''; }
+  function logLine(t) { logEl.classList.add('on'); logEl.textContent += t + '\n'; logEl.scrollTop = logEl.scrollHeight; }
+  function resetResult() { resultEl.classList.remove('on'); playerEl.removeAttribute('src'); playerEl.load(); dlEl.href = '#'; currentDownloadUrl = null; }
+  function reset() { hideStatus(); logEl.classList.remove('on'); logEl.textContent = ''; resetResult(); goBtn.disabled = false; }
+
+  function extractUrl(code) {
+    if (!code) return null;
+    const c = code.trim();
+    const pats = [/<iframe[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/<video[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/<source[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/<embed[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/https?:\/\/[^\s"'<>()]+/];
+    for (const re of pats) { const m = c.match(re); if (m && m[1]) return m[1].trim(); if (m && m[0] && m[0].startsWith('http')) return m[0].trim(); }
+    return null;
+  }
+
+  async function detectApi() {
+    if (apiBase) { try { await fetch(apiBase, {method:'OPTIONS'}); apiPill.textContent = 'API : ' + new URL(apiBase).hostname; apiPill.className = 'pill ok'; return apiBase; } catch {} }
+    for (const url of DEFAULT_APIS) {
+      try { const c = new AbortController(); const t = setTimeout(() => c.abort(), 3500); await fetch(url, {method:'OPTIONS', signal:c.signal}); clearTimeout(t); apiBase = url; apiPill.textContent = 'API : ' + new URL(url).hostname; apiPill.className = 'pill ok'; return url; } catch {}
+    }
+    apiPill.textContent = 'API : indisponible'; apiPill.className = 'pill ko'; return null;
+  }
+
+  async function requestDownload(url) {
+    if (!apiBase) throw new Error('Aucune API disponible.');
+    const isAudio = $('audioOnly').value === 'true';
+    const quality = $('quality').value;
+    const r = await fetch(apiBase, { method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'}, body: JSON.stringify({ url, videoQuality: quality === 'max' ? 'max' : quality, audioFormat: isAudio ? 'mp3' : 'best', downloadMode: isAudio ? 'audio' : 'auto', filenameStyle:'basic' }) });
+    if (!r.ok) { let m = 'HTTP ' + r.status; try { const j = await r.json(); m = j.text || j.error?.code || m; } catch {} throw new Error(m); }
+    return r.json();
+  }
+
+  async function launch() {
+    reset(); stepsEl.classList.remove('on');
+    const raw = codeEl.value.trim();
+    if (!raw) return setStatus('❌ Colle un code ou une URL.', 'err');
+    const url = extractUrl(raw);
+    if (!url) return setStatus('❌ Aucune URL détectée.', 'err');
+    if (!apiBase) { setStatus('⏳ Détection de l\'API…'); await detectApi(); if (!apiBase) return setStatus('❌ Aucune API joignable.', 'err'); }
+    goBtn.disabled = true;
+    setStatus('⏳ Analyse de la vidéo…');
+    logLine('→ URL : ' + url);
+    logLine('→ Envoi à ' + apiBase);
+    let data;
+    try { data = await requestDownload(url); } catch (e) { goBtn.disabled = false; setStatus('❌ Erreur : ' + e.message, 'err'); return; }
+    logLine('← Réponse : ' + JSON.stringify(data).slice(0, 300));
+    if (data.status === 'picker' && Array.isArray(data.picker)) { const f = data.picker[0]; data = { status:'redirect', url:f.url, filename:'video.mp4' }; }
+    if ((data.status === 'tunnel' || data.status === 'redirect') && data.url) {
+      currentDownloadUrl = data.url; currentFilename = data.filename || 'video.mp4';
+      playerEl.src = data.url; playerEl.load(); resultEl.classList.add('on');
+      dlEl.href = data.url; dlEl.download = currentFilename;
+      dlEl.textContent = '⬇️ Télécharger « ' + currentFilename + ' »';
+      setStatus('✅ Vidéo prête !', 'ok'); goBtn.disabled = false;
+    } else if (data.status === 'error' || data.error) { setStatus('❌ ' + (data.error?.code || data.text || 'Erreur'), 'err'); goBtn.disabled = false; }
+    else { setStatus('⚠️ Réponse inattendue.', 'warn'); goBtn.disabled = false; }
+  }
+
+  goBtn.addEventListener('click', launch);
+  clearBtn.addEventListener('click', () => { codeEl.value = ''; reset(); codeEl.focus(); });
+  codeEl.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); launch(); } });
+  codeEl.addEventListener('focus', () => stepsEl.classList.add('on'));
+  settingsBtn.addEventListener('click', () => { const d = document.querySelectorAll('details')[0]; d.open = !d.open; if (d.open) $('apiUrl').focus(); });
+  $('saveApi').addEventListener('click', async () => {
+    const v = $('apiUrl').value.trim();
+    if (!v) { localStorage.removeItem('tu_api'); apiBase = null; await detectApi(); setStatus('✅ API réinitialisée.', 'ok'); return; }
+    let n = v.endsWith('/') ? v : v + '/';
+    try { new URL(n); } catch { setStatus('❌ URL invalide.', 'err'); return; }
+    apiBase = n; localStorage.setItem('tu_api', n);
+    apiPill.textContent = 'API : ' + new URL(n).hostname; apiPill.className = 'pill ok';
+    setStatus('✅ API enregistrée.', 'ok');
+  });
+  copyBtn.addEventListener('click', () => { if (!currentDownloadUrl) return; navigator.clipboard.writeText(currentDownloadUrl).then(() => { const o = copyBtn.textContent; copyBtn.textContent = '✅ Copié !'; setTimeout(() => copyBtn.textContent = o, 1500); }); });
+
+  /* PREMIUM */
+  $('buyPremium').addEventListener('click', () => {
+    const msg = 'Bonjour, je souhaite acheter Téléchargeur Universel PRO (20 USDT).\n\nMerci de m\'envoyer les instructions de paiement et le code d\'accès.';
+    alert(msg + '\n\n(Ouvre ton client email ou contacte-nous pour finaliser le paiement.)');
+  });
+
+  /* BITCOIN */
+  $('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=' + encodeURIComponent('bitcoin:' + BTC_ADDRESS);
+  $('copyAddr').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(BTC_ADDRESS); const b = $('copyAddr'); const o = b.textContent; b.textContent = '✅ Copié !'; b.classList.add('ok'); setTimeout(() => { b.textContent = o; b.classList.remove('ok'); }, 1800); }
+    catch { alert('Adresse : ' + BTC_ADDRESS); }
+  });
+
+  /* TERMINAL : onglets OS + copie */
+  document.querySelectorAll('.term-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const os = tab.dataset.os;
+      document.querySelectorAll('.term-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.term-pane').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const pane = document.querySelector('.term-pane[data-pane="' + os + '"]');
+      if (pane) pane.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.cmd-copy').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.preventDefault();
+      const cmd = btn.dataset.cmd; if (!cmd) return;
+      try { await navigator.clipboard.writeText(cmd); const o = btn.textContent; btn.textContent = '✅'; btn.classList.add('ok'); setTimeout(() => { btn.textContent = o; btn.classList.remove('ok'); }, 1400); } catch {}
+    });
+  });
+  (function autoOS(){ const ua = navigator.userAgent.toLowerCase(); let os = 'win'; if (ua.includes('mac')) os = 'mac'; else if (ua.includes('linux') && !ua.includes('android')) os = 'linux'; const t = document.querySelector('.term-tab[data-os="' + os + '"]'); if (t) t.click(); })();
+
+  /* INIT */
+  if (apiBase) $('apiUrl').value = apiBase;
+  detectApi();
+})();
+</script>
+</body>
+</html>
