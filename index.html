@@ -28,7 +28,6 @@ body.locked{overflow:hidden}
 .gate-title{font-size:1.5rem;font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,#a78bfa,#60a5fa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .gate-sub{color:#94a3b8;font-size:.9rem;margin-bottom:1.5rem;line-height:1.6}
 .gate-sub strong{color:#c7d2fe}
-/* CADRES PUB DANS LE GATE — CÔTE À CÔTE */
 .gate-ads{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.5rem;align-items:start}
 @media(max-width:640px){.gate-ads{grid-template-columns:1fr}}
 .gate-ad{min-height:120px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:.7rem;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
@@ -38,6 +37,19 @@ body.locked{overflow:hidden}
 .gate-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 24px 50px -14px #6366f1}
 .gate-btn:disabled{opacity:.6;cursor:wait;transform:none}
 .gate-hint{margin-top:1rem;color:#64748b;font-size:.8rem}
+/* MODAL PUB AVANT TÉLÉCHARGEMENT */
+.ad-modal{position:fixed;inset:0;z-index:10000;background:rgba(5,5,15,.96);backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.ad-modal.show{opacity:1;visibility:visible}
+.ad-modal-box{width:100%;max-width:560px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:2rem 1.5rem;text-align:center;box-shadow:0 40px 100px -30px rgba(0,0,0,.95)}
+.ad-modal-box h3{font-size:1.2rem;font-weight:800;margin-bottom:.5rem;color:#fff}
+.ad-modal-box p{color:#94a3b8;font-size:.88rem;line-height:1.6;margin-bottom:1.4rem}
+.ad-zone{min-height:220px;background:rgba(0,0,0,.4);border:1px dashed rgba(255,255,255,.12);border-radius:14px;display:flex;align-items:center;justify-content:center;padding:1rem;margin-bottom:1.3rem;position:relative;overflow:hidden}
+.ad-zone::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.58rem;letter-spacing:.15em;color:#475569;font-weight:700;z-index:1}
+.ad-zone > div{width:100%;display:flex;align-items:center;justify-content:center}
+.ad-continue{padding:1rem 2rem;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:.25s;min-width:200px}
+.ad-continue:hover{transform:translateY(-2px);box-shadow:0 16px 34px -12px #6366f1}
+.ad-skip{display:block;margin:1rem auto 0;background:none;border:none;color:#64748b;font-family:inherit;font-size:.8rem;cursor:pointer;text-decoration:underline;padding:.3rem}
+.ad-skip:hover{color:#94a3b8}
 /* APP */
 .wrap{position:relative;z-index:1;width:100%;max-width:920px;padding-top:3.5rem}
 header{text-align:center;margin-bottom:2rem}
@@ -187,7 +199,7 @@ footer a{color:#a5b4fc;text-decoration:none}
   <a href="#support-section" class="topnav-link">Soutenir</a>
 </nav>
 
-<!-- GATE FLOUTÉ AVEC 2 CADRES PUB CÔTE À CÔTE -->
+<!-- GATE -->
 <div class="gate" id="gate">
   <div class="gate-box">
     <div class="gate-title">🔓 Débloquer l'accès</div>
@@ -196,7 +208,6 @@ footer a{color:#a5b4fc;text-decoration:none}
       Un seul clic pour accéder à l'outil.
     </div>
 
-    <!-- CADRES PUB CÔTE À CÔTE -->
     <div class="gate-ads">
       <div class="gate-ad">
         <div id="container-gate-1"></div>
@@ -211,10 +222,22 @@ footer a{color:#a5b4fc;text-decoration:none}
   </div>
 </div>
 
+<!-- MODAL PUB AVANT TÉLÉCHARGEMENT -->
+<div class="ad-modal" id="adModal">
+  <div class="ad-modal-box">
+    <h3>📢 Une publicité avant votre téléchargement</h3>
+    <p>Merci de patienter quelques secondes. Cela nous aide à garder le service gratuit pour tous.</p>
+    <div class="ad-zone" id="adZone">
+      <div id="container-modal"></div>
+    </div>
+    <button class="ad-continue" id="adContinue">Continuer vers le téléchargement</button>
+    <button class="ad-skip" id="adSkip">Passer la publicité →</button>
+  </div>
+</div>
+
 <!-- APP -->
 <div class="wrap" id="top">
 
-  <!-- Bannière haut -->
   <div class="ad-slot">
     <script type="text/javascript">
       atOptions = {'key':'581e088cb553c739ca8812abcb681c7a','format':'iframe','height':90,'width':728,'params':{}};
@@ -360,7 +383,7 @@ footer a{color:#a5b4fc;text-decoration:none}
       <li>Vitesse maximale de téléchargement</li>
       <li>Qualité 4K / 8K débloquée</li>
       <li>Code source complet fourni</li>
-      <li>Zéro publicité</li>
+      <li>Zéro publicité, zéro pub avant téléchargement</li>
       <li>Support prioritaire par email</li>
       <li>Utilisable sur 4 sessions maximum</li>
     </ul>
@@ -487,11 +510,13 @@ footer a{color:#a5b4fc;text-decoration:none}
   const resultEl = $('result'), playerEl = $('player'), dlEl = $('dl'), copyBtn = $('copy');
   const apiPill = $('pill-api');
   const gate = $('gate'), gateBtn = $('gateBtn');
+  const adModal = $('adModal'), adContinue = $('adContinue'), adSkip = $('adSkip');
 
   let apiBase = localStorage.getItem('tu_api') || null;
   let currentUrl = null;
+  let pendingDownloadUrl = null;
 
-  /* GATE — 1 SEUL CLIC */
+  /* GATE */
   function startGate() {
     document.body.classList.add('locked');
     gate.classList.remove('hidden');
@@ -521,6 +546,26 @@ footer a{color:#a5b4fc;text-decoration:none}
     gate.classList.add('hidden');
     document.body.classList.remove('locked');
   } else { startGate(); }
+
+  /* MODAL PUB AVANT TÉLÉCHARGEMENT */
+  function showAdModal(onDone) {
+    pendingDownloadUrl = onDone;
+    adModal.classList.add('show');
+  }
+
+  adContinue.addEventListener('click', () => {
+    adModal.classList.remove('show');
+    const cb = pendingDownloadUrl;
+    pendingDownloadUrl = null;
+    if (cb) cb();
+  });
+
+  adSkip.addEventListener('click', () => {
+    adModal.classList.remove('show');
+    const cb = pendingDownloadUrl;
+    pendingDownloadUrl = null;
+    if (cb) cb();
+  });
 
   /* APP */
   const setStatus = (m,c='') => { statusEl.textContent = m; statusEl.className = 'status on ' + c; };
@@ -624,8 +669,17 @@ footer a{color:#a5b4fc;text-decoration:none}
   }
 
   function launch() {
-    reset(); stepsEl.classList.remove('on');
-    doDownload();
+    reset();
+    stepsEl.classList.remove('on');
+    // Vérifier si l'utilisateur a le Premium actif (payant ou gratuit)
+    const premiumActive = localStorage.getItem('tu_premium') === '1';
+    if (premiumActive) {
+      // Pas de pub pour les utilisateurs premium
+      doDownload();
+    } else {
+      // Afficher le modal pub avant le téléchargement
+      showAdModal(doDownload);
+    }
   }
 
   goBtn.addEventListener('click', launch);
@@ -712,11 +766,11 @@ footer a{color:#a5b4fc;text-decoration:none}
 </script>
 
 <!-- ═══════════════════════════════════════════════════════
-     INJECTION DES PUBS ADSTERRA DANS LES 2 CADRES DU GATE
+     INJECTION DES PUBS ADSTERRA DANS LES 3 CONTENEURS
      ═══════════════════════════════════════════════════════ -->
 <script>
 (function() {
-  // Cadre 1 : bannière 728x90
+  // Cadre 1 du gate : bannière 728x90
   var c1 = document.getElementById('container-gate-1');
   if (c1) {
     var s1 = document.createElement('script');
@@ -728,7 +782,7 @@ footer a{color:#a5b4fc;text-decoration:none}
     c1.appendChild(s2);
   }
 
-  // Cadre 2 : bannière native
+  // Cadre 2 du gate : bannière native
   var c2 = document.getElementById('container-gate-2');
   if (c2) {
     var s3 = document.createElement('script');
@@ -739,6 +793,19 @@ footer a{color:#a5b4fc;text-decoration:none}
     var d = document.createElement('div');
     d.id = 'container-227fdab56b2902f2b1cff6ca6ff50464';
     c2.appendChild(d);
+  }
+
+  // Modal pub avant téléchargement : bannière native
+  var cm = document.getElementById('container-modal');
+  if (cm) {
+    var s4 = document.createElement('script');
+    s4.async = true;
+    s4.setAttribute('data-cfasync', 'false');
+    s4.src = 'https://pl31587449.profitableratecpmnetwork.com/227fdab56b2902f2b1cff6ca6ff50464/invoke.js';
+    cm.appendChild(s4);
+    var d2 = document.createElement('div');
+    d2.id = 'container-modal-native';
+    cm.appendChild(d2);
   }
 })();
 </script>
