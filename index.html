@@ -3,10 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 1800+ sites.">
-<title>Téléchargeur Universel — Télécharger des vidéos gratuitement</title>
-<link rel="icon" href="favicon.ico">
+
+<!-- ═══════════════════════════════════════════════
+     SEO DE BASE
+     ═══════════════════════════════════════════════ -->
+<meta name="description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 1800+ sites. Outil simple, rapide, sans inscription.">
+<meta name="keywords" content="téléchargeur vidéo, downloader, YouTube, TikTok, Instagram, Twitter, Vimeo, yt-dlp, cobalt, gratuit">
+<meta name="author" content="DENIX PRODUCTION">
+<meta name="robots" content="index, follow">
+<title>Téléchargeur Universel — Télécharger des vidéos gratuitement | by DENIX PRODUCTION</title>
+
+<!-- ═══════════════════════════════════════════════
+     OPEN GRAPH (WhatsApp, Facebook, LinkedIn…)
+     URLs ABSOLUES obligatoires !
+     ═══════════════════════════════════════════════ -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://telechargeur-universel.com/">
+<meta property="og:site_name" content="Téléchargeur Universel">
+<meta property="og:title" content="Téléchargeur Universel — 1800+ sites supportés">
+<meta property="og:description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 1800+ sites. Gratuit, open source, sans inscription.">
+<meta property="og:image" content="https://telechargeur-universel.com/og-image.png">
+<meta property="og:image:secure_url" content="https://telechargeur-universel.com/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Téléchargeur Universel — télécharger des vidéos YouTube, TikTok, Instagram">
+<meta property="og:locale" content="fr_FR">
+
+<!-- ═══════════════════════════════════════════════
+     TWITTER / X CARD
+     ═══════════════════════════════════════════════ -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@telechargeuruniv">
+<meta name="twitter:creator" content="@telechargeuruniv">
+<meta name="twitter:title" content="Téléchargeur Universel — 1800+ sites supportés">
+<meta name="twitter:description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 1800+ sites.">
+<meta name="twitter:image" content="https://telechargeur-universel.com/og-image.png">
+<meta name="twitter:image:alt" content="Téléchargeur Universel">
+
+<!-- ═══════════════════════════════════════════════
+     FAVICONS
+     ═══════════════════════════════════════════════ -->
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Téléchargeur Universel">
+<meta name="theme-color" content="#2d1b69">
+
+<!-- Yozora API -->
 <meta name="yozora-api" content="https://mon-yozora.vercel.app">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--accent-1:#6366f1;--accent-2:#a855f7;--accent-3:#ec4899;--ok:#10b981;--err:#ef4444;--warn:#f59e0b;--btc:#f7931a;--text:#e2e8f0;--text-dim:#94a3b8}
@@ -25,7 +75,6 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .topnav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
 @media(max-width:640px){.topnav{top:.6rem;padding:.3rem .4rem}.topnav-link{padding:.4rem .7rem;font-size:.74rem}}
 
-/* GATE */
 .gate{position:fixed;inset:0;z-index:9999;background:rgba(10,10,26,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;overflow-y:auto;opacity:1;transition:opacity .5s ease}
 .gate.hidden{opacity:0;pointer-events:none;visibility:hidden}
 .gate-box{width:100%;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:1.8rem 1.4rem;box-shadow:0 40px 100px -30px rgba(0,0,0,.95);text-align:center}
@@ -43,7 +92,6 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .gate-btn:disabled{opacity:.6;cursor:wait;transform:none}
 .gate-hint{margin-top:.9rem;color:#64748b;font-size:.78rem}
 
-/* MODAL PUB */
 .ad-modal{position:fixed;inset:0;z-index:10000;background:rgba(5,5,15,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:center;padding:1.2rem;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;overflow-y:auto}
 .ad-modal.show{opacity:1;visibility:visible}
 .ad-modal-box{width:100%;max-width:540px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:1.7rem 1.3rem;text-align:center;box-shadow:0 40px 100px -30px rgba(0,0,0,.95)}
@@ -57,10 +105,8 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .ad-skip{display:block;margin:.9rem auto 0;background:none;border:none;color:#64748b;font-family:inherit;font-size:.78rem;cursor:pointer;text-decoration:underline;padding:.3rem}
 .ad-skip:hover{color:#94a3b8}
 
-/* APP */
 .wrap{position:relative;z-index:1;width:100%;max-width:920px;padding-top:5rem}
 
-/* BANDEAU DENIX PRODUCTION */
 .byline{width:100%;background:#fff;border-radius:12px;padding:.75rem 1rem;text-align:center;margin-bottom:1.4rem;box-shadow:0 10px 28px -12px rgba(0,0,0,.7)}
 .byline span{color:#e11d48;font-weight:800;font-size:.98rem;letter-spacing:.08em;text-transform:uppercase;font-family:'Inter',sans-serif}
 @media(max-width:480px){.byline{padding:.6rem .8rem}.byline span{font-size:.82rem}}
@@ -206,7 +252,6 @@ footer a{color:#a5b4fc;text-decoration:none}
 
 <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 
-<!-- NAV -->
 <nav class="topnav">
   <a href="#top" class="topnav-link">Accueil</a>
   <a href="#sites-section" class="topnav-link">Sites</a>
@@ -215,7 +260,6 @@ footer a{color:#a5b4fc;text-decoration:none}
   <a href="#support-section" class="topnav-link">Soutenir</a>
 </nav>
 
-<!-- GATE -->
 <div class="gate" id="gate">
   <div class="gate-box">
     <div class="gate-title">🔓 Débloquer l'accès</div>
@@ -234,23 +278,18 @@ footer a{color:#a5b4fc;text-decoration:none}
   </div>
 </div>
 
-<!-- MODAL PUB -->
 <div class="ad-modal" id="adModal">
   <div class="ad-modal-box">
     <h3>📢 Une publicité avant votre téléchargement</h3>
     <p>Merci de patienter quelques secondes. Cela nous aide à garder le service gratuit pour tous.</p>
-    <div class="ad-zone">
-      <div id="container-modal"></div>
-    </div>
+    <div class="ad-zone"><div id="container-modal"></div></div>
     <button class="ad-continue" id="adContinue">Continuer vers le téléchargement</button>
     <button class="ad-skip" id="adSkip">Passer la publicité →</button>
   </div>
 </div>
 
-<!-- APP -->
 <div class="wrap" id="top">
 
-  <!-- BANDEAU DENIX PRODUCTION -->
   <div class="byline"><span>by DENIX PRODUCTION</span></div>
 
   <div class="ad-slot">
@@ -321,9 +360,7 @@ footer a{color:#a5b4fc;text-decoration:none}
     <div class="log" id="log"></div>
 
     <div class="result" id="result">
-      <div class="video-wrap">
-        <video id="player" controls playsinline preload="metadata"></video>
-      </div>
+      <div class="video-wrap"><video id="player" controls playsinline preload="metadata"></video></div>
       <div class="dl-bar">
         <a class="btn btn-dl" id="dl" href="#" download>⬇️ Télécharger la vidéo</a>
         <button class="btn btn-ghost" id="copy">📋 Copier le lien</button>
@@ -354,7 +391,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     </div>
   </div>
 
-  <!-- SITES -->
   <div class="section-title" id="sites-section">
     <h2>🌍 1800+ sites compatibles</h2>
     <p>21 sites natifs via Cobalt + 1800+ via yt-dlp (Yozora).</p>
@@ -387,7 +423,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     </div>
   </div>
 
-  <!-- PREMIUM -->
   <div class="premium" id="premium-section">
     <div class="prem-head">
       <div class="prem-icon">⚡</div>
@@ -412,7 +447,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     <div class="prem-note">Après paiement confirmé, tu reçois un code d'accès unique par email.<br>Utilisable sur 4 sessions maximum.</div>
   </div>
 
-  <!-- PREMIUM GRATUIT -->
   <div class="free-premium" id="free-premium-section">
     <h3>🎁 Gagne ton Premium gratuitement</h3>
     <p>Regarde des vidéos publicitaires volontairement. Une fois le palier atteint, tu obtiens le Premium à vie <strong>gratuitement</strong>.</p>
@@ -422,7 +456,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     <div class="fp-note">Ton compteur est sauvegardé dans ton navigateur.<br>Une fois 50 atteint, contacte-nous pour recevoir ton code Premium gratuit.</div>
   </div>
 
-  <!-- TERMINAL -->
   <div class="terminal-section" id="terminal-section">
     <div class="term-head">
       <div class="term-icon">⌨️</div>
@@ -471,7 +504,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     </div>
   </div>
 
-  <!-- Bannière bas -->
   <div class="ad-slot" style="margin-top:2rem">
     <script type="text/javascript">
       atOptions = {'key':'581e088cb553c739ca8812abcb681c7a','format':'iframe','height':90,'width':728,'params':{}};
@@ -479,7 +511,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     <script src="https://www.highrevenueformat.com/581e088cb553c739ca8812abcb681c7a/invoke.js"></script>
   </div>
 
-  <!-- BITCOIN -->
   <div class="support" id="support-section">
     <div class="support-head">
       <div class="btc-logo">₿</div>
@@ -520,7 +551,7 @@ footer a{color:#a5b4fc;text-decoration:none}
   const YOZORA_API = document.querySelector('meta[name="yozora-api"]')?.content || null;
   const REQUEST_TIMEOUT_MS = 60000;
   const BTC_ADDRESS = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
-  const POPUNDER_SCRIPT = 'https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a815004ce74046d38.js';
+  const POPUNDER_SCRIPT = 'https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a8154004ce74046d38.js';
 
   const $ = id => document.getElementById(id);
   const codeEl = $('code'), goBtn = $('go'), clearBtn = $('clear');
@@ -548,7 +579,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     } catch (e) { return false; }
   }
 
-  /* GATE */
   function startGate() {
     document.body.classList.add('locked');
     gate.classList.remove('hidden');
@@ -580,7 +610,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     document.body.classList.remove('locked');
   } else { startGate(); }
 
-  /* MODAL PUB */
   function showAdModal(onDone) {
     pendingDownloadUrl = onDone;
     adModal.classList.add('show');
@@ -601,7 +630,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     if (cb) cb();
   });
 
-  /* APP */
   const setStatus = (m,c='') => { statusEl.textContent = m; statusEl.className = 'status on ' + c; };
   const hideStatus = () => { statusEl.className = 'status'; statusEl.textContent = ''; };
   const logLine = t => { logEl.classList.add('on'); logEl.textContent += t + '\n'; logEl.scrollTop = logEl.scrollHeight; };
@@ -646,7 +674,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     const isAudio = $('audioOnly').value === 'true';
     const quality = $('quality').value;
 
-    // 1. Essaie Cobalt d'abord
     if (apiBase) {
       try {
         const controller = new AbortController();
@@ -668,18 +695,13 @@ footer a{color:#a5b4fc;text-decoration:none}
           const data = await r.json();
           if (data.status !== 'error' && !data.error) return data;
         }
-      } catch (e) {
-        // Cobalt échoue → on bascule sur Yozora
-      }
+      } catch (e) {}
     }
 
-    // 2. Fallback : Yozora (1800+ sites)
     if (YOZORA_API) {
       const format = isAudio
         ? 'bestaudio/best'
-        : (quality === 'max'
-          ? 'bestvideo+bestaudio/best'
-          : `bestvideo[height<=${quality}]+bestaudio/best[height<=${quality}]`);
+        : (quality === 'max' ? 'bestvideo+bestaudio/best' : `bestvideo[height<=${quality}]+bestaudio/best[height<=${quality}]`);
       const params = new URLSearchParams({ url, format });
       const r = await fetch(YOZORA_API + '/api/download?' + params.toString());
       if (!r.ok) throw new Error('Yozora HTTP ' + r.status);
@@ -739,11 +761,7 @@ footer a{color:#a5b4fc;text-decoration:none}
     reset();
     stepsEl.classList.remove('on');
     const premiumActive = localStorage.getItem('tu_premium') === '1';
-    if (premiumActive) {
-      doDownload();
-    } else {
-      showAdModal(doDownload);
-    }
+    if (premiumActive) { doDownload(); } else { showAdModal(doDownload); }
   }
 
   goBtn.addEventListener('click', launch);
@@ -771,7 +789,6 @@ footer a{color:#a5b4fc;text-decoration:none}
     alert('Pour acheter Téléchargeur Universel PRO (5 USDT),\ncontacte-nous par email.\n\nTu recevras les instructions de paiement et ton code d\'accès.');
   });
 
-  /* PREMIUM GRATUIT */
   const FP_TARGET = 50;
   let fpWatched = Number.parseInt(localStorage.getItem('tu_fp_watched') || '0', 10);
   if (!Number.isSafeInteger(fpWatched) || fpWatched < 0) fpWatched = 0;
@@ -803,14 +820,12 @@ footer a{color:#a5b4fc;text-decoration:none}
     }, 3000);
   });
 
-  /* BITCOIN */
   $('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=' + encodeURIComponent('bitcoin:' + BTC_ADDRESS);
   $('copyAddr').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(BTC_ADDRESS); const b = $('copyAddr'); const o = b.textContent; b.textContent = '✅ Copié !'; b.classList.add('ok'); setTimeout(() => { b.textContent = o; b.classList.remove('ok'); }, 1800); }
     catch { alert('Adresse : ' + BTC_ADDRESS); }
   });
 
-  /* TERMINAL */
   document.querySelectorAll('.term-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       const os = tab.dataset.os;
@@ -842,7 +857,6 @@ footer a{color:#a5b4fc;text-decoration:none}
 })();
 </script>
 
-<!-- INJECTION DES PUBS DANS LES CADRES -->
 <script>
 (function() {
   var c1 = document.getElementById('container-gate-1');
@@ -882,7 +896,6 @@ footer a{color:#a5b4fc;text-decoration:none}
 })();
 </script>
 
-<!-- POPUNDER initial + SOCIAL BAR -->
 <script src="https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a8154004ce74046d38.js"></script>
 <script src="https://pl31587447.profitableratecpmnetwork.com/71/73/24/71732449ede0dee49315bb61ba1ad0b4.js"></script>
 </body>
