@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 1800+ sites. Sans inscription.">
+<meta name="description" content="Téléchargeur Universel — Téléchargez et générez des vidéos avec l'IA. 1800+ sites + générateur vidéo gratuit.">
 <meta name="robots" content="index, follow">
-<title>Téléchargeur Universel — Télécharger des vidéos gratuitement</title>
+<title>Téléchargeur Universel — Télécharger & Générer des vidéos</title>
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://telechargeur-universel.com/">
 <meta property="og:site_name" content="Téléchargeur Universel">
-<meta property="og:title" content="Téléchargeur Universel — 1800+ sites">
-<meta property="og:description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 1800+ sites.">
+<meta property="og:title" content="Téléchargeur Universel — Télécharger & Générer des vidéos">
+<meta property="og:description" content="Téléchargez depuis 1800+ sites et générez des vidéos IA gratuitement.">
 <meta property="og:image" content="https://telechargeur-universel.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -20,27 +20,31 @@
 <meta name="twitter:image" content="https://telechargeur-universel.com/og-image.png">
 
 <link rel="icon" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <meta name="theme-color" content="#2d1b69">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--a1:#6366f1;--a2:#a855f7;--a3:#ec4899;--ok:#10b981;--err:#ef4444;--warn:#f59e0b;--btc:#f7931a;--tx:#e2e8f0;--txd:#94a3b8}
-body{background:radial-gradient(ellipse at top,#2d1b69 0%,#1a1440 35%,#0a0a1a 75%) fixed;font-family:'Inter',system-ui,sans-serif;color:var(--tx);min-height:100vh;padding:2rem 1rem;display:flex;flex-direction:column;align-items:center;overflow-x:hidden}
+:root{--a1:#6366f1;--a2:#a855f7;--a3:#ec4899;--ok:#10b981;--err:#ef4444;--warn:#f59e0b;--btc:#f7931a;--tx:#e2e8f0;--txd:#94a3b8;--panel:#15151f;--panel2:#1d1d29;--border:#2a2a3a}
+body{background:radial-gradient(ellipse at top,#2d1b69 0%,#1a1440 35%,#0a0a1a 75%) fixed;font-family:'Inter',-apple-system,system-ui,sans-serif;color:var(--tx);min-height:100vh;padding:2rem 1rem;display:flex;flex-direction:column;align-items:center;overflow-x:hidden}
 body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
+.bg-orbs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35}
+.orb-1{width:500px;height:500px;background:var(--a1);top:-150px;left:-100px;animation:float 20s ease-in-out infinite}
+.orb-2{width:400px;height:400px;background:var(--a3);bottom:-100px;right:-100px;animation:float 25s ease-in-out infinite reverse}
+.orb-3{width:300px;height:300px;background:var(--a2);top:40%;left:60%;animation:float 30s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-40px) scale(1.1)}}
 
 .topnav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:400;display:flex;gap:.4rem;background:rgba(10,10,26,.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:.4rem .5rem;max-width:calc(100vw - 2rem);overflow-x:auto}
-.topnav-link{padding:.5rem .9rem;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--txd);background:transparent;border:none;font-family:inherit;cursor:pointer;text-decoration:none;white-space:nowrap}
-.topnav-link:hover{color:var(--tx);background:rgba(255,255,255,.06)}
+.topnav-link{padding:.5rem .9rem;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--txd);background:transparent;border:none;font-family:inherit;cursor:pointer;text-decoration:none;white-space:nowrap;transition:.2s}
+.topnav-link:hover,.topnav-link.active{color:var(--tx);background:rgba(255,255,255,.08)}
 @media(max-width:640px){.topnav{top:.6rem;padding:.3rem .4rem}.topnav-link{padding:.4rem .7rem;font-size:.74rem}}
 
+/* GATE */
 .gate{position:fixed;inset:0;z-index:9999;background:rgba(10,10,26,.6);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;overflow-y:auto;transition:opacity .5s ease}
 .gate.hidden{opacity:0;pointer-events:none;visibility:hidden}
 .gate-box{width:100%;max-width:600px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:1.8rem 1.4rem;text-align:center}
 .gate-title{font-size:1.4rem;font-weight:800;margin-bottom:.4rem;background:linear-gradient(135deg,#a78bfa,#60a5fa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.gate-sub{color:#94a3b8;font-size:.88rem;margin-bottom:1.2rem;line-height:1.5}
+.gate-sub{color:var(--txd);font-size:.88rem;margin-bottom:1.2rem;line-height:1.5}
 .gate-sub strong{color:#c7d2fe}
 .gate-ad{min-height:90px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:.6rem;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:1.2rem}
 .gate-ad::before{content:'PUBLICITÉ';position:absolute;top:4px;left:9px;font-size:.52rem;letter-spacing:.12em;color:#475569;font-weight:700;z-index:1}
@@ -52,25 +56,36 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .wrap{position:relative;z-index:1;width:100%;max-width:920px;padding-top:5rem}
 .byline{width:100%;background:#fff;border-radius:12px;padding:.75rem 1rem;text-align:center;margin-bottom:1.4rem}
 .byline span{color:#e11d48;font-weight:800;font-size:.98rem;letter-spacing:.08em;text-transform:uppercase}
+@media(max-width:480px){.byline{padding:.6rem .8rem}.byline span{font-size:.82rem}}
 
-header{text-align:center;margin-bottom:2rem}
+header{text-align:center;margin-bottom:1.5rem}
 .logo-full{max-width:400px;width:88%;height:auto;display:block;margin:0 auto .6rem;filter:drop-shadow(0 12px 30px rgba(99,102,241,.4))}
 .tagline{color:var(--txd);font-size:.92rem;line-height:1.55;margin-top:.5rem}
 .tagline strong{color:#c7d2fe}
 .pills{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
 .pill{padding:.3rem .8rem;border-radius:999px;font-size:.68rem;font-weight:700;text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--txd)}
-.pill.ok{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:#4ade80}
-.pill.ko{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#f87171}
-.pill.checking{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3);color:#a5b4fc}
 
-.ad-slot{width:100%;max-width:920px;margin:0 auto 1.4rem;min-height:90px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:.8rem;position:relative;overflow:hidden}
+/* TABS PRINCIPAUX */
+.main-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;background:rgba(0,0,0,.35);border-radius:16px;padding:.4rem;border:1px solid rgba(255,255,255,.08)}
+.main-tab{flex:1;padding:1rem 1.2rem;border:none;border-radius:12px;background:transparent;color:var(--txd);font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:.25s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.main-tab:hover{color:var(--tx);background:rgba(255,255,255,.05)}
+.main-tab.active{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 8px 20px -6px var(--a1)}
+@media(max-width:520px){.main-tab{font-size:.82rem;padding:.85rem .5rem;flex-direction:column;gap:.2rem}}
+
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* AD SLOTS */
+.ad-slot{width:100%;margin:0 auto 1.4rem;min-height:90px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:.8rem;position:relative;overflow:hidden}
 .ad-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:11px;font-size:.58rem;letter-spacing:.14em;color:#64748b;font-weight:700;z-index:1}
 
-.card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:1.6rem 1.3rem}
+/* CARDS */
+.card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:1.6rem 1.3rem;margin-bottom:1.2rem}
 @media(max-width:640px){.card{padding:1.3rem 1rem}}
 label{display:block;font-size:.74rem;font-weight:700;color:var(--txd);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem}
 textarea,input,select{width:100%;background:rgba(0,0,0,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:.85rem 1rem;font-family:'SF Mono',monospace;font-size:.85rem;color:var(--tx);outline:none;transition:.2s}
-textarea{min-height:120px}
+textarea{min-height:120px;resize:vertical}
 textarea:focus,input:focus,select:focus{border-color:var(--a1);box-shadow:0 0 0 4px rgba(99,102,241,.15)}
 textarea::placeholder,input::placeholder{color:#64748b}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:1rem}
@@ -85,6 +100,7 @@ textarea::placeholder,input::placeholder{color:#64748b}
 .status.on{display:block}
 .status.err{background:rgba(239,68,68,.08);border-color:var(--err);color:#fca5a5}
 .status.ok{background:rgba(16,185,129,.08);border-color:var(--ok);color:#6ee7b7}
+.status.warn{background:rgba(245,158,11,.08);border-color:var(--warn);color:#fcd34d}
 .result{margin-top:1.4rem;display:none}
 .result.on{display:block}
 .video-wrap{border-radius:16px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.1)}
@@ -97,7 +113,7 @@ textarea::placeholder,input::placeholder{color:#64748b}
 .steps.on{display:block}
 .steps ol{margin-left:1.2rem;margin-top:.4rem}
 details{margin-top:1.3rem;background:rgba(0,0,0,.25);border-radius:14px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
-details summary{padding:.85rem 1.1rem;cursor:pointer;font-weight:600;font-size:.88rem;color:#c7d2fe;list-style:none;display:flex;justify-content:space-between}
+details summary{padding:.85rem 1.1rem;cursor:pointer;font-weight:600;font-size:.88rem;color:#c7d2fe;list-style:none;display:flex;justify-content:space-between;align-items:center}
 details summary::-webkit-details-marker{display:none}
 details summary::after{content:'▾';transition:.2s}
 details[open] summary::after{transform:rotate(180deg)}
@@ -106,88 +122,83 @@ details .content code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.15r
 .native-slot{margin-top:1.4rem;padding:.8rem;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:14px;position:relative;overflow:hidden}
 .native-slot::before{content:'PUBLICITÉ';position:absolute;top:5px;left:10px;font-size:.55rem;color:#475569;font-weight:700;z-index:1}
 
-.section-title{margin:2.5rem 0 1.3rem;text-align:center}
-.section-title h2{font-size:1.35rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.4rem}
-.section-title p{color:#94a3b8;font-size:.85rem;max-width:520px;margin:0 auto;line-height:1.5}
-.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.5rem}
-.site-item{padding:.7rem .85rem;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.6rem}
-.site-item .ico{font-size:1.2rem}
-.site-item .nm{font-size:.82rem;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.site-item .tp{font-size:.62rem;color:#94a3b8;text-transform:uppercase}
+/* ═══ GÉNÉRATEUR IA ═══ */
+.instructions{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(6,182,212,.06));border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:1.1rem 1.2rem;margin-bottom:1.2rem}
+.instructions h3{font-size:.88rem;font-weight:700;color:var(--a2);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.06em}
+.instructions ol{margin-left:1.2rem;font-size:.85rem;color:#cbd5e1;line-height:1.7}
+.instructions ol li{margin-bottom:.25rem}
+.instructions a{color:#06b6d4;text-decoration:underline}
+.instructions code{background:rgba(0,0,0,.4);padding:.1rem .4rem;border-radius:4px;font-family:ui-monospace,monospace;font-size:.85em;color:#c7d2fe}
 
-.premium{margin-top:2rem;background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(168,85,247,.08),rgba(236,72,153,.08));border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:1.6rem}
-.prem-head{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
-.prem-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:grid;place-items:center;font-size:1.4rem}
-.prem-title{font-size:1.15rem;font-weight:800;color:#fff}
-.prem-sub{font-size:.8rem;color:#e9d5ff;margin-top:.15rem}
-.prem-features{list-style:none;margin:1rem 0 1.2rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-@media(max-width:640px){.prem-features{grid-template-columns:1fr}}
-.prem-features li{color:#e2e8f0;font-size:.83rem;display:flex;gap:.5rem}
-.prem-features li::before{content:'✦';color:#f0abfc;font-weight:800}
-.prem-price{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:.9rem 1.1rem;background:rgba(0,0,0,.35);border-radius:14px;border:1px solid rgba(168,85,247,.25)}
-.prem-price-num{font-size:1.9rem;font-weight:900;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
-.prem-price-label{font-size:.83rem;color:#c7d2fe}
-.prem-price-label strong{color:#fff}
-.btn-premium{width:100%;padding:.95rem;border:none;border-radius:14px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s}
-.btn-premium:hover{transform:translateY(-2px)}
-.prem-note{font-size:.73rem;color:#94a3b8;margin-top:.7rem;text-align:center;line-height:1.5}
-.prem-code-row{display:flex;gap:.5rem;margin-top:.9rem;flex-wrap:wrap}
-.prem-code-row input{flex:1 1 200px}
-.prem-code-row button{flex:0 0 auto;padding:.85rem 1.2rem;border:none;border-radius:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;cursor:pointer;font-family:inherit}
-.free-premium{margin-top:2rem;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(99,102,241,.08));border:1px solid rgba(16,185,129,.35);border-radius:24px;padding:1.6rem;text-align:center}
-.free-premium h3{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:.5rem}
-.free-premium p{color:#cbd5e1;font-size:.85rem;line-height:1.6;margin-bottom:1.1rem}
-.fp-progress{width:100%;height:12px;background:rgba(0,0,0,.4);border-radius:10px;overflow:hidden;margin:.9rem 0;border:1px solid rgba(255,255,255,.1)}
-.fp-fill{height:100%;width:0%;background:linear-gradient(90deg,#10b981,#22d3ee);transition:width .5s;border-radius:10px}
-.fp-count{font-size:.83rem;color:#94a3b8;font-weight:600;margin-bottom:1rem}
-.fp-count strong{color:#6ee7b7}
+.api-panel{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:16px;padding:1rem 1.2rem;margin-bottom:1.2rem;transition:border-color .3s}
+.api-panel.ok{border-color:var(--ok)}
+.api-key-input{width:100%;padding:.85rem 1rem;border-radius:10px;border:1px solid var(--border);background:#0a0a0a;color:var(--tx);font-family:ui-monospace,monospace;font-size:.85rem;margin-bottom:.6rem}
+.api-key-input:focus{outline:none;border-color:var(--a2)}
+.api-save-btn{width:100%;padding:.8rem 1.2rem;border-radius:10px;border:none;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:.9rem;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+.api-status-line{font-size:.78rem;padding:.55rem .85rem;border-radius:8px;display:flex;align-items:center;gap:.5rem;background:var(--panel2);color:var(--txd);transition:all .3s}
+.api-status-line.ok{background:rgba(16,185,129,.15);color:var(--ok);font-weight:600}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#555;flex-shrink:0}
+.api-status-line.ok .status-dot{background:var(--ok)}
 
-.terminal-section{margin-top:2rem;background:linear-gradient(180deg,rgba(15,15,35,.9),rgba(10,10,26,.95));border:1px solid rgba(99,102,241,.25);border-radius:24px;padding:1.6rem;position:relative;overflow:hidden}
-.terminal-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,#a855f7,#ec4899,transparent)}
-.term-head{display:flex;align-items:center;gap:.9rem;margin-bottom:1.1rem;padding-bottom:.9rem;border-bottom:1px solid rgba(255,255,255,.06)}
-.term-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#0f172a,#1e1b4b);display:grid;place-items:center;font-size:1.5rem}
-.term-title{font-size:1.15rem;font-weight:800;color:#fff}
-.term-sub{font-size:.78rem;color:#a5b4fc;margin-top:.15rem}
-.term-intro{color:#cbd5e1;font-size:.88rem;line-height:1.6;margin-bottom:1.2rem}
-.term-intro strong{color:#f0abfc}
-.term-details{margin-top:.7rem;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
-.term-details summary{padding:.9rem 1.1rem;cursor:pointer;font-weight:700;font-size:.9rem;color:#e0e7ff;list-style:none;display:flex}
-.term-details summary::-webkit-details-marker{display:none}
-.term-details summary::after{content:'▾';margin-left:auto;color:#818cf8}
-.term-details[open] summary::after{transform:rotate(180deg)}
-.term-content{padding:.4rem 1.1rem 1.1rem;font-size:.84rem;line-height:1.6;color:#cbd5e1}
-.cmd{display:flex;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.5rem 0;overflow:hidden;font-family:'SF Mono',monospace}
-.cmd::before{content:'$';color:#22d3ee;padding:.7rem .5rem .7rem .8rem;font-weight:700}
-.cmd code{flex:1;padding:.7rem .5rem;color:#e0e7ff;font-size:.78rem;line-height:1.5;word-break:break-all;display:flex;align-items:center;min-width:0}
-.cmd-copy{background:rgba(255,255,255,.04);border:none;border-left:1px solid rgba(255,255,255,.08);color:#a5b4fc;cursor:pointer;padding:0 .9rem;font-size:1rem}
-.cmd-copy.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
-.term-warn{margin-top:1.2rem;padding:.9rem 1.1rem;background:rgba(251,191,36,.08);border-left:4px solid #fbbf24;border-radius:12px;font-size:.8rem;color:#fde68a;line-height:1.6}
+.upload-zone{border:2px dashed var(--border);border-radius:16px;padding:1.6rem 1rem;text-align:center;cursor:pointer;transition:.2s;margin-bottom:1.1rem;background:rgba(0,0,0,.2)}
+.upload-zone:hover{border-color:var(--a2);background:rgba(139,92,246,.05)}
+.upload-zone input[type=file]{display:none}
+.upload-icon{font-size:2rem;margin-bottom:.4rem;opacity:.7;color:var(--a2)}
+.upload-text{font-size:.92rem;color:var(--tx);font-weight:600;margin-bottom:.2rem}
+.upload-hint{font-size:.74rem;color:var(--txd)}
+.images-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:.5rem;margin-bottom:1rem}
+.image-card{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:#000;aspect-ratio:9/16}
+.image-card img{width:100%;height:100%;object-fit:cover;display:block}
+.image-card .remove-btn{position:absolute;top:3px;right:3px;background:rgba(239,68,68,.9);color:#fff;border:none;width:20px;height:20px;border-radius:50%;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-.support{margin-top:2rem;background:linear-gradient(180deg,rgba(247,147,26,.08),rgba(247,147,26,.02));border:1px solid rgba(247,147,26,.25);border-radius:24px;padding:1.6rem}
-.support-head{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
-.btc-logo{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#f7931a,#ffb347);display:grid;place-items:center;font-size:1.35rem;font-weight:800;color:#fff}
-.support-title{font-size:1.1rem;font-weight:800;color:#fff}
-.support-sub{font-size:.8rem;color:#fbbf24}
-.support-body{display:flex;gap:1.3rem;flex-wrap:wrap;align-items:flex-start}
-@media(max-width:640px){.support-body{flex-direction:column;align-items:center}}
-.qr-wrap{flex:0 0 auto;background:#fff;padding:.6rem;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:.4rem}
-.qr-wrap img{width:150px;height:150px;display:block;border-radius:6px}
-.qr-wrap small{color:#0a0a1a;font-size:.62rem;font-weight:700}
-.support-info{flex:1 1 260px;min-width:0;width:100%}
-.support-info p{color:#fde68a;font-size:.83rem;line-height:1.6;margin-bottom:.8rem}
-.addr-box{display:flex;gap:.4rem;background:rgba(0,0,0,.4);border:1px solid rgba(247,147,26,.3);border-radius:12px;padding:.4rem;margin-bottom:.7rem;flex-wrap:wrap}
-.addr-box code{flex:1 1 200px;min-width:0;color:#fbbf24;font-family:'SF Mono',monospace;font-size:.72rem;word-break:break-all;padding:.5rem .55rem;display:flex;align-items:center}
-.addr-box button{background:linear-gradient(135deg,#f7931a,#ffb347);border:none;border-radius:8px;padding:.5rem 1rem;color:#fff;font-weight:700;font-size:.78rem;cursor:pointer;font-family:inherit}
-.addr-box button.ok{background:linear-gradient(135deg,#10b981,#059669)}
-.support-note{font-size:.76rem;color:#94a3b8;line-height:1.6;background:rgba(0,0,0,.25);border-left:3px solid #f7931a;padding:.65rem .85rem;border-radius:8px}
-.illustration{margin-top:1.3rem;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-.illustration img{width:100%;display:block;height:auto}
+.prompt-presets{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.prompt-preset{padding:.4rem .8rem;border-radius:16px;border:1px solid var(--border);background:var(--panel2);font-size:.75rem;cursor:pointer;transition:.15s;color:var(--tx);user-select:none}
+.prompt-preset:hover{border-color:var(--a2);color:var(--a2)}
 
-footer{text-align:center;margin-top:2rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.06);color:#64748b;font-size:.78rem;line-height:1.7}
-footer a{color:#a5b4fc;text-decoration:none}
+.queue{margin-top:1rem;display:none}
+.queue-summary{background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.6rem;font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem}
+.queue-summary .progress-text{color:var(--a2);font-weight:700}
+.queue-item{display:flex;align-items:center;gap:.8rem;padding:.7rem .9rem;border-radius:10px;border:1px solid var(--border);margin-bottom:.4rem;background:rgba(0,0,0,.25);font-size:.83rem}
+.queue-item.creating{border-color:var(--warn)}
+.queue-item.processing{border-color:var(--a2)}
+.queue-item.done{border-color:var(--ok)}
+.queue-item.failed{border-color:var(--err)}
+.queue-item .q-icon{font-size:1rem;width:1.5rem;text-align:center}
+.queue-item .q-name{flex:1;font-weight:600}
+.queue-item .q-status{font-size:.75rem;color:var(--txd);text-align:right}
+
+.gallery{margin-top:1.5rem;display:none}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.8rem}
+.gallery-item{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:#000;animation:fadeIn .4s ease}
+.gallery-item video{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#000}
+.gallery-item .g-caption{padding:.5rem .7rem;background:var(--panel);font-size:.75rem;color:var(--txd);display:flex;justify-content:space-between;align-items:center;gap:.4rem}
+.gallery-item .g-caption a{color:#06b6d4;text-decoration:none;font-weight:600}
+
+.status-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;padding:.8rem 1rem;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.6rem;transform:translateY(100%);transition:transform .3s;z-index:100}
+.status-bar.visible{transform:translateY(0)}
+.status-bar .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.toast{position:fixed;top:1.5rem;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--tx);color:#000;padding:.85rem 1.4rem;border-radius:12px;font-size:.85rem;font-weight:600;z-index:1000;opacity:0;transition:transform .35s,opacity .35s;max-width:90vw;text-align:center}
+.toast.visible{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{background:var(--ok);color:#fff}
+.toast.error{background:var(--err);color:#fff}
+.toast.warn{background:var(--warn);color:#000}
+.hidden{display:none!important}
+
+.btn-stop{width:100%;padding:.9rem;border-radius:14px;border:1px solid var(--err);background:transparent;color:var(--err);font-size:.88rem;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:1rem;display:none;text-transform:uppercase}
+.btn-stop.visible{display:block}
+
+.control-row{margin-bottom:.9rem}
+.control-row:last-child{margin-bottom:0}
+.control-label{display:block;font-size:.74rem;color:var(--txd);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+
+@media(max-width:640px){.main-tab{font-size:.8rem;padding:.75rem .5rem}}
 </style>
 </head>
 <body class="locked">
+
+<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 
 <!-- GATE -->
 <div class="gate" id="gate">
@@ -195,7 +206,7 @@ footer a{color:#a5b4fc;text-decoration:none}
     <div class="gate-title">🔓 Débloquer l'accès</div>
     <div class="gate-sub">
       <strong>Téléchargeur Universel</strong> est 100% gratuit et financé par la publicité.<br>
-      Un seul clic pour accéder à l'outil.
+      Un seul clic pour accéder aux outils.
     </div>
     <div class="gate-ad"><div id="container-gate"></div></div>
     <button class="gate-btn" id="gateBtn" disabled>⏳ Patientez <span id="gateTimer">3 s</span></button>
@@ -206,17 +217,18 @@ footer a{color:#a5b4fc;text-decoration:none}
 <!-- NAV -->
 <nav class="topnav">
   <a href="#top" class="topnav-link">Accueil</a>
-  <a href="#sites" class="topnav-link">Sites</a>
+  <a href="#tab-downloader" class="topnav-link" data-tab-link="downloader">Télécharger</a>
+  <a href="#tab-generator" class="topnav-link" data-tab-link="generator">Générer IA</a>
   <a href="#premium" class="topnav-link">Premium</a>
   <a href="#terminal" class="topnav-link">yt-dlp</a>
   <a href="#support" class="topnav-link">Soutenir</a>
 </nav>
 
-<!-- APP -->
 <div class="wrap" id="top">
+
   <div class="byline"><span>by DENIX PRODUCTION</span></div>
 
-  <!-- Pub haut -->
+  <!-- PUB HAUT -->
   <div class="ad-slot">
     <script type="text/javascript">
       atOptions = {'key':'581e088cb553c739ca8812abcb681c7a','format':'iframe','height':90,'width':728,'params':{}};
@@ -227,181 +239,235 @@ footer a{color:#a5b4fc;text-decoration:none}
   <header>
     <img src="logo-full.png" alt="Téléchargeur Universel" class="logo-full">
     <div class="tagline">
-      Colle <strong>une URL vidéo</strong> ou un code d'intégration.<br>
-      21 sites via Cobalt + 1800+ sites via yt-dlp.
+      <strong>Téléchargez</strong> depuis 1800+ sites ou <strong>générez</strong> des vidéos avec l'IA.<br>
+      Gratuit, open source, sans inscription.
     </div>
     <div class="pills">
-      <span class="pill checking" id="pill-api">API : vérification…</span>
-      <span class="pill">Sans tracking</span>
       <span class="pill">1800+ sites</span>
+      <span class="pill">Générateur IA</span>
+      <span class="pill">Sans tracking</span>
     </div>
   </header>
 
-  <div class="card">
-    <label for="code">Code d'intégration ou URL</label>
-    <textarea id="code" placeholder='Colle ici un code <iframe src="..."> ou une URL (YouTube, TikTok…)&#10;Ou une URL directe .mp4 / .m3u8'></textarea>
+  <!-- TABS PRINCIPAUX -->
+  <div class="main-tabs">
+    <button class="main-tab active" data-tab="downloader">📥 Télécharger</button>
+    <button class="main-tab" data-tab="generator">🎬 Générer IA</button>
+  </div>
 
-    <div class="grid-2">
-      <div>
-        <label for="quality">Qualité</label>
-        <select id="quality">
-          <option value="max">Maximale</option>
-          <option value="1080">1080p</option>
-          <option value="720" selected>720p</option>
-          <option value="480">480p</option>
-          <option value="360">360p</option>
-        </select>
+  <!-- ═══════════════════════════════════════════════
+       TAB 1 : TÉLÉCHARGEUR
+       ═══════════════════════════════════════════════ -->
+  <div class="tab-content active" id="tab-downloader">
+
+    <div class="card">
+      <label for="code">Code d'intégration ou URL</label>
+      <textarea id="code" placeholder='Colle ici un code <iframe src="..."> ou une URL (YouTube, TikTok…)&#10;Ou une URL directe .mp4 / .m3u8'></textarea>
+
+      <div class="grid-2">
+        <div>
+          <label for="quality">Qualité</label>
+          <select id="quality">
+            <option value="max">Maximale</option>
+            <option value="1080">1080p</option>
+            <option value="720" selected>720p</option>
+            <option value="480">480p</option>
+            <option value="360">360p</option>
+          </select>
+        </div>
+        <div>
+          <label for="audioOnly">Format</label>
+          <select id="audioOnly">
+            <option value="false">Vidéo (mp4)</option>
+            <option value="true">Audio seulement (mp3)</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label for="audioOnly">Format</label>
-        <select id="audioOnly">
-          <option value="false">Vidéo (mp4)</option>
-          <option value="true">Audio seulement (mp3)</option>
-        </select>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="go">🚀 Télécharger</button>
+        <button class="btn btn-ghost" id="clear">🗑️ Effacer</button>
+      </div>
+
+      <div class="steps" id="steps">
+        <strong>💡 Comment faire :</strong>
+        <ol>
+          <li>Va sur la page de la vidéo</li>
+          <li>Clique sur <strong>Partager → Intégrer</strong></li>
+          <li>Copie le code ou l'URL</li>
+          <li>Colle-le et clique <strong>Télécharger</strong></li>
+        </ol>
+      </div>
+
+      <div class="status" id="status"></div>
+      <div class="log" id="log"></div>
+
+      <div class="result" id="result">
+        <div class="video-wrap"><video id="player" controls playsinline preload="metadata"></video></div>
+        <div class="dl-bar">
+          <a class="btn btn-dl" id="dl" href="#" download>⬇️ Télécharger la vidéo</a>
+          <button class="btn btn-ghost" id="copy">📋 Copier</button>
+        </div>
+      </div>
+
+      <details>
+        <summary>📜 Mentions légales</summary>
+        <div class="content">
+          <p>Usage strictement personnel. Copie privée (art. L.122-5 CPI). Ne pas redistribuer.</p>
+        </div>
+      </details>
+
+      <div class="native-slot">
+        <script async="async" data-cfasync="false" src="https://pl31587449.profitableratecpmnetwork.com/227fdab56b2902f2b1cff6ca6ff50464/invoke.js"></script>
+        <div id="container-227fdab56b2902f2b1cff6ca6ff50464"></div>
       </div>
     </div>
+  </div>
 
-    <div class="actions">
-      <button class="btn btn-primary" id="go">🚀 Télécharger</button>
-      <button class="btn btn-ghost" id="clear">🗑️ Effacer</button>
-    </div>
+  <!-- ═══════════════════════════════════════════════
+       TAB 2 : GÉNÉRATEUR IA
+       ═══════════════════════════════════════════════ -->
+  <div class="tab-content" id="tab-generator">
 
-    <div class="steps" id="steps">
-      <strong>💡 Comment faire :</strong>
+    <!-- INSTRUCTIONS API -->
+    <div class="instructions">
+      <h3>🔑 Comment obtenir votre clé API (gratuit)</h3>
       <ol>
-        <li>Va sur la page de la vidéo</li>
-        <li>Clique sur <strong>Partager → Intégrer</strong></li>
-        <li>Copie le code ou l'URL</li>
-        <li>Colle-le et clique <strong>Télécharger</strong></li>
+        <li>Va sur <a href="https://platform.agnes-ai.com" target="_blank" rel="noopener">platform.agnes-ai.com</a></li>
+        <li>Crée un compte gratuit</li>
+        <li>Va dans <strong>Settings</strong> → <strong>API Keys</strong></li>
+        <li>Clique <strong>Generate new key</strong> et copie la clé (commence par <code>sk-</code>)</li>
+        <li>Colle-la ci-dessous et clique <strong>Enregistrer</strong></li>
       </ol>
     </div>
 
-    <div class="status" id="status"></div>
-    <div class="log" id="log"></div>
-
-    <div class="result" id="result">
-      <div class="video-wrap"><video id="player" controls playsinline preload="metadata"></video></div>
-      <div class="dl-bar">
-        <a class="btn btn-dl" id="dl" href="#" download>⬇️ Télécharger la vidéo</a>
-        <button class="btn btn-ghost" id="copy">📋 Copier</button>
+    <!-- API KEY -->
+    <div class="api-panel" id="api-panel">
+      <input type="password" class="api-key-input" id="api-key-input" placeholder="Collez votre clé API ici (sk-...)" autocomplete="off" spellcheck="false">
+      <button type="button" class="api-save-btn" id="api-save-btn">Enregistrer la clé</button>
+      <div class="api-status-line" id="api-status-line">
+        <span class="status-dot"></span>
+        <span id="api-status-text">Aucune clé API enregistrée</span>
       </div>
     </div>
 
-    <details>
-      <summary>📜 Mentions légales</summary>
-      <div class="content">
-        <p>Usage strictement personnel. Copie privée (art. L.122-5 CPI). Ne pas redistribuer.</p>
+    <!-- IMAGES -->
+    <div class="card">
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept="image/*" multiple>
+        <div class="upload-icon">＋</div>
+        <div class="upload-text">Ajoutez vos images <span style="color:var(--txd);font-weight:400">(optionnel)</span></div>
+        <div class="upload-hint">Chaque image devient une vidéo animée · ou générez sans image</div>
       </div>
-    </details>
+      <div class="images-grid" id="images-grid"></div>
 
-    <!-- Pub native dans la carte -->
-    <div class="native-slot">
-      <script async="async" data-cfasync="false" src="https://pl31587449.profitableratecpmnetwork.com/227fdab56b2902f2b1cff6ca6ff50464/invoke.js"></script>
-      <div id="container-227fdab56b2902f2b1cff6ca6ff50464"></div>
-    </div>
-  </div>
+      <label for="main-prompt">Votre description</label>
+      <textarea id="main-prompt" placeholder="Décrivez ce que vous voulez voir :&#10;&#10;« Un homme marche dans une rue éclairée au néon. La caméra le suit de profil. Il pleut légèrement. »"></textarea>
+      <div class="prompt-presets" id="prompt-presets"></div>
 
-  <!-- SITES -->
-  <div class="section-title" id="sites">
-    <h2>🌍 1800+ sites compatibles</h2>
-    <p>21 sites natifs via Cobalt + 1800+ via yt-dlp.</p>
-  </div>
+      <div class="grid-2" style="margin-top:1.2rem">
+        <div>
+          <label for="duration-select">Durée</label>
+          <select id="duration-select">
+            <option value="121">5 secondes</option>
+            <option value="153" selected>6,4 secondes</option>
+            <option value="241">10 secondes</option>
+          </select>
+        </div>
+        <div>
+          <label for="count-select">Nombre de vidéos</label>
+          <select id="count-select">
+            <option value="1" selected>1 vidéo</option>
+            <option value="2">2 vidéos</option>
+            <option value="3">3 vidéos</option>
+            <option value="4">4 vidéos</option>
+            <option value="5">5 vidéos</option>
+          </select>
+        </div>
+      </div>
 
-  <div class="card">
-    <div class="sites-grid">
-      <div class="site-item"><span class="ico">▶️</span><div><div class="nm">YouTube</div><div class="tp">Vidéo</div></div></div>
-      <div class="site-item"><span class="ico">🎵</span><div><div class="nm">TikTok</div><div class="tp">Vidéo</div></div></div>
-      <div class="site-item"><span class="ico">📷</span><div><div class="nm">Instagram</div><div class="tp">Reels</div></div></div>
-      <div class="site-item"><span class="ico">🐦</span><div><div class="nm">Twitter / X</div><div class="tp">Vidéo</div></div></div>
-      <div class="site-item"><span class="ico">🎬</span><div><div class="nm">Vimeo</div><div class="tp">HD</div></div></div>
-      <div class="site-item"><span class="ico">📹</span><div><div class="nm">Dailymotion</div><div class="tp">Vidéo</div></div></div>
-      <div class="site-item"><span class="ico">👥</span><div><div class="nm">Facebook</div><div class="tp">Vidéo</div></div></div>
-      <div class="site-item"><span class="ico">👽</span><div><div class="nm">Reddit</div><div class="tp">Clips</div></div></div>
-      <div class="site-item"><span class="ico">🎧</span><div><div class="nm">SoundCloud</div><div class="tp">Audio</div></div></div>
-      <div class="site-item"><span class="ico">🎮</span><div><div class="nm">Twitch</div><div class="tp">Clips</div></div></div>
-      <div class="site-item"><span class="ico">➕</span><div><div class="nm">1800+ autres</div><div class="tp">yt-dlp</div></div></div>
+      <div class="control-row" style="margin-top:.9rem">
+        <label for="ratio-select">Format</label>
+        <select id="ratio-select">
+          <option value="portrait" selected>Portrait 9:16 (mobile)</option>
+          <option value="landscape">Paysage 16:9</option>
+          <option value="square">Carré 1:1</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="generate-btn" style="width:100%;margin-top:1.2rem" disabled>Générer les vidéos</button>
+      <button type="button" class="btn-stop" id="stop-btn">⏹ Arrêter</button>
+
+      <div class="queue" id="queue"></div>
+
+      <div class="gallery" id="gallery">
+        <label style="margin-bottom:.8rem">🎥 Vidéos générées</label>
+        <div class="gallery-grid" id="gallery-grid"></div>
+      </div>
     </div>
   </div>
 
   <!-- PREMIUM -->
-  <div class="premium" id="premium">
-    <div class="prem-head">
-      <div class="prem-icon">⚡</div>
+  <div class="card" id="premium" style="background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(168,85,247,.08),rgba(236,72,153,.08));border-color:rgba(168,85,247,.3)">
+    <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem">
+      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:grid;place-items:center;font-size:1.4rem">⚡</div>
       <div>
-        <div class="prem-title">Passe en mode PRO</div>
-        <div class="prem-sub">Accès à vie · Paiement unique</div>
+        <div style="font-size:1.15rem;font-weight:800;color:#fff">Passe en mode PRO</div>
+        <div style="font-size:.8rem;color:#e9d5ff">Accès à vie · Paiement unique</div>
       </div>
     </div>
-    <ul class="prem-features">
-      <li>Vitesse maximale</li>
-      <li>Qualité 4K / 8K</li>
-      <li>Code source fourni</li>
-      <li>Zéro publicité</li>
-      <li>Support par email</li>
-      <li>4 sessions maximum</li>
+    <ul style="list-style:none;margin:1rem 0 1.2rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+      <li style="color:#e2e8f0;font-size:.83rem;display:flex;gap:.5rem"><span style="color:#f0abfc">✦</span>Vitesse maximale</li>
+      <li style="color:#e2e8f0;font-size:.83rem;display:flex;gap:.5rem"><span style="color:#f0abfc">✦</span>Qualité 4K / 8K</li>
+      <li style="color:#e2e8f0;font-size:.83rem;display:flex;gap:.5rem"><span style="color:#f0abfc">✦</span>Code source fourni</li>
+      <li style="color:#e2e8f0;font-size:.83rem;display:flex;gap:.5rem"><span style="color:#f0abfc">✦</span>Zéro publicité</li>
     </ul>
-    <div class="prem-price">
-      <div class="prem-price-num">5 <span style="font-size:1.2rem">USDT</span></div>
-      <div class="prem-price-label"><strong>Paiement unique</strong><br>Accès à vie</div>
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:.9rem 1.1rem;background:rgba(0,0,0,.35);border-radius:14px;border:1px solid rgba(168,85,247,.25)">
+      <div style="font-size:1.9rem;font-weight:900;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent">5 <span style="font-size:1.2rem">USDT</span></div>
+      <div style="font-size:.83rem;color:#c7d2fe"><strong style="color:#fff">Paiement unique</strong><br>Accès à vie</div>
     </div>
-    <button class="btn-premium" id="buyPremium">🚀 Acheter — 5 USDT</button>
-    <p class="prem-note">Après paiement, tu reçois un <strong>code d'accès</strong> par email.</p>
-    <div class="prem-code-row">
-      <input id="premiumCode" placeholder="Colle ton code Premium ici" type="text" autocomplete="off">
-      <button id="activatePremium" type="button">Activer</button>
+    <button class="btn btn-primary" id="buyPremium" style="width:100%">🚀 Acheter — 5 USDT</button>
+    <p style="font-size:.73rem;color:#94a3b8;margin-top:.7rem;text-align:center">Après paiement, tu reçois un code d'accès par email.</p>
+    <div style="display:flex;gap:.5rem;margin-top:.9rem;flex-wrap:wrap">
+      <input id="premiumCode" placeholder="Colle ton code Premium" style="flex:1 1 200px;background:rgba(0,0,0,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:.85rem 1rem;color:#e2e8f0;font-family:inherit">
+      <button id="activatePremium" style="flex:0 0 auto;padding:.85rem 1.2rem;border:none;border-radius:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;cursor:pointer;font-family:inherit">Activer</button>
     </div>
-    <p class="prem-note" id="premiumStatus"></p>
-  </div>
-
-  <!-- PREMIUM GRATUIT -->
-  <div class="free-premium" id="free">
-    <h3>🎁 Gagne ton Premium gratuitement</h3>
-    <p>Regarde des vidéos publicitaires volontairement. Une fois 50 atteint, tu obtiens le Premium à vie gratuitement.</p>
-    <div class="fp-progress"><div class="fp-fill" id="fpFill"></div></div>
-    <div class="fp-count"><strong id="fpCount">0</strong> / 50 vidéos regardées</div>
-    <button class="btn btn-primary" id="watchVideoBtn" style="width:100%">📺 Regarder une vidéo (+1)</button>
-    <p class="prem-note">Ton compteur est sauvegardé dans ton navigateur.</p>
+    <p id="premiumStatus" style="font-size:.73rem;color:#94a3b8;margin-top:.7rem;text-align:center"></p>
   </div>
 
   <!-- TERMINAL -->
-  <div class="terminal-section" id="terminal">
-    <div class="term-head">
-      <div class="term-icon">⌨️</div>
+  <div class="card" id="terminal" style="background:linear-gradient(180deg,rgba(15,15,35,.9),rgba(10,10,26,.95));border-color:rgba(99,102,241,.25);position:relative;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:.9rem;margin-bottom:1.1rem;padding-bottom:.9rem;border-bottom:1px solid rgba(255,255,255,.06)">
+      <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#0f172a,#1e1b4b);display:grid;place-items:center;font-size:1.5rem">⌨️</div>
       <div>
-        <div class="term-title">Méthode Pro : yt-dlp</div>
-        <div class="term-sub">1800+ sites · 4K/8K · Gratuit</div>
+        <div style="font-size:1.15rem;font-weight:800;color:#fff">Méthode Pro : yt-dlp</div>
+        <div style="font-size:.78rem;color:#a5b4fc">1800+ sites · 4K/8K · Gratuit</div>
       </div>
     </div>
-    <p class="term-intro">
-      Tu veux <strong>4K, 8K, playlists, audio seul</strong> ? <strong>yt-dlp</strong> est l'outil open source des pros.
-    </p>
+    <p style="color:#cbd5e1;font-size:.88rem;line-height:1.6;margin-bottom:1.2rem">Tu veux <strong style="color:#f0abfc">4K, 8K, playlists, audio seul</strong> ? <strong>yt-dlp</strong> est l'outil open source des pros.</p>
 
-    <details class="term-details" open>
-      <summary>📦 Installer yt-dlp</summary>
-      <div class="term-content">
-        <p><strong>Windows</strong> (cmd) :</p>
-        <div class="cmd"><code>winget install yt-dlp</code><button class="cmd-copy" data-cmd="winget install yt-dlp">📋</button></div>
-        <div class="cmd"><code>winget install Gyan.FFmpeg</code><button class="cmd-copy" data-cmd="winget install Gyan.FFmpeg">📋</button></div>
-        <p style="margin-top:.6rem"><strong>macOS</strong> (Terminal) :</p>
-        <div class="cmd"><code>brew install yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="brew install yt-dlp ffmpeg">📋</button></div>
-        <p style="margin-top:.6rem"><strong>Linux</strong> :</p>
-        <div class="cmd"><code>sudo apt install -y yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="sudo apt install -y yt-dlp ffmpeg">📋</button></div>
+    <details class="term-details" open style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:.7rem">
+      <summary style="padding:.9rem 1.1rem;cursor:pointer;font-weight:700;font-size:.9rem;color:#e0e7ff;list-style:none;display:flex">📦 Installer yt-dlp</summary>
+      <div style="padding:.4rem 1.1rem 1.1rem;font-size:.84rem;line-height:1.6;color:#cbd5e1">
+        <p style="margin:.4rem 0">Windows (cmd) :</p>
+        <div style="display:flex;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.5rem 0;overflow:hidden;font-family:'SF Mono',monospace">
+          <code style="flex:1;padding:.7rem .5rem .7rem .8rem;color:#e0e7ff;font-size:.78rem">winget install yt-dlp</code>
+          <button class="cmd-copy" data-cmd="winget install yt-dlp" style="background:rgba(255,255,255,.04);border:none;border-left:1px solid rgba(255,255,255,.08);color:#a5b4fc;cursor:pointer;padding:0 .9rem;font-size:1rem">📋</button>
+        </div>
+        <div style="display:flex;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.5rem 0;overflow:hidden;font-family:'SF Mono',monospace">
+          <code style="flex:1;padding:.7rem .5rem .7rem .8rem;color:#e0e7ff;font-size:.78rem">winget install Gyan.FFmpeg</code>
+          <button class="cmd-copy" data-cmd="winget install Gyan.FFmpeg" style="background:rgba(255,255,255,.04);border:none;border-left:1px solid rgba(255,255,255,.08);color:#a5b4fc;cursor:pointer;padding:0 .9rem;font-size:1rem">📋</button>
+        </div>
+        <p style="margin:.7rem 0 .4rem">macOS :</p>
+        <div style="display:flex;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.5rem 0;overflow:hidden;font-family:'SF Mono',monospace">
+          <code style="flex:1;padding:.7rem .5rem .7rem .8rem;color:#e0e7ff;font-size:.78rem">brew install yt-dlp ffmpeg</code>
+          <button class="cmd-copy" data-cmd="brew install yt-dlp ffmpeg" style="background:rgba(255,255,255,.04);border:none;border-left:1px solid rgba(255,255,255,.08);color:#a5b4fc;cursor:pointer;padding:0 .9rem;font-size:1rem">📋</button>
+        </div>
       </div>
     </details>
-
-    <details class="term-details" open>
-      <summary>🚀 Utilisation</summary>
-      <div class="term-content">
-        <div class="cmd"><code>yt-dlp "URL"</code><button class="cmd-copy" data-cmd='yt-dlp "URL"'>📋</button></div>
-      </div>
-    </details>
-
-    <div class="term-warn">
-      ⚖️ yt-dlp est open source. Usage personnel uniquement.
-    </div>
   </div>
 
-  <!-- Pub bas -->
+  <!-- PUB BAS -->
   <div class="ad-slot" style="margin-top:2rem">
     <script type="text/javascript">
       atOptions = {'key':'581e088cb553c739ca8812abcb681c7a','format':'iframe','height':90,'width':728,'params':{}};
@@ -410,293 +476,792 @@ footer a{color:#a5b4fc;text-decoration:none}
   </div>
 
   <!-- BITCOIN -->
-  <div class="support" id="support">
-    <div class="support-head">
-      <div class="btc-logo">₿</div>
+  <div class="card" id="support" style="background:linear-gradient(180deg,rgba(247,147,26,.08),rgba(247,147,26,.02));border-color:rgba(247,147,26,.25)">
+    <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem">
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#f7931a,#ffb347);display:grid;place-items:center;font-size:1.35rem;font-weight:800;color:#fff">₿</div>
       <div>
-        <div class="support-title">Soutenir l'initiative ❤️</div>
-        <div class="support-sub">100% gratuit · Fait avec passion</div>
+        <div style="font-size:1.1rem;font-weight:800;color:#fff">Soutenir l'initiative ❤️</div>
+        <div style="font-size:.8rem;color:#fbbf24">100% gratuit · Fait avec passion</div>
       </div>
     </div>
-    <div class="support-body">
-      <div class="qr-wrap">
-        <img id="qrImg" alt="QR Bitcoin" src="">
-        <small>SCANNER POUR DONNER</small>
+    <div style="display:flex;gap:1.3rem;flex-wrap:wrap;align-items:flex-start">
+      <div style="background:#fff;padding:.6rem;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:.4rem">
+        <img id="qrImg" alt="QR Bitcoin" src="" style="width:150px;height:150px;display:block;border-radius:6px">
+        <small style="color:#0a0a1a;font-size:.62rem;font-weight:700">SCANNER POUR DONNER</small>
       </div>
-      <div class="support-info">
-        <p>Si tu veux soutenir le projet, envoie quelques satoshis. 🙏</p>
-        <div class="addr-box">
-          <code id="btcAddr">bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs</code>
-          <button id="copyAddr">📋 Copier</button>
+      <div style="flex:1 1 260px;min-width:0">
+        <p style="color:#fde68a;font-size:.83rem;line-height:1.6;margin-bottom:.8rem">Si tu veux soutenir le projet, envoie quelques satoshis. 🙏</p>
+        <div style="display:flex;gap:.4rem;background:rgba(0,0,0,.4);border:1px solid rgba(247,147,26,.3);border-radius:12px;padding:.4rem;margin-bottom:.7rem;flex-wrap:wrap">
+          <code style="flex:1 1 200px;min-width:0;color:#fbbf24;font-family:'SF Mono',monospace;font-size:.72rem;word-break:break-all;padding:.5rem .55rem;display:flex;align-items:center">bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs</code>
+          <button id="copyAddr" style="background:linear-gradient(135deg,#f7931a,#ffb347);border:none;border-radius:8px;padding:.5rem 1rem;color:#fff;font-weight:700;font-size:.78rem;cursor:pointer;font-family:inherit">📋 Copier</button>
         </div>
-        <div class="support-note">⚠️ Bitcoin uniquement (BTC).</div>
+        <div style="font-size:.76rem;color:#94a3b8;line-height:1.6;background:rgba(0,0,0,.25);border-left:3px solid #f7931a;padding:.65rem .85rem;border-radius:8px">⚠️ Bitcoin uniquement (BTC).</div>
       </div>
     </div>
-    <div class="illustration">
-      <img src="illustration.png" alt="Illustration">
+    <div style="margin-top:1.3rem;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08)">
+      <img src="illustration.png" alt="Illustration" style="width:100%;display:block;height:auto">
     </div>
   </div>
 
-  <footer>
+  <footer style="text-align:center;margin-top:2rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.06);color:#64748b;font-size:.78rem;line-height:1.7">
     Téléchargeur Universel · <strong style="color:#e11d48">by DENIX PRODUCTION</strong> · Open source<br>
     <span style="font-size:.7rem;opacity:.7">bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs</span>
   </footer>
 </div>
 
+<!-- STATUS BAR -->
+<div class="status-bar" id="status-bar">
+  <div class="spinner"></div>
+  <span id="status-text">Préparation…</span>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toast-text">Message</span></div>
+
 <script>
-(() => {
-  'use strict';
-  const DEFAULT_APIS = ['https://mon-cobalt-api.onrender.com/'];
-  const YOZORA_API = 'https://mon-yozora.vercel.app';
-  const BTC = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
-  const MONETAG_LINK = 'https://omg10.com/4/11928508';
-  const PREMIUM_CODES = ['DENIX-PREMIUM-2026', 'VIP-TU-2026-XYZ', 'PREMIUM-5USDT-001'];
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+const DEFAULT_APIS = ['https://mon-cobalt-api.onrender.com/'];
+const YOZORA_API = 'https://mon-yozora.vercel.app';
+const BTC = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
+const MONETAG_LINK = 'https://omg10.com/4/11928508';
+const PREMIUM_CODES = ['DENIX-PREMIUM-2026', 'VIP-TU-2026-XYZ', 'PREMIUM-5USDT-001'];
 
-  const $ = id => document.getElementById(id);
-  const codeEl = $('code'), goBtn = $('go'), clearBtn = $('clear');
-  const statusEl = $('status'), logEl = $('log');
-  const resultEl = $('result'), playerEl = $('player'), dlEl = $('dl'), copyBtn = $('copy');
-  const apiPill = $('pill-api');
-  const gate = $('gate'), gateBtn = $('gateBtn');
-  const premiumCodeEl = $('premiumCode');
-  const activateBtn = $('activatePremium');
-  const premiumStatusEl = $('premiumStatus');
+// API AGNES IA
+const AGNES_BASE = 'https://apihub.agnes-ai.com/v1';
+const AGNES_POLL = 'https://apihub.agnes-ai.com/agnesapi';
+const AGNES_MODEL = 'agnes-video-v2.0';
+const AGNES_KEY_STORAGE = 'agnes_api_key_public';
+const AGNES_FRAME_RATE = 24;
+const AGNES_CREATE_INTERVAL_MIN = 62000;
+const AGNES_CREATE_INTERVAL_MAX = 90000;
+const AGNES_POLL_SEC = 8;
+const AGNES_MAX_ATTEMPTS = 100;
+const AGNES_MAX_IMG = 12 * 1024 * 1024;
 
-  let apiBase = localStorage.getItem('tu_api') || null;
-  let currentUrl = null;
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const truncate = (u, n = 70) => u.length > n ? u.slice(0, n - 3) + '...' : u;
+const fmtEta = s => s < 60 ? Math.round(s) + 's' : Math.floor(s/60) + 'm' + (Math.round(s%60) > 0 ? ' ' + Math.round(s%60) + 's' : '');
 
-  // ─── PREMIUM ───
-  function isPremium() { return localStorage.getItem('tu_premium_validated') === '1'; }
-  function updatePremUI() {
-    if (isPremium()) {
-      premiumStatusEl.textContent = '✅ Premium actif sur ce navigateur';
-      premiumStatusEl.style.color = '#6ee7b7';
-    }
-  }
-  updatePremUI();
+// ═══════════════════════════════════════════════════
+// STATUS / TOAST
+// ═══════════════════════════════════════════════════
+function setStatus(text) {
+  const bar = $('status-bar'), txt = $('status-text');
+  if (!bar || !txt) return;
+  if (text) { bar.classList.add('visible'); txt.textContent = text; }
+  else bar.classList.remove('visible');
+}
 
-  activateBtn.addEventListener('click', () => {
-    const code = premiumCodeEl.value.trim().toUpperCase();
-    if (!code) { premiumStatusEl.textContent = '❌ Entre un code'; premiumStatusEl.style.color = '#fca5a5'; return; }
-    if (PREMIUM_CODES.includes(code)) {
-      localStorage.setItem('tu_premium_validated', '1');
-      premiumStatusEl.textContent = '✅ Premium activé ! Recharge la page.';
-      premiumStatusEl.style.color = '#6ee7b7';
-      premiumCodeEl.value = '';
-    } else {
-      premiumStatusEl.textContent = '❌ Code invalide';
-      premiumStatusEl.style.color = '#fca5a5';
-    }
+let toastTimeout = null;
+function showToast(msg, type = 'success', duration = 2500) {
+  const t = $('toast'), txt = $('toast-text');
+  if (!t || !txt) return;
+  t.classList.remove('visible', 'success', 'error', 'warn');
+  void t.offsetWidth;
+  txt.textContent = msg;
+  t.classList.add(type);
+  requestAnimationFrame(() => t.classList.add('visible'));
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('visible'), duration);
+}
+
+// ═══════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('.main-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    const content = $('tab-' + target);
+    if (content) content.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+});
 
-  // ─── GATE ───
-  function startGate() {
-    document.body.classList.add('locked');
-    gate.classList.remove('hidden');
-    let t = 3;
-    gateBtn.disabled = true;
-    gateBtn.innerHTML = '⏳ Patientez <span id="gateTimer">' + t + ' s</span>';
-    const int = setInterval(() => {
-      t--;
-      const el = document.getElementById('gateTimer');
-      if (el) el.textContent = t + ' s';
-      if (t <= 0) {
-        clearInterval(int);
-        gateBtn.disabled = false;
-        gateBtn.innerHTML = '🔓 Débloquer l\'accès';
-      }
-    }, 1000);
-  }
-
-  gateBtn.addEventListener('click', () => {
-    if (gateBtn.disabled) return;
-    // 1 popup au clic
-    try { window.open(MONETAG_LINK, '_blank'); } catch (e) {}
-    gate.classList.add('hidden');
-    document.body.classList.remove('locked');
-    sessionStorage.setItem('tu_unlocked', '1');
+document.querySelectorAll('[data-tab-link]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.dataset.tabLink;
+    const tabBtn = document.querySelector('.main-tab[data-tab="' + target + '"]');
+    if (tabBtn) tabBtn.click();
   });
+});
 
-  if (sessionStorage.getItem('tu_unlocked') === '1') {
-    gate.classList.add('hidden');
-    document.body.classList.remove('locked');
-  } else { startGate(); }
-
-  // ─── APP ───
-  const setStatus = (m, c = '') => { statusEl.textContent = m; statusEl.className = 'status on ' + c; };
-  const hideStatus = () => { statusEl.className = 'status'; statusEl.textContent = ''; };
-  const logLine = t => { logEl.classList.add('on'); logEl.textContent += t + '\n'; logEl.scrollTop = logEl.scrollHeight; };
-  const resetResult = () => { resultEl.classList.remove('on'); playerEl.removeAttribute('src'); playerEl.load(); dlEl.href = '#'; currentUrl = null; };
-  const reset = () => { hideStatus(); logEl.classList.remove('on'); logEl.textContent = ''; resetResult(); goBtn.disabled = false; };
-
-  function extractUrl(code) {
-    if (!code) return null;
-    const c = code.trim();
-    const pats = [/<iframe[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<video[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<source[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<embed[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /https?:\/\/[^\s"'<>()]+/];
-    for (const re of pats) {
-      const m = c.match(re);
-      if (m && (m[1] || m[0])) {
-        const cand = (m[1] || m[0]).trim().replace(/[.,;!?]+$/, '');
-        try { const u = new URL(cand); if (['http:', 'https:'].includes(u.protocol)) return u.href; } catch {}
-      }
+// ═══════════════════════════════════════════════════
+// GATE
+// ═══════════════════════════════════════════════════
+function startGate() {
+  document.body.classList.add('locked');
+  $('gate').classList.remove('hidden');
+  let t = 3;
+  const btn = $('gateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Patientez <span id="gateTimer">' + t + ' s</span>';
+  const int = setInterval(() => {
+    t--;
+    const el = $('gateTimer');
+    if (el) el.textContent = t + ' s';
+    if (t <= 0) {
+      clearInterval(int);
+      btn.disabled = false;
+      btn.innerHTML = '🔓 Débloquer l\'accès';
     }
-    return null;
+  }, 1000);
+}
+
+$('gateBtn').addEventListener('click', () => {
+  if ($('gateBtn').disabled) return;
+  try { window.open(MONETAG_LINK, '_blank'); } catch (e) {}
+  $('gate').classList.add('hidden');
+  document.body.classList.remove('locked');
+  sessionStorage.setItem('tu_unlocked', '1');
+});
+
+if (sessionStorage.getItem('tu_unlocked') === '1') {
+  $('gate').classList.add('hidden');
+  document.body.classList.remove('locked');
+} else { startGate(); }
+
+// ═══════════════════════════════════════════════════
+// PREMIUM
+// ═══════════════════════════════════════════════════
+function isPremium() { return localStorage.getItem('tu_premium_validated') === '1'; }
+function updatePremUI() {
+  if (isPremium()) {
+    $('premiumStatus').textContent = '✅ Premium actif sur ce navigateur';
+    $('premiumStatus').style.color = '#6ee7b7';
+  }
+}
+updatePremUI();
+
+$('activatePremium').addEventListener('click', () => {
+  const code = $('premiumCode').value.trim().toUpperCase();
+  if (!code) { $('premiumStatus').textContent = '❌ Entre un code'; $('premiumStatus').style.color = '#fca5a5'; return; }
+  if (PREMIUM_CODES.includes(code)) {
+    localStorage.setItem('tu_premium_validated', '1');
+    $('premiumStatus').textContent = '✅ Premium activé ! Recharge la page.';
+    $('premiumStatus').style.color = '#6ee7b7';
+    $('premiumCode').value = '';
+  } else {
+    $('premiumStatus').textContent = '❌ Code invalide';
+    $('premiumStatus').style.color = '#fca5a5';
+  }
+});
+
+$('buyPremium').addEventListener('click', () => {
+  alert('Pour acheter Téléchargeur Universel PRO (5 USDT),\ncontacte-nous par email.\nTu recevras un code d\'accès.');
+});
+
+// ═══════════════════════════════════════════════════
+// TÉLÉCHARGEUR
+// ═══════════════════════════════════════════════════
+const codeEl = $('code'), goBtn = $('go'), clearBtn = $('clear');
+const statusEl = $('status'), logEl = $('log');
+const resultEl = $('result'), playerEl = $('player'), dlEl = $('dl'), copyBtn = $('copy');
+const apiPill = null;
+
+let apiBase = localStorage.getItem('tu_api') || null;
+let currentUrl = null;
+
+function setTStatus(msg, cls = '') { statusEl.textContent = msg; statusEl.className = 'status on ' + cls; }
+function hideTStatus() { statusEl.className = 'status'; statusEl.textContent = ''; }
+function logLine(t) { logEl.classList.add('on'); logEl.textContent += t + '\n'; logEl.scrollTop = logEl.scrollHeight; }
+function resetResult() { resultEl.classList.remove('on'); playerEl.removeAttribute('src'); playerEl.load(); dlEl.href = '#'; currentUrl = null; }
+function reset() { hideTStatus(); logEl.classList.remove('on'); logEl.textContent = ''; resetResult(); goBtn.disabled = false; }
+
+function extractUrl(code) {
+  if (!code) return null;
+  const c = code.trim();
+  const pats = [/<iframe[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<video[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<source[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<embed[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /https?:\/\/[^\s"'<>()]+/];
+  for (const re of pats) {
+    const m = c.match(re);
+    if (m && (m[1] || m[0])) {
+      const cand = (m[1] || m[0]).trim().replace(/[.,;!?]+$/, '');
+      try { const u = new URL(cand); if (['http:', 'https:'].includes(u.protocol)) return u.href; } catch {}
+    }
+  }
+  return null;
+}
+
+async function detectApi() {
+  if (apiBase) {
+    try {
+      const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
+      const r = await fetch(apiBase, { method: 'GET', signal: c.signal });
+      clearTimeout(t);
+      if (r.ok) return apiBase;
+    } catch {}
+  }
+  for (const url of DEFAULT_APIS) {
+    try {
+      const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
+      const r = await fetch(url, { method: 'GET', signal: c.signal });
+      clearTimeout(t);
+      if (r.ok) { apiBase = url; return url; }
+    } catch {}
+  }
+  return null;
+}
+
+async function requestDownload(url) {
+  const isAudio = $('audioOnly').value === 'true';
+  const quality = $('quality').value;
+
+  if (apiBase) {
+    try {
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), 30000);
+      const r = await fetch(apiBase, {
+        signal: controller.signal,
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, videoQuality: quality === 'max' ? 'max' : quality, audioFormat: isAudio ? 'mp3' : 'best', downloadMode: isAudio ? 'audio' : 'auto', filenameStyle: 'basic' })
+      });
+      clearTimeout(t);
+      if (r.ok) {
+        const data = await r.json();
+        if (data.status !== 'error' && !data.error) return data;
+      }
+    } catch {}
   }
 
-  async function detectApi() {
-    if (apiBase) {
+  if (YOZORA_API) {
+    const format = isAudio ? 'bestaudio/best' : (quality === 'max' ? 'bestvideo+bestaudio/best' : `bestvideo[height<=${quality}]+bestaudio/best[height<=${quality}]`);
+    const params = new URLSearchParams({ url, format });
+    const r = await fetch(YOZORA_API + '/api/download?' + params.toString());
+    if (!r.ok) throw new Error('Yozora HTTP ' + r.status);
+    const data = await r.json();
+    if (data.url || data.download_url || data.video_url) {
+      return { status: 'redirect', url: data.url || data.download_url || data.video_url, filename: data.filename || data.title || 'video.mp4' };
+    }
+    throw new Error('Réponse Yozora invalide');
+  }
+  throw new Error('Aucune API disponible.');
+}
+
+async function doDownload() {
+  const raw = codeEl.value.trim();
+  if (!raw) return setTStatus('❌ Colle un code ou une URL.', 'err');
+  const url = extractUrl(raw);
+  if (!url) return setTStatus('❌ Aucune URL détectée.', 'err');
+  if (!apiBase && !YOZORA_API) {
+    setTStatus('⏳ Détection de l\'API…');
+    await detectApi();
+    if (!apiBase && !YOZORA_API) return setTStatus('❌ Aucune API joignable.', 'err');
+  }
+
+  goBtn.disabled = true;
+  setTStatus('⏳ Analyse de la vidéo…');
+  logLine('→ URL : ' + url);
+
+  let data;
+  try { data = await requestDownload(url); }
+  catch (e) { goBtn.disabled = false; setTStatus('❌ Erreur : ' + e.message, 'err'); return; }
+
+  logLine('← Réponse : ' + JSON.stringify(data).slice(0, 200));
+
+  if (data.status === 'picker' && Array.isArray(data.picker)) {
+    const choice = data.picker.find(x => x && typeof x.url === 'string');
+    if (choice) data = { status: 'redirect', url: choice.url, filename: choice.filename || 'video.mp4' };
+  }
+
+  if ((data.status === 'tunnel' || data.status === 'redirect') && data.url && (() => { try { return ['http:', 'https:'].includes(new URL(data.url).protocol); } catch { return false; } })()) {
+    currentUrl = data.url;
+    const fn = String(data.filename || 'video.mp4').replace(/[\\/:*?"<>|]/g, '_').slice(0, 180);
+    playerEl.src = data.url; playerEl.load();
+    resultEl.classList.add('on');
+    dlEl.href = data.url; dlEl.download = fn;
+    dlEl.textContent = '⬇️ Télécharger « ' + fn + ' »';
+    setTStatus('✅ Vidéo prête !', 'ok');
+    goBtn.disabled = false;
+  } else if (data.status === 'error' || data.error) {
+    setTStatus('❌ ' + (data.error?.code || data.text || 'Erreur'), 'err'); goBtn.disabled = false;
+  } else {
+    setTStatus('⚠️ Réponse inattendue.', 'warn'); goBtn.disabled = false;
+  }
+}
+
+goBtn.addEventListener('click', () => { reset(); doDownload(); });
+clearBtn.addEventListener('click', () => { codeEl.value = ''; reset(); codeEl.focus(); });
+codeEl.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); reset(); doDownload(); } });
+codeEl.addEventListener('focus', () => $('steps').classList.add('on'));
+copyBtn.addEventListener('click', () => {
+  if (!currentUrl) return;
+  navigator.clipboard.writeText(currentUrl).then(() => { const o = copyBtn.textContent; copyBtn.textContent = '✅'; setTimeout(() => copyBtn.textContent = o, 1500); });
+});
+
+// ═══════════════════════════════════════════════════
+// BITCOIN
+// ═══════════════════════════════════════════════════
+$('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=' + encodeURIComponent('bitcoin:' + BTC);
+$('copyAddr').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(BTC); const b = $('copyAddr'); const o = b.textContent; b.textContent = '✅ Copié'; setTimeout(() => b.textContent = o, 1800); }
+  catch { alert('Adresse : ' + BTC); }
+});
+
+// ═══════════════════════════════════════════════════
+// TERMINAL copy
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('.cmd-copy').forEach(btn => {
+  btn.addEventListener('click', async e => {
+    e.preventDefault();
+    const cmd = btn.dataset.cmd; if (!cmd) return;
+    try { await navigator.clipboard.writeText(cmd); const o = btn.textContent; btn.textContent = '✅'; setTimeout(() => btn.textContent = o, 1400); } catch {}
+  });
+});
+
+// ═══════════════════════════════════════════════════
+// GÉNÉRATEUR IA
+// ═══════════════════════════════════════════════════
+const GPresets = [
+  { label: '🚶 Marche', text: 'Le sujet marche lentement vers la caméra. Mouvement fluide, ambiance cinématographique.' },
+  { label: '😊 Sourire', text: 'Le sujet sourit doucement et tourne la tête. Expression naturelle et chaleureuse.' },
+  { label: '💨 Vent', text: 'Une brise légère fait bouger les cheveux et les vêtements du sujet.' },
+  { label: '🌆 Néon', text: 'Le sujet se tient dans une rue éclairée par des néons. Pluie fine, reflets sur le sol.' },
+  { label: '🎬 Zoom', text: 'La caméra zoome lentement vers le visage du sujet. Éclairage dramatique.' },
+  { label: '🌊 Mer', text: 'Le sujet regarde l\'océan. Vagues en arrière-plan, coucher de soleil doré.' },
+  { label: '🔥 Action', text: 'Le sujet court rapidement. Caméra en mouvement. Poussière dans l\'air.' },
+  { label: '✨ Magie', text: 'Des particules lumineuses flottent autour du sujet. Ambiance magique.' },
+];
+
+const gState = {
+  images: [],
+  isRunning: false,
+  stopRequested: false,
+  queue: [],
+  completed: 0,
+  failed: 0,
+  mainPrompt: '',
+  durationFrames: 153,
+  videoCount: 1,
+  ratio: 'portrait',
+  loadingImages: false,
+  createIntervalMs: AGNES_CREATE_INTERVAL_MIN,
+  attempts: 0,
+};
+
+function getAgnesKey() { try { return (localStorage.getItem(AGNES_KEY_STORAGE) || '').trim(); } catch { return ''; } }
+
+function saveAgnesKey() {
+  const input = $('api-key-input');
+  if (!input) return;
+  const key = input.value.trim();
+  if (!key) {
+    try { localStorage.removeItem(AGNES_KEY_STORAGE); } catch {}
+    updateAgnesPanel();
+    showToast('Clé supprimée', 'warn');
+    return;
+  }
+  if (!key.startsWith('sk-')) {
+    if (!confirm('La clé ne commence pas par "sk-". Sauvegarder quand même ?')) return;
+  }
+  try {
+    localStorage.setItem(AGNES_KEY_STORAGE, key);
+    updateAgnesPanel();
+    showToast('Clé API enregistrée ✓', 'success');
+    input.blur();
+  } catch { showToast('Erreur', 'error'); }
+}
+
+function updateAgnesPanel() {
+  const panel = $('api-panel'), input = $('api-key-input');
+  const line = $('api-status-line'), txt = $('api-status-text');
+  if (!panel || !input || !line || !txt) return;
+  const key = getAgnesKey();
+  if (key) {
+    panel.classList.add('ok'); line.classList.add('ok');
+    txt.textContent = 'Clé active · ' + key.slice(0, 8) + '…' + key.slice(-4);
+    input.value = key; input.placeholder = '';
+  } else {
+    panel.classList.remove('ok'); line.classList.remove('ok');
+    txt.textContent = 'Aucune clé API enregistrée';
+    input.value = ''; input.placeholder = 'Collez votre clé API ici (sk-...)';
+  }
+  updateGenerateBtn();
+}
+
+function updateGenerateBtn() {
+  const btn = $('generate-btn');
+  if (!btn) return;
+  const hasKey = !!getAgnesKey();
+  const hasPrompt = ($('main-prompt')?.value.trim().length || 0) > 0;
+  const hasImages = gState.images.length > 0;
+  btn.disabled = !hasKey || (!hasPrompt && !hasImages) || gState.isRunning || gState.loadingImages;
+
+  if (gState.loadingImages) btn.textContent = 'Chargement… (' + gState.images.length + ')';
+  else if (gState.isRunning) btn.textContent = 'Génération… (' + (gState.completed + gState.failed) + '/' + gState.queue.length + ')';
+  else if (!hasKey) btn.textContent = 'Ajoutez votre clé API';
+  else if (!hasPrompt && !hasImages) btn.textContent = 'Décrivez ou ajoutez une image';
+  else btn.textContent = 'Générer ' + gState.videoCount + ' vidéo' + (gState.videoCount > 1 ? 's' : '');
+}
+
+function fileToDataUri(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = e => resolve(e.target.result);
+    r.onerror = () => reject(new Error('Erreur'));
+    r.readAsDataURL(file);
+  });
+}
+
+function makeThumb(dataUri) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
       try {
-        const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
-        const r = await fetch(apiBase, { method: 'GET', signal: c.signal });
-        clearTimeout(t);
-        if (r.ok) { apiPill.textContent = 'API : OK'; apiPill.className = 'pill ok'; return apiBase; }
-      } catch {}
-    }
-    for (const url of DEFAULT_APIS) {
-      try {
-        const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
-        const r = await fetch(url, { method: 'GET', signal: c.signal });
-        clearTimeout(t);
-        if (r.ok) { apiBase = url; apiPill.textContent = 'API : OK'; apiPill.className = 'pill ok'; return url; }
-      } catch {}
-    }
-    apiPill.textContent = 'API : indisponible'; apiPill.className = 'pill ko'; return null;
-  }
-
-  async function requestDownload(url) {
-    const isAudio = $('audioOnly').value === 'true';
-    const quality = $('quality').value;
-
-    if (apiBase) {
-      try {
-        const controller = new AbortController();
-        const t = setTimeout(() => controller.abort(), 30000);
-        const r = await fetch(apiBase, {
-          signal: controller.signal,
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url, videoQuality: quality === 'max' ? 'max' : quality, audioFormat: isAudio ? 'mp3' : 'best', downloadMode: isAudio ? 'audio' : 'auto', filenameStyle: 'basic' })
-        });
-        clearTimeout(t);
-        if (r.ok) {
-          const data = await r.json();
-          if (data.status !== 'error' && !data.error) return data;
-        }
-      } catch (e) {}
-    }
-
-    if (YOZORA_API) {
-      const format = isAudio ? 'bestaudio/best' : (quality === 'max' ? 'bestvideo+bestaudio/best' : `bestvideo[height<=${quality}]+bestaudio/best[height<=${quality}]`);
-      const params = new URLSearchParams({ url, format });
-      const r = await fetch(YOZORA_API + '/api/download?' + params.toString());
-      if (!r.ok) throw new Error('Yozora HTTP ' + r.status);
-      const data = await r.json();
-      if (data.url || data.download_url || data.video_url) {
-        return { status: 'redirect', url: data.url || data.download_url || data.video_url, filename: data.filename || data.title || 'video.mp4' };
-      }
-      throw new Error('Réponse Yozora invalide');
-    }
-    throw new Error('Aucune API disponible.');
-  }
-
-  async function doDownload() {
-    const raw = codeEl.value.trim();
-    if (!raw) return setStatus('❌ Colle un code ou une URL.', 'err');
-    const url = extractUrl(raw);
-    if (!url) return setStatus('❌ Aucune URL détectée.', 'err');
-    if (!apiBase && !YOZORA_API) { setStatus('⏳ Détection de l\'API…'); await detectApi(); if (!apiBase && !YOZORA_API) return setStatus('❌ Aucune API joignable.', 'err'); }
-
-    goBtn.disabled = true;
-    setStatus('⏳ Analyse de la vidéo…');
-    logLine('→ URL : ' + url);
-
-    let data;
-    try { data = await requestDownload(url); }
-    catch (e) { goBtn.disabled = false; setStatus('❌ Erreur : ' + e.message, 'err'); return; }
-
-    logLine('← Réponse : ' + JSON.stringify(data).slice(0, 200));
-
-    if (data.status === 'picker' && Array.isArray(data.picker)) {
-      const choice = data.picker.find(x => x && typeof x.url === 'string');
-      if (choice) data = { status: 'redirect', url: choice.url, filename: choice.filename || 'video.mp4' };
-    }
-
-    if ((data.status === 'tunnel' || data.status === 'redirect') && data.url && (() => { try { return ['http:', 'https:'].includes(new URL(data.url).protocol); } catch { return false; } })()) {
-      currentUrl = data.url;
-      const fn = String(data.filename || 'video.mp4').replace(/[\\/:*?"<>|]/g, '_').slice(0, 180);
-      playerEl.src = data.url; playerEl.load();
-      resultEl.classList.add('on');
-      dlEl.href = data.url; dlEl.download = fn;
-      dlEl.textContent = '⬇️ Télécharger « ' + fn + ' »';
-      setStatus('✅ Vidéo prête !', 'ok');
-      goBtn.disabled = false;
-    } else if (data.status === 'error' || data.error) {
-      setStatus('❌ ' + (data.error?.code || data.text || 'Erreur'), 'err'); goBtn.disabled = false;
-    } else {
-      setStatus('⚠️ Réponse inattendue.', 'warn'); goBtn.disabled = false;
-    }
-  }
-
-  goBtn.addEventListener('click', () => { reset(); doDownload(); });
-  clearBtn.addEventListener('click', () => { codeEl.value = ''; reset(); codeEl.focus(); });
-  codeEl.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); reset(); doDownload(); } });
-  codeEl.addEventListener('focus', () => $('steps').classList.add('on'));
-  copyBtn.addEventListener('click', () => {
-    if (!currentUrl) return;
-    navigator.clipboard.writeText(currentUrl).then(() => { const o = copyBtn.textContent; copyBtn.textContent = '✅'; setTimeout(() => copyBtn.textContent = o, 1500); });
+        const c = document.createElement('canvas');
+        const ratio = img.height / img.width;
+        c.width = 200;
+        c.height = Math.round(200 * ratio);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.7));
+      } catch { resolve(dataUri); }
+    };
+    img.onerror = () => resolve(dataUri);
+    img.src = dataUri;
   });
-  $('buyPremium').addEventListener('click', () => {
-    alert('Pour acheter Téléchargeur Universel PRO (5 USDT),\ncontacte-nous par email.\nTu recevras un code d\'accès à coller dans la section Premium.');
+}
+
+async function processFile(file) {
+  if (!file.type.startsWith('image/')) return null;
+  if (file.size > AGNES_MAX_IMG) return null;
+  try {
+    const uri = await fileToDataUri(file);
+    const thumb = await makeThumb(uri);
+    return { file, dataUri: uri, thumbnail: thumb, id: Date.now() + Math.random() };
+  } catch { return null; }
+}
+
+async function handleGFiles(files) {
+  const arr = Array.from(files).filter(f => f.type.startsWith('image/'));
+  if (!arr.length) return;
+  gState.loadingImages = true;
+  updateGenerateBtn();
+  setStatus('Chargement des images…');
+  const results = await Promise.allSettled(arr.map(processFile));
+  for (const r of results) if (r.status === 'fulfilled' && r.value) gState.images.push(r.value);
+  gState.loadingImages = false;
+  setStatus(null);
+  renderGImages();
+  updateGenerateBtn();
+}
+
+function removeGImage(id) {
+  gState.images = gState.images.filter(i => i.id !== id);
+  renderGImages();
+  updateGenerateBtn();
+}
+
+function renderGImages() {
+  const grid = $('images-grid');
+  if (!grid) return;
+  grid.innerHTML = gState.images.map(i =>
+    '<div class="image-card"><img src="' + (i.thumbnail || i.dataUri) + '" alt=""><button class="remove-btn" data-r="' + i.id + '">✕</button></div>'
+  ).join('');
+  grid.querySelectorAll('[data-r]').forEach(b => {
+    b.addEventListener('click', e => { e.stopPropagation(); removeGImage(parseFloat(b.dataset.r)); });
   });
+}
 
-  // ─── PREMIUM GRATUIT ───
-  const FP_TARGET = 50;
-  let fp = Number.parseInt(localStorage.getItem('tu_fp_watched') || '0', 10);
-  if (!Number.isSafeInteger(fp) || fp < 0) fp = 0;
-  fp = Math.min(fp, FP_TARGET);
-  const updateFP = () => { $('fpCount').textContent = fp; $('fpFill').style.width = Math.min((fp / FP_TARGET) * 100, 100) + '%'; };
-  updateFP();
-
-  $('watchVideoBtn').addEventListener('click', () => {
-    const btn = $('watchVideoBtn');
-    if (btn.disabled) return;
-    btn.disabled = true;
-    const orig = btn.textContent;
-    btn.textContent = '⏳ Ouverture…';
-    let opened = false;
-    try { opened = window.open(MONETAG_LINK, '_blank') !== null; } catch (e) { opened = false; }
-    setTimeout(() => {
-      if (opened) {
-        fp++;
-        localStorage.setItem('tu_fp_watched', String(fp));
-        updateFP();
-        btn.textContent = '✅ +1';
-        setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
-        if (fp >= FP_TARGET) alert('🎉 Félicitations ! 50 vidéos atteintes !\nContacte-nous par email pour recevoir ton code Premium gratuit.');
-      } else {
-        btn.textContent = '⚠️ Autorise les popups';
-        setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2500);
-      }
-    }, 1500);
-  });
-
-  // ─── BITCOIN ───
-  $('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=' + encodeURIComponent('bitcoin:' + BTC);
-  $('copyAddr').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(BTC); const b = $('copyAddr'); const o = b.textContent; b.textContent = '✅ Copié'; b.classList.add('ok'); setTimeout(() => { b.textContent = o; b.classList.remove('ok'); }, 1800); }
-    catch { alert('Adresse : ' + BTC); }
-  });
-
-  // ─── TERMINAL ───
-  document.querySelectorAll('.cmd-copy').forEach(btn => {
-    btn.addEventListener('click', async e => {
-      e.preventDefault();
-      const cmd = btn.dataset.cmd; if (!cmd) return;
-      try { await navigator.clipboard.writeText(cmd); const o = btn.textContent; btn.textContent = '✅'; btn.classList.add('ok'); setTimeout(() => { btn.textContent = o; btn.classList.remove('ok'); }, 1400); } catch {}
+function renderGPresets() {
+  const c = $('prompt-presets');
+  if (!c) return;
+  c.innerHTML = GPresets.map((p, i) => '<div class="prompt-preset" data-p="' + i + '">' + esc(p.label) + '</div>').join('');
+  c.querySelectorAll('.prompt-preset').forEach(el => {
+    el.addEventListener('click', () => {
+      const p = GPresets[parseInt(el.dataset.p, 10)];
+      if (!p) return;
+      $('main-prompt').value = p.text;
+      gState.mainPrompt = p.text;
+      updateGenerateBtn();
+      showToast('Appliqué', 'success', 1200);
     });
   });
+}
 
-  detectApi();
+function buildGPrompt(index, total) {
+  const base = gState.mainPrompt.trim();
+  const ratioTxt = gState.ratio === 'portrait' ? 'Portrait 9:16 vertical' : gState.ratio === 'landscape' ? 'Landscape 16:9 horizontal' : 'Square 1:1';
+  const parts = [];
+  if (gState.images.length > 0) {
+    parts.push('Animate this exact image as the starting frame. Preserve the subject identity, face, expression, clothing, and composition.');
+    parts.push('This is a continuation of the source image, not a re-imagination.');
+  } else {
+    parts.push('Generate a cinematic video based on the following description.');
+  }
+  if (base) parts.push('Scene: ' + base);
+  if (total > 1) parts.push('This is part ' + (index + 1) + ' of ' + total + '. Keep visual consistency across all parts.');
+  parts.push('Smooth cinematic camera, natural lighting, high quality.');
+  parts.push('No text, no subtitles, no watermarks.');
+  parts.push(ratioTxt + ', ' + AGNES_FRAME_RATE + 'fps.');
+  return parts.join('. ');
+}
+
+async function agnesFetch(url, options = {}, label = 'API') {
+  for (let a = 0; a < 7; a++) {
+    if (gState.stopRequested) throw new Error('Arrêt demandé');
+    try {
+      const r = await fetch(url, options);
+      if (r.status === 429) {
+        gState.attempts = 0;
+        if (gState.createIntervalMs < AGNES_CREATE_INTERVAL_MAX) gState.createIntervalMs = Math.min(gState.createIntervalMs + 8000, AGNES_CREATE_INTERVAL_MAX);
+        const wait = [15, 30, 45, 60, 90, 120, 180][Math.min(a, 6)];
+        setStatus('L\'IA se prépare… (' + wait + 's)');
+        await sleep(wait * 1000);
+        continue;
+      }
+      if (r.status === 503) {
+        const wait = [5, 10, 15, 20, 30, 45][Math.min(a, 5)];
+        setStatus('Préparation… (' + wait + 's)');
+        await sleep(wait * 1000);
+        continue;
+      }
+      return r;
+    } catch (e) {
+      if (e.message === 'Arrêt demandé') throw e;
+      const wait = [3, 5, 8, 12, 20, 30][Math.min(a, 5)];
+      setStatus('Connexion… (' + wait + 's)');
+      await sleep(wait * 1000);
+    }
+  }
+  return fetch(url, options);
+}
+
+async function createVideoTask(imageDataUri, prompt) {
+  const body = { model: AGNES_MODEL, prompt, num_frames: gState.durationFrames, frame_rate: AGNES_FRAME_RATE };
+  if (imageDataUri) body.image = imageDataUri;
+
+  const r = await agnesFetch(AGNES_BASE + '/videos', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + getAgnesKey(), 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }, 'Création');
+
+  if (!r.ok) {
+    const err = await r.text();
+    throw new Error('HTTP ' + r.status + ' — ' + err.slice(0, 200));
+  }
+  const d = await r.json();
+  const id = d.video_id || d.id || d.task_id;
+  if (!id) throw new Error('Pas de video_id');
+  return id;
+}
+
+async function pollVideo(videoId, onProgress) {
+  let rem = 25;
+  while (rem > 0) {
+    if (gState.stopRequested) throw new Error('Arrêt demandé');
+    onProgress('Création… — ' + rem + 's');
+    await sleep(1000);
+    rem--;
+  }
+  for (let a = 0; a < AGNES_MAX_ATTEMPTS; a++) {
+    if (gState.stopRequested) throw new Error('Arrêt demandé');
+    if (a > 0) {
+      let r = AGNES_POLL_SEC;
+      while (r > 0) {
+        if (gState.stopRequested) throw new Error('Arrêt demandé');
+        onProgress('Traitement… — ' + r + 's');
+        await sleep(1000);
+        r--;
+      }
+    }
+    const url = AGNES_POLL + '?video_id=' + encodeURIComponent(videoId) + '&model_name=' + encodeURIComponent(AGNES_MODEL);
+    const r = await agnesFetch(url, { method: 'GET', headers: { 'Authorization': 'Bearer ' + getAgnesKey() } }, 'Polling');
+    const d = await r.json();
+    const status = d.status || 'unknown';
+    const progress = d.progress || 0;
+    onProgress('Génération… — ' + progress + '%');
+    if (status === 'completed' || status === 'succeeded' || status === 'done') {
+      const vUrl = (d.metadata && d.metadata.url) || d.url || (d.output && d.output.url);
+      if (!vUrl) throw new Error('Pas d\'URL');
+      return vUrl;
+    }
+    if (status === 'failed' || status === 'error' || status === 'cancelled') throw new Error('Échec');
+  }
+  throw new Error('Délai dépassé');
+}
+
+function renderGQueue() {
+  const q = $('queue');
+  if (!q) return;
+  if (!gState.queue.length) { q.style.display = 'none'; return; }
+  q.style.display = 'block';
+  const total = gState.queue.length;
+  const done = gState.completed + gState.failed;
+  const inP = gState.queue.filter(x => x.status === 'processing').length;
+  const pend = total - done - inP;
+  const eta = pend > 0 ? (pend * (gState.createIntervalMs / 1000)) + 30 : (inP * 25);
+
+  let html = '<div class="queue-summary"><span class="progress-text">Progression : ' + done + '/' + total + '</span><span style="color:var(--txd)">' + (done < total ? '≈ ' + fmtEta(eta) + ' restant' : '✦ Terminé ✦') + '</span></div>';
+  html += gState.queue.map(item => {
+    let icon = '○', txt = 'En attente', cls = '';
+    if (item.status === 'creating') { icon = '◐'; txt = 'Préparation…'; cls = 'creating'; }
+    else if (item.status === 'processing') { icon = '◐'; txt = item.progress || 'Génération…'; cls = 'processing'; }
+    else if (item.status === 'done') { icon = '●'; txt = 'Terminé'; cls = 'done'; }
+    else if (item.status === 'failed') { icon = '✕'; txt = 'Échec'; cls = 'failed'; }
+    return '<div class="queue-item ' + cls + '"><div class="q-icon">' + icon + '</div><div class="q-name">Vidéo ' + (item.index + 1) + '</div><div class="q-status">' + esc(txt) + '</div></div>';
+  }).join('');
+  q.innerHTML = html;
+}
+
+function addToGGallery(url, label) {
+  const g = $('gallery'), grid = $('gallery-grid');
+  if (!g || !grid) return;
+  g.style.display = 'block';
+  const el = document.createElement('div');
+  el.className = 'gallery-item';
+  el.innerHTML = '<video controls preload="metadata" playsinline><source src="' + url + '" type="video/mp4"></video><div class="g-caption"><span>' + esc(label) + '</span><a href="' + url + '" download="' + esc(label) + '.mp4">⬇️</a></div>';
+  grid.appendChild(el);
+}
+
+async function createGTask(item) {
+  item.status = 'creating';
+  item.progress = 'Préparation…';
+  renderGQueue();
+  const prompt = buildGPrompt(item.index, gState.queue.length);
+  const vid = await createVideoTask(item.image ? item.image.dataUri : null, prompt);
+  item.videoId = vid;
+  item.status = 'processing';
+  item.progress = 'Génération…';
+  renderGQueue();
+}
+
+async function pollGTask(item) {
+  try {
+    const url = await pollVideo(item.videoId, p => { item.progress = p; renderGQueue(); });
+    item.status = 'done';
+    item.videoUrl = url;
+    gState.completed++;
+    renderGQueue();
+    updateGenerateBtn();
+    addToGGallery(url, 'Vidéo ' + (item.index + 1));
+  } catch (e) {
+    item.status = 'failed';
+    item.progress = e.message === 'Arrêt demandé' ? 'Arrêté' : 'Échec';
+    gState.failed++;
+    renderGQueue();
+    updateGenerateBtn();
+  }
+}
+
+async function startGeneration() {
+  if (gState.isRunning) return;
+  if (!getAgnesKey()) { showToast('Ajoutez votre clé API', 'error'); $('api-key-input').focus(); return; }
+  gState.mainPrompt = $('main-prompt').value.trim();
+  if (!gState.mainPrompt && gState.images.length === 0) { showToast('Décrivez ou ajoutez une image', 'error'); return; }
+
+  gState.isRunning = true;
+  gState.stopRequested = false;
+  gState.completed = 0;
+  gState.failed = 0;
+  gState.attempts = 0;
+  gState.createIntervalMs = AGNES_CREATE_INTERVAL_MIN;
+
+  gState.queue = [];
+  const count = gState.videoCount;
+  if (gState.images.length === 0) {
+    for (let i = 0; i < count; i++) gState.queue.push({ index: i, image: null, status: 'pending' });
+  } else {
+    for (let i = 0; i < Math.min(gState.images.length, count); i++) gState.queue.push({ index: i, image: gState.images[i], status: 'pending' });
+    for (let i = gState.images.length; i < count; i++) gState.queue.push({ index: i, image: null, status: 'pending' });
+  }
+
+  $('gallery-grid').innerHTML = '';
+  $('gallery').style.display = 'none';
+  $('stop-btn').classList.add('visible');
+  updateGenerateBtn();
+  renderGQueue();
+
+  const totalStart = Date.now();
+  const polls = [];
+
+  try {
+    for (let i = 0; i < gState.queue.length; i++) {
+      if (gState.stopRequested) break;
+      const item = gState.queue[i];
+      try {
+        await createGTask(item);
+        polls.push(pollGTask(item));
+      } catch (e) {
+        if (e.message === 'Arrêt demandé') break;
+        item.status = 'failed';
+        item.progress = 'Échec';
+        gState.failed++;
+        renderGQueue();
+        updateGenerateBtn();
+      }
+      if (i < gState.queue.length - 1 && !gState.stopRequested) {
+        const wait = Math.ceil(gState.createIntervalMs / 1000);
+        for (let r = wait; r > 0; r--) {
+          if (gState.stopRequested) break;
+          setStatus('Respiration… — Vidéo ' + (i + 2) + '/' + gState.queue.length + ' dans ' + r + 's');
+          await sleep(1000);
+        }
+      }
+    }
+    if (polls.length) { setStatus('Finalisation…'); await Promise.allSettled(polls); }
+  } catch (e) {}
+
+  const elapsed = (Date.now() - totalStart) / 1000;
+  const summary = gState.stopRequested ? 'Arrêté — ' + gState.completed + '/' + gState.queue.length + ' vidéos' : '✦ ' + gState.completed + '/' + gState.queue.length + ' vidéos en ' + fmtEta(elapsed) + ' ✦';
+  setStatus(summary);
+  await sleep(4000);
+  setStatus(null);
+
+  gState.isRunning = false;
+  gState.stopRequested = false;
+  $('stop-btn').classList.remove('visible');
+  updateGenerateBtn();
+  showToast(gState.completed + ' vidéo' + (gState.completed > 1 ? 's' : '') + ' générée' + (gState.completed > 1 ? 's' : ''), 'success');
+}
+
+function stopGeneration() {
+  if (!gState.isRunning) return;
+  gState.stopRequested = true;
+  setStatus('Arrêt…');
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+(function init() {
+  // Gate
+  // déjà géré
+
+  // Tabs
+  // déjà géré
+
+  // API key
+  $('api-save-btn').addEventListener('click', saveAgnesKey);
+  $('api-key-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveAgnesKey(); } });
+
+  // Upload images
+  $('upload-zone').addEventListener('click', () => $('file-input').click());
+  $('file-input').addEventListener('change', e => { handleGFiles(e.target.files); e.target.value = ''; });
+
+  // Prompt
+  $('main-prompt').addEventListener('input', e => { gState.mainPrompt = e.target.value; updateGenerateBtn(); });
+
+  // Settings
+  $('duration-select').addEventListener('change', e => { gState.durationFrames = parseInt(e.target.value, 10); });
+  $('count-select').addEventListener('change', e => { gState.videoCount = parseInt(e.target.value, 10); updateGenerateBtn(); });
+  $('ratio-select').addEventListener('change', e => { gState.ratio = e.target.value; });
+
+  // Generate
+  $('generate-btn').addEventListener('click', startGeneration);
+  $('stop-btn').addEventListener('click', stopGeneration);
+
+  // Renders
+  renderGPresets();
+  renderGImages();
+  updateAgnesPanel();
 })();
 </script>
 
