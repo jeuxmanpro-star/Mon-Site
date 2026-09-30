@@ -123,8 +123,7 @@
 
   /* PREMIUM */
   .premium{margin-top:2rem;background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(168,85,247,.08),rgba(236,72,153,.08));border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:1.8rem;position:relative;overflow:hidden}
-  .premium::before{content:'';position:absolute;top:-50%;right:-20%;width:400px;height:400px;background:radial-gradient(circle,rgba(236,72,153,.2),transparent 70%);pointer-events:none}
-  .prem-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;position:relative}
+  .prem-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
   .prem-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:grid;place-items:center;font-size:1.5rem;box-shadow:0 10px 30px -8px #a855f7}
   .prem-title{font-size:1.2rem;font-weight:800;color:#fff}
   .prem-sub{font-size:.82rem;color:#e9d5ff;margin-top:.15rem}
@@ -148,7 +147,7 @@
   .term-intro{color:#cbd5e1;font-size:.9rem;line-height:1.65;margin-bottom:1.4rem}
   .term-intro strong{color:#f0abfc;font-weight:700}
   .term-details{margin-top:.8rem;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
-  .term-details[open]{border-color:rgba(99,102,241,.4);box-shadow:0 8px 30px -12px rgba(99,102,241,.5)}
+  .term-details[open]{border-color:rgba(99,102,241,.4)}
   .term-details summary{padding:1rem 1.2rem;cursor:pointer;font-weight:700;font-size:.92rem;color:#e0e7ff;user-select:none;list-style:none;display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.02)}
   .term-details summary:hover{background:rgba(255,255,255,.05)}
   .term-details summary::-webkit-details-marker{display:none}
@@ -161,7 +160,7 @@
   .term-tab:hover{color:#e2e8f0}
   .term-tab.active{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;box-shadow:0 6px 16px -6px #6366f1}
   .term-pane{display:none}
-  .term-pane.active{display:block;animation:fadeIn .25s ease}
+  .term-pane.active{display:block}
   .cmd{display:flex;align-items:stretch;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.6rem 0;overflow:hidden;font-family:'SF Mono','JetBrains Mono','Consolas',monospace;position:relative}
   .cmd::before{content:'$';color:#22d3ee;padding:.75rem .6rem .75rem .9rem;font-weight:700;font-size:.95rem;user-select:none}
   .cmd code{flex:1;padding:.75rem .6rem;color:#e0e7ff;font-size:.82rem;line-height:1.5;word-break:break-all;display:flex;align-items:center;background:transparent}
@@ -170,32 +169,18 @@
   .cmd-copy.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
   .term-note{font-size:.78rem;color:#94a3b8;margin:.4rem 0 .8rem;padding-left:.8rem;border-left:2px solid rgba(99,102,241,.4);line-height:1.55}
   .term-note code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.1rem .35rem;border-radius:4px;font-family:'SF Mono',monospace;font-size:.9em}
-  .cmd-table{width:100%;border-collapse:collapse;margin-top:.8rem;font-size:.82rem}
-  .cmd-table thead th{text-align:left;padding:.6rem .5rem;color:#a5b4fc;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid rgba(255,255,255,.08)}
-  .cmd-table tbody tr{border-bottom:1px solid rgba(255,255,255,.04)}
-  .cmd-table tbody tr:hover{background:rgba(99,102,241,.06)}
-  .cmd-table td{padding:.6rem .5rem;vertical-align:middle;color:#cbd5e1}
-  .cmd-table td:first-child{color:#e0e7ff;font-weight:500}
-  .cmd-table code{background:rgba(0,0,0,.4);color:#67e8f9;padding:.25rem .5rem;border-radius:6px;font-family:'SF Mono',monospace;font-size:.75rem;display:inline-block;max-width:100%;word-break:break-all}
-  .cmd-table .cmd-copy{border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.35rem .6rem;background:rgba(255,255,255,.03);font-size:.85rem}
-  .term-steps{margin:.8rem 0;padding-left:1.4rem;color:#cbd5e1;line-height:1.75}
-  .term-steps li{margin:.4rem 0}
-  .term-steps li::marker{color:#a855f7;font-weight:700}
-  .term-steps kbd{background:#1e1b4b;border:1px solid rgba(99,102,241,.4);border-bottom-width:2px;padding:.1rem .45rem;border-radius:5px;font-family:'SF Mono',monospace;font-size:.78rem;color:#c7d2fe}
-  .term-steps code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.1rem .35rem;border-radius:4px;font-family:'SF Mono',monospace;font-size:.88em}
-  .term-steps em{color:#f0abfc;font-style:normal;font-weight:600}
   .term-warn{margin-top:1.4rem;padding:1rem 1.2rem;background:rgba(251,191,36,.08);border-left:4px solid #fbbf24;border-radius:12px;font-size:.82rem;color:#fde68a;line-height:1.6}
   .term-warn strong{color:#fcd34d}
 
   /* BITCOIN */
-  .support{margin-top:2rem;background:linear-gradient(180deg,rgba(247,147,26,.08),rgba(247,147,26,.02));border:1px solid rgba(247,147,26,.25);border-radius:24px;padding:1.8rem;box-shadow:0 20px 60px -20px rgba(247,147,26,.3);position:relative;overflow:hidden}
+  .support{margin-top:2rem;background:linear-gradient(180deg,rgba(247,147,26,.08),rgba(247,147,26,.02));border:1px solid rgba(247,147,26,.25);border-radius:24px;padding:1.8rem;position:relative;overflow:hidden}
   .support-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
   .btc-logo{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f7931a,#ffb347);display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#fff;box-shadow:0 10px 25px -6px #f7931a}
   .support-title{font-size:1.15rem;font-weight:800;color:#fff}
   .support-sub{font-size:.82rem;color:#fbbf24;margin-top:.1rem}
-  .support-body{position:relative;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start}
+  .support-body{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start}
   @media(max-width:640px){.support-body{flex-direction:column;align-items:stretch}}
-  .qr-wrap{flex:0 0 auto;background:#fff;padding:.7rem;border-radius:14px;box-shadow:0 12px 30px -10px rgba(247,147,26,.5);display:flex;flex-direction:column;align-items:center;gap:.5rem}
+  .qr-wrap{flex:0 0 auto;background:#fff;padding:.7rem;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:.5rem}
   .qr-wrap img{width:160px;height:160px;display:block;border-radius:6px}
   .qr-wrap small{color:#0a0a1a;font-size:.65rem;font-weight:700;letter-spacing:.05em}
   .support-info{flex:1 1 280px;min-width:0}
@@ -203,7 +188,7 @@
   .addr-box{display:flex;gap:.5rem;align-items:stretch;background:rgba(0,0,0,.4);border:1px solid rgba(247,147,26,.3);border-radius:12px;padding:.5rem;margin-bottom:.8rem}
   .addr-box code{flex:1;min-width:0;color:#fbbf24;font-family:'SF Mono',monospace;font-size:.75rem;line-height:1.4;word-break:break-all;padding:.5rem .6rem;display:flex;align-items:center}
   .addr-box button{background:linear-gradient(135deg,#f7931a,#ffb347);border:none;border-radius:8px;padding:0 1rem;color:#fff;font-weight:700;font-size:.8rem;cursor:pointer;transition:.15s;white-space:nowrap;font-family:inherit}
-  .addr-box button:hover{transform:scale(1.03);box-shadow:0 8px 20px -6px #f7931a}
+  .addr-box button:hover{transform:scale(1.03)}
   .addr-box button.ok{background:linear-gradient(135deg,#10b981,#059669)}
   .support-note{font-size:.78rem;color:#94a3b8;line-height:1.6;background:rgba(0,0,0,.25);border-left:3px solid #f7931a;padding:.7rem .9rem;border-radius:8px;margin-top:.6rem}
   .illustration{margin-top:1.5rem;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.3)}
@@ -222,7 +207,7 @@
   <div class="orb orb-3"></div>
 </div>
 
-<!-- ═══════════════ GATE (4 étapes) ═══════════════ -->
+<!-- GATE -->
 <div class="gate" id="gate">
   <div class="gate-box">
     <div class="gate-title">🔓 Débloquer l'accès</div>
@@ -238,24 +223,17 @@
       <div class="step-dot" data-step="4">4</div>
     </div>
     <div class="gate-ads">
-      <div class="gate-ad" id="gate-ad-1">
-        <div>📢 Emplacement pub 1<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div>
-      </div>
-      <div class="gate-ad" id="gate-ad-2">
-        <div>📢 Emplacement pub 2<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div>
-      </div>
+      <div class="gate-ad" id="gate-ad-1"><div>📢 Emplacement pub 1<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div></div>
+      <div class="gate-ad" id="gate-ad-2"><div>📢 Emplacement pub 2<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div></div>
     </div>
     <div class="gate-action">
-      <button class="gate-btn" id="gateBtn" disabled>
-        ⏳ Patiente un instant…
-        <span class="timer" id="gateTimer">8 s</span>
-      </button>
+      <button class="gate-btn" id="gateBtn" disabled>⏳ Patiente un instant…<span class="timer" id="gateTimer">8 s</span></button>
     </div>
     <div class="gate-hint">Étape <strong id="stepLabel">1</strong> sur 4 · Merci pour ta patience ❤️</div>
   </div>
 </div>
 
-<!-- ═══════════════ APP ═══════════════ -->
+<!-- APP -->
 <div class="wrap">
 
   <div class="ad-slot placeholder" id="ad-top">
@@ -335,8 +313,7 @@
       <summary>🌐 API personnalisée (backend self-hosted)</summary>
       <div class="content">
         <p>Par défaut, on utilise une instance publique de
-        <a href="https://github.com/imputnet/cobalt" target="_blank" rel="noopener">cobalt</a>,
-        un backend open source qui gère plus de 1000 sites.</p>
+        <a href="https://github.com/imputnet/cobalt" target="_blank" rel="noopener">cobalt</a>.</p>
         <input id="apiUrl" style="margin-top:.6rem" placeholder="https://api.example.com/">
         <button class="btn btn-ghost" id="saveApi" style="margin-top:.6rem;flex:0 0 auto;padding:.7rem 1.2rem">💾 Enregistrer</button>
       </div>
@@ -361,7 +338,6 @@
         <div class="prem-sub">Accès à vie · Paiement unique · Code source inclus</div>
       </div>
     </div>
-
     <ul class="prem-features">
       <li>Vitesse maximale de téléchargement</li>
       <li>Qualité 4K / 8K débloquée</li>
@@ -370,64 +346,49 @@
       <li>Support prioritaire par email</li>
       <li>Utilisable sur 4 sessions maximum</li>
     </ul>
-
     <div class="prem-price">
       <div class="prem-price-num">20 <span style="font-size:1.2rem">USDT</span></div>
-      <div class="prem-price-label">
-        <strong>Paiement unique</strong><br>
-        Accès à vie · Pas d'abonnement
-      </div>
+      <div class="prem-price-label"><strong>Paiement unique</strong><br>Accès à vie · Pas d'abonnement</div>
     </div>
-
     <button class="btn btn-primary" id="buyPremium" style="width:100%">🚀 Acheter maintenant — 20 USDT</button>
-    <div class="prem-note">
-      Après paiement confirmé, tu recevras un <strong>code d'accès unique</strong> par email.<br>
-      Ce code est utilisable sur <strong>4 sessions maximum</strong>. Ne le partage pas.
-    </div>
+    <div class="prem-note">Après paiement confirmé, tu recevras un <strong>code d'accès unique</strong> par email.<br>Ce code est utilisable sur <strong>4 sessions maximum</strong>.</div>
   </div>
 
-  <!-- SECTION TERMINAL -->
+  <!-- TERMINAL -->
   <div class="terminal-section">
     <div class="term-head">
       <div class="term-icon">⌨️</div>
       <div>
         <div class="term-title">Méthode Pro : Terminal (yt-dlp)</div>
-        <div class="term-sub">Puissance maximale · 1800+ sites · 100% gratuit · Sans limite</div>
+        <div class="term-sub">Puissance maximale · 1800+ sites · 100% gratuit</div>
       </div>
     </div>
-
     <p class="term-intro">
       Tu veux télécharger en <strong>4K, 8K, playlist entière, audio seul</strong>, ou depuis des sites
       que les APIs bloquent ? <strong>yt-dlp</strong> est l'outil open source utilisé par tous les pros.
-      Une commande, un téléchargement. Aucune limite, aucune pub, aucun compte.
     </p>
 
     <details class="term-details" open>
-      <summary>📦 Étape 1 — Installer yt-dlp (une seule fois)</summary>
+      <summary>📦 Étape 1 — Installer yt-dlp</summary>
       <div class="term-content">
         <div class="term-tabs">
           <button class="term-tab active" data-os="win">🪟 Windows</button>
           <button class="term-tab" data-os="mac">🍎 macOS</button>
           <button class="term-tab" data-os="linux">🐧 Linux</button>
         </div>
-
         <div class="term-pane active" data-pane="win">
           <p>Ouvre <strong>l'invite de commandes</strong> (Windows + R, tape <code>cmd</code>) et colle :</p>
           <div class="cmd"><code>winget install yt-dlp</code><button class="cmd-copy" data-cmd="winget install yt-dlp">📋</button></div>
-          <p class="term-note">Et pour fusionner audio + vidéo :</p>
+          <p class="term-note">Pour fusionner audio + vidéo :</p>
           <div class="cmd"><code>winget install Gyan.FFmpeg</code><button class="cmd-copy" data-cmd="winget install Gyan.FFmpeg">📋</button></div>
         </div>
-
         <div class="term-pane" data-pane="mac">
-          <p>Ouvre <strong>Terminal</strong> (Cmd + Espace, tape <code>Terminal</code>) et colle :</p>
+          <p>Ouvre <strong>Terminal</strong> et colle :</p>
           <div class="cmd"><code>brew install yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="brew install yt-dlp ffmpeg">📋</button></div>
-          <p class="term-note">Sans Homebrew : <a href="https://brew.sh" target="_blank" rel="noopener" style="color:#a5b4fc">brew.sh</a></p>
         </div>
-
         <div class="term-pane" data-pane="linux">
           <p>Ouvre un terminal et colle :</p>
           <div class="cmd"><code>sudo apt install -y yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="sudo apt install -y yt-dlp ffmpeg">📋</button></div>
-          <p class="term-note">Fedora : <code>sudo dnf install yt-dlp ffmpeg</code></p>
         </div>
       </div>
     </details>
@@ -437,52 +398,17 @@
       <div class="term-content">
         <p>Remplace <code>URL</code> par le lien de ta vidéo :</p>
         <div class="cmd"><code>yt-dlp "URL"</code><button class="cmd-copy" data-cmd='yt-dlp "URL"'>📋</button></div>
-        <p style="margin-top:1rem">Exemple avec TokyVideo :</p>
+        <p style="margin-top:1rem">Exemple concret :</p>
         <div class="cmd"><code>yt-dlp "https://www.tokyvideo.com/fr/video/l-entorse"</code><button class="cmd-copy" data-cmd='yt-dlp "https://www.tokyvideo.com/fr/video/l-entorse"'>📋</button></div>
-      </div>
-    </details>
-
-    <details class="term-details">
-      <summary>🎓 Étape 3 — Commandes avancées</summary>
-      <div class="term-content">
-        <table class="cmd-table">
-          <thead><tr><th>Ce que tu veux</th><th>Commande</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>Meilleure qualité</td><td><code>yt-dlp -f "bestvideo+bestaudio" "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -f "bestvideo+bestaudio" "URL"'>📋</button></td></tr>
-            <tr><td>Limiter à 1080p</td><td><code>yt-dlp -f "bestvideo[height<=1080]+bestaudio" "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -f "bestvideo[height<=1080]+bestaudio" "URL"'>📋</button></td></tr>
-            <tr><td>Audio seul MP3</td><td><code>yt-dlp -x --audio-format mp3 "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -x --audio-format mp3 "URL"'>📋</button></td></tr>
-            <tr><td>Playlist entière</td><td><code>yt-dlp "URL_PLAYLIST"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp "URL_PLAYLIST"'>📋</button></td></tr>
-            <tr><td>Voir les formats</td><td><code>yt-dlp -F "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp -F "URL"'>📋</button></td></tr>
-            <tr><td>Cookies Chrome</td><td><code>yt-dlp --cookies-from-browser chrome "URL"</code></td><td><button class="cmd-copy" data-cmd='yt-dlp --cookies-from-browser chrome "URL"'>📋</button></td></tr>
-            <tr><td>Mettre à jour</td><td><code>yt-dlp -U</code></td><td><button class="cmd-copy" data-cmd="yt-dlp -U">📋</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </details>
-
-    <details class="term-details">
-      <summary>🔥 Astuce ultime — Trouver le vrai lien caché (F12)</summary>
-      <div class="term-content">
-        <ol class="term-steps">
-          <li>Ouvre la page de la vidéo dans <strong>Chrome</strong></li>
-          <li>Appuie sur <kbd>F12</kbd> → onglet <strong>Network</strong></li>
-          <li>Filtre : <code>m3u8</code> (ou <code>mp4</code>)</li>
-          <li>Recharge, lance la vidéo 2 secondes</li>
-          <li>Clic droit sur la ligne → <em>Copy link address</em></li>
-          <li>Colle dans le terminal :</li>
-        </ol>
-        <div class="cmd"><code>yt-dlp "URL_COPIÉE"</code><button class="cmd-copy" data-cmd='yt-dlp "URL_COPIÉE"'>📋</button></div>
       </div>
     </details>
 
     <div class="term-warn">
       ⚖️ <strong>Rappel légal :</strong> yt-dlp est un outil open source parfaitement légal.
-      L'utiliser pour télécharger des vidéos dont tu as les droits, ou pour un <strong>usage strictement personnel</strong>
-      (copie privée, art. L.122-5 CPI) est autorisé en France.
+      L'utiliser pour un <strong>usage strictement personnel</strong> est autorisé.
     </div>
   </div>
 
-  <!-- AD BAS -->
   <div class="ad-slot placeholder" id="ad-bottom" style="margin-top:2rem;margin-bottom:0">
     <div>📢 Emplacement publicitaire (728×90)<br><small style="opacity:.7">Colle ton code pub ici</small></div>
   </div>
@@ -493,7 +419,7 @@
       <div class="btc-logo">₿</div>
       <div>
         <div class="support-title">Soutenir l'initiative ❤️</div>
-        <div class="support-sub">Fait avec passion · 100% gratuit · Aucune pub intrusive</div>
+        <div class="support-sub">Fait avec passion · 100% gratuit</div>
       </div>
     </div>
     <div class="support-body">
@@ -502,7 +428,7 @@
         <small>SCANNEZ POUR DONNER</small>
       </div>
       <div class="support-info">
-        <p>Ce projet est <strong>entièrement gratuit</strong> et <strong>open source</strong>. Si tu veux soutenir son développement, envoie quelques satoshis à l'adresse ci-dessous. Chaque don aide énormément. 🙏</p>
+        <p>Ce projet est <strong>entièrement gratuit</strong>. Si tu veux soutenir son développement, envoie quelques satoshis. 🙏</p>
         <div class="addr-box">
           <code id="btcAddr">bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs</code>
           <button id="copyAddr">📋 Copier</button>
@@ -524,7 +450,7 @@
 <script>
 (() => {
   'use strict';
-  const DEFAULT_APIS = ['https://api.cobalt.tools/','https://co.wuk.sh/','https://cobalt-api.kwiatekmiki.com/'];
+  const DEFAULT_APIS = ['https://mon-cobalt-api.onrender.com'];
   const BTC_ADDRESS = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
   const GATE_STEP_DELAY = 8;
 
@@ -544,7 +470,6 @@
 
   /* GATE */
   let currentStep = 1, timerInterval = null;
-
   function startGate() {
     document.body.classList.add('locked');
     gate.classList.remove('hidden');
@@ -667,20 +592,16 @@
   });
   copyBtn.addEventListener('click', () => { if (!currentDownloadUrl) return; navigator.clipboard.writeText(currentDownloadUrl).then(() => { const o = copyBtn.textContent; copyBtn.textContent = '✅ Copié !'; setTimeout(() => copyBtn.textContent = o, 1500); }); });
 
-  /* PREMIUM */
   $('buyPremium').addEventListener('click', () => {
-    const msg = 'Bonjour, je souhaite acheter Téléchargeur Universel PRO (20 USDT).\n\nMerci de m\'envoyer les instructions de paiement et le code d\'accès.';
-    alert(msg + '\n\n(Ouvre ton client email ou contacte-nous pour finaliser le paiement.)');
+    alert('Pour acheter Téléchargeur Universel PRO (20 USDT),\ncontacte-nous par email avec ta demande.\n\nTu recevras les instructions de paiement et ton code d\'accès.');
   });
 
-  /* BITCOIN */
   $('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=' + encodeURIComponent('bitcoin:' + BTC_ADDRESS);
   $('copyAddr').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(BTC_ADDRESS); const b = $('copyAddr'); const o = b.textContent; b.textContent = '✅ Copié !'; b.classList.add('ok'); setTimeout(() => { b.textContent = o; b.classList.remove('ok'); }, 1800); }
     catch { alert('Adresse : ' + BTC_ADDRESS); }
   });
 
-  /* TERMINAL : onglets OS + copie */
   document.querySelectorAll('.term-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       const os = tab.dataset.os;
@@ -700,7 +621,6 @@
   });
   (function autoOS(){ const ua = navigator.userAgent.toLowerCase(); let os = 'win'; if (ua.includes('mac')) os = 'mac'; else if (ua.includes('linux') && !ua.includes('android')) os = 'linux'; const t = document.querySelector('.term-tab[data-os="' + os + '"]'); if (t) t.click(); })();
 
-  /* INIT */
   if (apiBase) $('apiUrl').value = apiBase;
   detectApi();
 })();
