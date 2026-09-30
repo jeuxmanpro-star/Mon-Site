@@ -3,401 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 16 autres sites. Outil simple, rapide, sans inscription. Open source.">
-<meta property="og:title" content="Téléchargeur Universel — 1800+ sites supportés">
-<meta property="og:description" content="Colle n'importe quel code d'intégration ou URL vidéo. Gratuit, open source, sans inscription.">
-<meta property="og:image" content="og-image.png">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta property="og:url" content="https://telechargeur-universel.com/">
-<title>Téléchargeur Universel — Télécharger des vidéos YouTube, TikTok, Instagram, Twitter/X gratuitement</title>
-<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="shortcut icon" href="favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Téléchargeur Universel">
-<link rel="manifest" href="site.webmanifest">
+<meta name="description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 16 autres sites.">
+<title>Téléchargeur Universel — Télécharger des vidéos gratuitement</title>
+<link rel="icon" href="favicon.ico">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{
-    --accent-1:#6366f1; --accent-2:#a855f7; --accent-3:#ec4899;
-    --ok:#10b981; --err:#ef4444; --warn:#f59e0b; --btc:#f7931a;
-    --text:#e2e8f0; --text-dim:#94a3b8;
-  }
-  html,body{height:100%}
-  body{
-    background:radial-gradient(ellipse at top,#2d1b69 0%,#1a1440 35%,#0a0a1a 75%);
-    background-attachment:fixed;
-    font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
-    color:var(--text); min-height:100vh; padding:2rem 1rem;
-    display:flex; flex-direction:column; align-items:center;
-    -webkit-font-smoothing:antialiased;
-  }
-  body.locked{overflow:hidden}
-  .bg-orbs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-  .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35}
-  .orb-1{width:500px;height:500px;background:var(--accent-1);top:-150px;left:-100px;animation:float 20s ease-in-out infinite}
-  .orb-2{width:400px;height:400px;background:var(--accent-3);bottom:-100px;right:-100px;animation:float 25s ease-in-out infinite reverse}
-  .orb-3{width:300px;height:300px;background:var(--accent-2);top:40%;left:60%;animation:float 30s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-40px) scale(1.1)}}
-
-  /* ═══════════ MENU DÉROULANT ═══════════ */
-  .topnav{
-    position:fixed;top:1rem;left:50%;transform:translateX(-50%);
-    z-index:400;display:flex;gap:.5rem;align-items:center;
-    background:rgba(10,10,26,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,.1);border-radius:999px;
-    padding:.45rem .55rem;
-    box-shadow:0 12px 32px -14px rgba(0,0,0,.7);
-    max-width:calc(100vw - 2rem);
-  }
-  .topnav-link{
-    padding:.55rem 1rem;border-radius:999px;
-    font-size:.82rem;font-weight:600;color:var(--text-dim);
-    background:transparent;border:none;font-family:inherit;cursor:pointer;
-    transition:.2s;white-space:nowrap;text-decoration:none;
-    display:inline-flex;align-items:center;gap:.4rem;
-  }
-  .topnav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
-  .topnav-link .caret{
-    display:inline-block;width:8px;height:8px;
-    border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
-    transform:rotate(45deg);margin-top:-3px;transition:transform .25s;
-  }
-  .topnav-link.open .caret{transform:rotate(-135deg);margin-top:3px}
-  .topnav-menu{position:relative}
-  .topnav-dropdown{
-    position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-8px);
-    background:rgba(10,10,26,.95);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
-    border:1px solid rgba(255,255,255,.12);border-radius:16px;
-    padding:.5rem;min-width:240px;
-    box-shadow:0 24px 60px -20px rgba(0,0,0,.9);
-    opacity:0;pointer-events:none;visibility:hidden;
-    transition:opacity .22s ease,transform .25s cubic-bezier(.34,1.2,.64,1),visibility .22s;
-  }
-  .topnav-dropdown.open{
-    opacity:1;pointer-events:auto;visibility:visible;
-    transform:translateX(-50%) translateY(0);
-  }
-  .topnav-dropdown a{
-    display:flex;align-items:center;gap:.65rem;
-    padding:.65rem .85rem;border-radius:10px;
-    font-size:.85rem;font-weight:500;color:var(--text-dim);
-    text-decoration:none;transition:.18s;
-  }
-  .topnav-dropdown a:hover{
-    background:rgba(99,102,241,.14);color:var(--text);text-decoration:none;
-  }
-  .topnav-dropdown .separator{height:1px;background:rgba(255,255,255,.08);margin:.4rem .5rem}
-  @media(max-width:640px){
-    .topnav{top:.6rem;padding:.35rem .4rem}
-    .topnav-link{padding:.45rem .8rem;font-size:.76rem}
-  }
-
-  /* GATE */
-  .gate{position:fixed;inset:0;z-index:9999;background:rgba(10,10,26,.94);backdrop-filter:blur(20px);display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;opacity:1;transition:opacity .4s ease}
-  .gate.hidden{opacity:0;pointer-events:none;visibility:hidden}
-  .gate-box{width:100%;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:2rem;box-shadow:0 40px 100px -30px rgba(0,0,0,.9);margin:auto 0}
-  .gate-title{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:.4rem;background:linear-gradient(135deg,#a78bfa,#60a5fa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .gate-sub{text-align:center;color:#94a3b8;font-size:.85rem;margin-bottom:1.5rem;line-height:1.5}
-  .gate-progress{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:1.8rem}
-  .step-dot{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.12);display:grid;place-items:center;font-weight:800;font-size:.95rem;color:#64748b;transition:.3s}
-  .step-dot.done{background:linear-gradient(135deg,#6366f1,#a855f7);border-color:transparent;color:#fff;box-shadow:0 0 20px rgba(99,102,241,.6);transform:scale(1.05)}
-  .step-dot.current{border-color:#a855f7;color:#a855f7;animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.6)}50%{box-shadow:0 0 0 12px rgba(168,85,247,0)}}
-
-  /* ═══════════ EMPLACEMENTS PUB GATE ═══════════ */
-  .gate-ads{display:grid;grid-template-columns:1fr;gap:.8rem;margin-bottom:1.5rem}
-  @media(min-width:640px){.gate-ads{grid-template-columns:1fr 1fr}}
-  .gate-ad{
-    min-height:120px;
-    background:rgba(0,0,0,.35);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:14px;
-    padding:1rem;
-    display:flex;align-items:center;justify-content:center;
-    text-align:center;font-size:.75rem;color:#64748b;
-    position:relative;overflow:hidden;
-  }
-  .gate-ad::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.6rem;letter-spacing:.15em;color:#475569;font-weight:700;z-index:1}
-
-  .gate-action{text-align:center;margin-bottom:1.2rem}
-  .gate-btn{padding:1.1rem 2.4rem;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer;transition:.2s;box-shadow:0 16px 40px -12px #6366f1;letter-spacing:.02em;min-width:280px}
-  .gate-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 24px 50px -14px #6366f1}
-  .gate-btn:disabled{opacity:.55;cursor:wait;transform:none;background:rgba(255,255,255,.1);box-shadow:none}
-  .gate-btn .timer{display:inline-block;background:rgba(0,0,0,.3);padding:.15rem .55rem;border-radius:6px;margin-left:.5rem;font-variant-numeric:tabular-nums;font-size:.9rem}
-  .gate-hint{color:#64748b;font-size:.78rem;text-align:center;line-height:1.5}
-  .gate-hint strong{color:#a5b4fc}
-
-  /* APP */
-  .wrap{position:relative;z-index:1;width:100%;max-width:920px;padding-top:3.5rem}
-  header{text-align:center;margin-bottom:2rem}
-  .logo-full{max-width:420px;width:90%;height:auto;display:block;margin:0 auto .6rem;filter:drop-shadow(0 12px 30px rgba(99,102,241,.4))}
-  .tagline{color:var(--text-dim);font-size:.95rem;line-height:1.5;margin-top:.5rem}
-  .tagline strong{color:#c7d2fe;font-weight:600}
-  .pills{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
-  .pill{padding:.35rem .9rem;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text-dim)}
-  .pill.ok{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:#4ade80}
-  .pill.ko{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#f87171}
-  .pill.checking{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3);color:#a5b4fc}
-
-  /* ═══════════ EMPLACEMENTS PUB SITE ═══════════ */
-  .ad-slot{
-    width:100%;max-width:920px;margin:0 auto 1.5rem;
-    min-height:100px;
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(255,255,255,.02);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:16px;padding:1rem;
-    position:relative;overflow:hidden;
-  }
-  .ad-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.62rem;letter-spacing:.15em;color:#64748b;font-weight:700;z-index:1}
-
-  .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:1.8rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06)}
-  label{display:block;font-size:.78rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
-  textarea,input,select{width:100%;background:rgba(0,0,0,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:.9rem 1.1rem;font-family:'SF Mono','JetBrains Mono',monospace;font-size:.87rem;color:var(--text);outline:none;transition:.2s;resize:vertical}
-  input,select{font-family:inherit;font-size:.9rem;resize:none}
-  textarea{min-height:130px;line-height:1.5}
-  textarea:focus,input:focus,select:focus{border-color:var(--accent-1);box-shadow:0 0 0 4px rgba(99,102,241,.15);background:rgba(0,0,0,.55)}
-  textarea::placeholder,input::placeholder{color:#64748b}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
-  @media(max-width:640px){.grid-2{grid-template-columns:1fr}}
-  .actions{display:flex;gap:.7rem;margin-top:1.3rem;flex-wrap:wrap}
-  .btn{flex:1 1 160px;border:none;border-radius:14px;padding:1rem 1.4rem;font-size:.95rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;transition:.15s;color:#fff;text-decoration:none}
-  .btn-primary{background:linear-gradient(135deg,var(--accent-1),var(--accent-2));box-shadow:0 14px 30px -10px var(--accent-1),inset 0 1px 0 rgba(255,255,255,.2)}
-  .btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 22px 40px -12px var(--accent-1),inset 0 1px 0 rgba(255,255,255,.2)}
-  .btn-ghost{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--text)}
-  .btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.1)}
-  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
-  .status{margin-top:1.2rem;padding:1rem 1.2rem;border-radius:14px;font-size:.88rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;background:rgba(99,102,241,.08);border-left:4px solid var(--accent-1);color:#c7d2fe;display:none}
-  .status.on{display:block;animation:fadeIn .3s ease}
-  .status.err{background:rgba(239,68,68,.08);border-color:var(--err);color:#fca5a5}
-  .status.ok{background:rgba(16,185,129,.08);border-color:var(--ok);color:#6ee7b7}
-  .status.warn{background:rgba(245,158,11,.08);border-color:var(--warn);color:#fcd34d}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-  .result{margin-top:1.5rem;display:none}
-  .result.on{display:block;animation:fadeIn .4s ease}
-  .video-wrap{border-radius:16px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px -15px rgba(0,0,0,.9)}
-  .video-wrap video{width:100%;display:block;max-height:520px}
-  .dl-bar{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
-  .dl-bar .btn{flex:1 1 200px}
-  .btn-dl{background:linear-gradient(135deg,var(--ok),#059669);box-shadow:0 14px 30px -10px var(--ok)}
-  .btn-dl:hover{transform:translateY(-2px);box-shadow:0 22px 40px -12px var(--ok)}
-  .btn-copy{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--text)}
-  .log{margin-top:1rem;background:#000;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;font-family:'SF Mono',monospace;font-size:.72rem;color:#64748b;max-height:200px;overflow-y:auto;white-space:pre-wrap;line-height:1.5;display:none}
-  .log.on{display:block}
-  .steps{display:none;margin-top:1rem;padding:.9rem 1.1rem;background:rgba(0,0,0,.3);border-radius:12px;border-left:3px solid var(--accent-2);font-size:.82rem;color:#c7d2fe}
-  .steps.on{display:block}
-  .steps ol{margin-left:1.2rem;margin-top:.4rem}
-  .steps li{margin:.3rem 0}
-  details{margin-top:1.5rem;background:rgba(0,0,0,.25);border-radius:14px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
-  details summary{padding:.9rem 1.2rem;cursor:pointer;font-weight:600;font-size:.9rem;color:#c7d2fe;user-select:none;list-style:none;display:flex;justify-content:space-between;align-items:center}
-  details summary::-webkit-details-marker{display:none}
-  details summary::after{content:'▾';transition:.2s;color:var(--text-dim)}
-  details[open] summary::after{transform:rotate(180deg)}
-  details .content{padding:0 1.2rem 1.2rem;font-size:.85rem;line-height:1.7;color:var(--text-dim)}
-  details .content code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.15rem .4rem;border-radius:5px;font-family:'SF Mono',monospace;font-size:.85em}
-  details .content a{color:#a5b4fc;text-decoration:none;border-bottom:1px dotted}
-
-  /* ═══════════ NATIVE BANNER ═══════════ */
-  .native-slot{
-    margin-top:1.5rem;padding:1rem;
-    background:rgba(0,0,0,.25);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:14px;
-    position:relative;overflow:hidden;
-  }
-  .native-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.6rem;letter-spacing:.15em;color:#475569;font-weight:700;z-index:1}
-
-  /* ═══════════ SITES SUPPORTÉS ═══════════ */
-  .sites-section{margin-top:2.5rem}
-  .sites-header{text-align:center;margin-bottom:1.5rem}
-  .sites-header h2{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.4rem}
-  .sites-header p{color:#94a3b8;font-size:.88rem;line-height:1.5}
-  .sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem}
-  .site-item{padding:.85rem 1rem;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.7rem;transition:.2s;cursor:default}
-  .site-item:hover{border-color:rgba(168,85,247,.4);transform:translateY(-2px);box-shadow:0 12px 28px -12px rgba(168,85,247,.5)}
-  .site-item .ico{font-size:1.3rem;flex-shrink:0;line-height:1}
-  .site-item .info{min-width:0;flex:1}
-  .site-item .nm{font-size:.85rem;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
-  .site-item .tp{font-size:.66rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
-
-  /* PREMIUM */
-  .premium{margin-top:2rem;background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(168,85,247,.08),rgba(236,72,153,.08));border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:1.8rem;position:relative;overflow:hidden}
-  .prem-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
-  .prem-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:grid;place-items:center;font-size:1.5rem;box-shadow:0 10px 30px -8px #a855f7}
-  .prem-title{font-size:1.2rem;font-weight:800;color:#fff}
-  .prem-sub{font-size:.82rem;color:#e9d5ff;margin-top:.15rem}
-  .prem-features{list-style:none;margin:1rem 0 1.3rem;display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-  @media(max-width:640px){.prem-features{grid-template-columns:1fr}}
-  .prem-features li{color:#e2e8f0;font-size:.85rem;display:flex;align-items:flex-start;gap:.5rem;line-height:1.4}
-  .prem-features li::before{content:'✦';color:#f0abfc;font-weight:800;flex-shrink:0}
-  .prem-price{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:1rem 1.2rem;background:rgba(0,0,0,.35);border-radius:14px;border:1px solid rgba(168,85,247,.25)}
-  .prem-price-num{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
-  .prem-price-label{font-size:.85rem;color:#c7d2fe;line-height:1.4}
-  .prem-price-label strong{color:#fff}
-  .prem-note{font-size:.75rem;color:#94a3b8;margin-top:.6rem;text-align:center;line-height:1.5}
-
-  /* TERMINAL */
-  .terminal-section{margin-top:2rem;background:linear-gradient(180deg,rgba(15,15,35,.9),rgba(10,10,26,.95));border:1px solid rgba(99,102,241,.25);border-radius:24px;padding:1.8rem;box-shadow:0 30px 80px -30px rgba(0,0,0,.9);position:relative;overflow:hidden}
-  .terminal-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,#a855f7,#ec4899,transparent);opacity:.7}
-  .term-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.06)}
-  .term-icon{width:52px;height:52px;flex-shrink:0;border-radius:14px;background:linear-gradient(135deg,#0f172a,#1e1b4b);border:1px solid rgba(99,102,241,.3);display:grid;place-items:center;font-size:1.6rem;box-shadow:0 12px 30px -8px #6366f1}
-  .term-title{font-size:1.2rem;font-weight:800;color:#fff}
-  .term-sub{font-size:.8rem;color:#a5b4fc;margin-top:.15rem;font-weight:500}
-  .term-intro{color:#cbd5e1;font-size:.9rem;line-height:1.65;margin-bottom:1.4rem}
-  .term-intro strong{color:#f0abfc;font-weight:700}
-  .term-details{margin-top:.8rem;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
-  .term-details[open]{border-color:rgba(99,102,241,.4)}
-  .term-details summary{padding:1rem 1.2rem;cursor:pointer;font-weight:700;font-size:.92rem;color:#e0e7ff;user-select:none;list-style:none;display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.02)}
-  .term-details summary:hover{background:rgba(255,255,255,.05)}
-  .term-details summary::-webkit-details-marker{display:none}
-  .term-details summary::after{content:'▾';margin-left:auto;transition:.2s;color:#818cf8;font-size:1.1rem}
-  .term-details[open] summary::after{transform:rotate(180deg)}
-  .term-content{padding:.4rem 1.2rem 1.2rem;font-size:.86rem;line-height:1.65;color:#cbd5e1}
-  .term-content p{margin:.6rem 0}
-  .term-tabs{display:flex;gap:.4rem;margin:.8rem 0 1rem;background:rgba(0,0,0,.35);padding:.3rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);width:fit-content}
-  .term-tab{padding:.5rem 1rem;border:none;border-radius:8px;background:transparent;color:#94a3b8;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s}
-  .term-tab:hover{color:#e2e8f0}
-  .term-tab.active{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;box-shadow:0 6px 16px -6px #6366f1}
-  .term-pane{display:none}
-  .term-pane.active{display:block}
-  .cmd{display:flex;align-items:stretch;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.6rem 0;overflow:hidden;font-family:'SF Mono','JetBrains Mono','Consolas',monospace;position:relative}
-  .cmd::before{content:'$';color:#22d3ee;padding:.75rem .6rem .75rem .9rem;font-weight:700;font-size:.95rem;user-select:none}
-  .cmd code{flex:1;padding:.75rem .6rem;color:#e0e7ff;font-size:.82rem;line-height:1.5;word-break:break-all;display:flex;align-items:center;background:transparent}
-  .cmd-copy{background:rgba(255,255,255,.04);border:none;border-left:1px solid rgba(255,255,255,.08);color:#a5b4fc;cursor:pointer;padding:0 1rem;font-size:1rem;transition:.15s}
-  .cmd-copy:hover{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
-  .cmd-copy.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
-  .term-note{font-size:.78rem;color:#94a3b8;margin:.4rem 0 .8rem;padding-left:.8rem;border-left:2px solid rgba(99,102,241,.4);line-height:1.55}
-  .term-note code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.1rem .35rem;border-radius:4px;font-family:'SF Mono',monospace;font-size:.9em}
-  .term-warn{margin-top:1.4rem;padding:1rem 1.2rem;background:rgba(251,191,36,.08);border-left:4px solid #fbbf24;border-radius:12px;font-size:.82rem;color:#fde68a;line-height:1.6}
-  .term-warn strong{color:#fcd34d}
-
-  /* BITCOIN */
-  .support{margin-top:2rem;background:linear-gradient(180deg,rgba(247,147,26,.08),rgba(247,147,26,.02));border:1px solid rgba(247,147,26,.25);border-radius:24px;padding:1.8rem;position:relative;overflow:hidden}
-  .support-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
-  .btc-logo{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f7931a,#ffb347);display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#fff;box-shadow:0 10px 25px -6px #f7931a}
-  .support-title{font-size:1.15rem;font-weight:800;color:#fff}
-  .support-sub{font-size:.82rem;color:#fbbf24;margin-top:.1rem}
-  .support-body{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start}
-  @media(max-width:640px){.support-body{flex-direction:column;align-items:stretch}}
-  .qr-wrap{flex:0 0 auto;background:#fff;padding:.7rem;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:.5rem}
-  .qr-wrap img{width:160px;height:160px;display:block;border-radius:6px}
-  .qr-wrap small{color:#0a0a1a;font-size:.65rem;font-weight:700;letter-spacing:.05em}
-  .support-info{flex:1 1 280px;min-width:0}
-  .support-info p{color:#fde68a;font-size:.85rem;line-height:1.6;margin-bottom:.8rem}
-  .addr-box{display:flex;gap:.5rem;align-items:stretch;background:rgba(0,0,0,.4);border:1px solid rgba(247,147,26,.3);border-radius:12px;padding:.5rem;margin-bottom:.8rem}
-  .addr-box code{flex:1;min-width:0;color:#fbbf24;font-family:'SF Mono',monospace;font-size:.75rem;line-height:1.4;word-break:break-all;padding:.5rem .6rem;display:flex;align-items:center}
-  .addr-box button{background:linear-gradient(135deg,#f7931a,#ffb347);border:none;border-radius:8px;padding:0 1rem;color:#fff;font-weight:700;font-size:.8rem;cursor:pointer;transition:.15s;white-space:nowrap;font-family:inherit}
-  .addr-box button:hover{transform:scale(1.03)}
-  .addr-box button.ok{background:linear-gradient(135deg,#10b981,#059669)}
-  .support-note{font-size:.78rem;color:#94a3b8;line-height:1.6;background:rgba(0,0,0,.25);border-left:3px solid #f7931a;padding:.7rem .9rem;border-radius:8px;margin-top:.6rem}
-  .illustration{margin-top:1.5rem;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.3)}
-  .illustration img{width:100%;display:block;height:auto}
-
-  footer{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);color:#64748b;font-size:.8rem;line-height:1.7}
-  footer a{color:#a5b4fc;text-decoration:none}
-  footer a:hover{text-decoration:underline}
-
-  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.3,1)}
-  .reveal.visible{opacity:1;transform:none}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--accent-1:#6366f1;--accent-2:#a855f7;--accent-3:#ec4899;--ok:#10b981;--err:#ef4444;--warn:#f59e0b;--btc:#f7931a;--text:#e2e8f0;--text-dim:#94a3b8}
+body{background:radial-gradient(ellipse at top,#2d1b69 0%,#1a1440 35%,#0a0a1a 75%) fixed;font-family:'Inter',system-ui,sans-serif;color:var(--text);min-height:100vh;padding:2rem 1rem;display:flex;flex-direction:column;align-items:center}
+body.locked{overflow:hidden}
+.bg-orbs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35}
+.orb-1{width:500px;height:500px;background:var(--accent-1);top:-150px;left:-100px;animation:float 20s ease-in-out infinite}
+.orb-2{width:400px;height:400px;background:var(--accent-3);bottom:-100px;right:-100px;animation:float 25s ease-in-out infinite reverse}
+.orb-3{width:300px;height:300px;background:var(--accent-2);top:40%;left:60%;animation:float 30s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-40px) scale(1.1)}}
+.topnav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:400;display:flex;gap:.5rem;align-items:center;background:rgba(10,10,26,.75);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:.45rem .55rem;box-shadow:0 12px 32px -14px rgba(0,0,0,.7);max-width:calc(100vw - 2rem)}
+.topnav-link{padding:.55rem 1rem;border-radius:999px;font-size:.82rem;font-weight:600;color:var(--text-dim);background:transparent;border:none;font-family:inherit;cursor:pointer;transition:.2s;text-decoration:none;display:inline-flex;align-items:center}
+.topnav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
+@media(max-width:640px){.topnav{top:.6rem;padding:.35rem .4rem}.topnav-link{padding:.45rem .8rem;font-size:.76rem}}
+/* GATE FLOUTÉ */
+.gate{position:fixed;inset:0;z-index:9999;background:rgba(10,10,26,.5);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:center;padding:2rem 1rem;overflow-y:auto;opacity:1;transition:opacity .5s ease}
+.gate.hidden{opacity:0;pointer-events:none;visibility:hidden}
+.gate-box{width:100%;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:2rem 1.6rem;box-shadow:0 40px 100px -30px rgba(0,0,0,.95);text-align:center}
+.gate-title{font-size:1.5rem;font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,#a78bfa,#60a5fa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.gate-sub{color:#94a3b8;font-size:.9rem;margin-bottom:1.5rem;line-height:1.6}
+.gate-sub strong{color:#c7d2fe}
+/* CADRES PUB DANS LE GATE — CÔTE À CÔTE */
+.gate-ads{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.5rem;align-items:start}
+@media(max-width:640px){.gate-ads{grid-template-columns:1fr}}
+.gate-ad{min-height:120px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:.7rem;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.gate-ad::before{content:'PUBLICITÉ';position:absolute;top:5px;left:10px;font-size:.55rem;letter-spacing:.12em;color:#475569;font-weight:700;z-index:1}
+.gate-ad > div{width:100%;display:flex;align-items:center;justify-content:center}
+.gate-btn{padding:1.15rem 2.5rem;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer;transition:.25s;box-shadow:0 16px 40px -12px #6366f1;min-width:260px}
+.gate-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 24px 50px -14px #6366f1}
+.gate-btn:disabled{opacity:.6;cursor:wait;transform:none}
+.gate-hint{margin-top:1rem;color:#64748b;font-size:.8rem}
+/* APP */
+.wrap{position:relative;z-index:1;width:100%;max-width:920px;padding-top:3.5rem}
+header{text-align:center;margin-bottom:2rem}
+.logo-full{max-width:420px;width:90%;height:auto;display:block;margin:0 auto .6rem;filter:drop-shadow(0 12px 30px rgba(99,102,241,.4))}
+.tagline{color:var(--text-dim);font-size:.95rem;line-height:1.5;margin-top:.5rem}
+.tagline strong{color:#c7d2fe;font-weight:600}
+.pills{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+.pill{padding:.35rem .9rem;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text-dim)}
+.pill.ok{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:#4ade80}
+.pill.ko{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#f87171}
+.pill.checking{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3);color:#a5b4fc}
+.ad-slot{width:100%;max-width:920px;margin:0 auto 1.5rem;min-height:100px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1rem;position:relative;overflow:hidden}
+.ad-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.62rem;letter-spacing:.15em;color:#64748b;font-weight:700;z-index:1}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:1.8rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
+label{display:block;font-size:.78rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+textarea,input,select{width:100%;background:rgba(0,0,0,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:.9rem 1.1rem;font-family:'SF Mono',monospace;font-size:.87rem;color:var(--text);outline:none;transition:.2s;resize:vertical}
+textarea{min-height:130px}
+textarea:focus,input:focus,select:focus{border-color:var(--accent-1);box-shadow:0 0 0 4px rgba(99,102,241,.15);background:rgba(0,0,0,.55)}
+textarea::placeholder,input::placeholder{color:#64748b}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr}}
+.actions{display:flex;gap:.7rem;margin-top:1.3rem;flex-wrap:wrap}
+.btn{border:none;border-radius:14px;padding:1rem 1.4rem;font-size:.95rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;transition:.2s;color:#fff;text-decoration:none;flex:1 1 160px}
+.btn-primary{background:linear-gradient(135deg,var(--accent-1),var(--accent-2));box-shadow:0 14px 30px -10px var(--accent-1)}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 22px 40px -12px var(--accent-1)}
+.btn-ghost{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--text);flex:0 1 auto}
+.btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.1)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.status{margin-top:1.2rem;padding:1rem 1.2rem;border-radius:14px;font-size:.88rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;background:rgba(99,102,241,.08);border-left:4px solid var(--accent-1);color:#c7d2fe;display:none}
+.status.on{display:block}
+.status.err{background:rgba(239,68,68,.08);border-color:var(--err);color:#fca5a5}
+.status.ok{background:rgba(16,185,129,.08);border-color:var(--ok);color:#6ee7b7}
+.status.warn{background:rgba(245,158,11,.08);border-color:var(--warn);color:#fcd34d}
+.result{margin-top:1.5rem;display:none}
+.result.on{display:block}
+.video-wrap{border-radius:16px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.1)}
+.video-wrap video{width:100%;display:block;max-height:520px}
+.dl-bar{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+.btn-dl{background:linear-gradient(135deg,var(--ok),#059669);box-shadow:0 14px 30px -10px var(--ok)}
+.log{margin-top:1rem;background:#000;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;font-family:'SF Mono',monospace;font-size:.72rem;color:#64748b;max-height:200px;overflow-y:auto;white-space:pre-wrap;display:none}
+.log.on{display:block}
+.steps{display:none;margin-top:1rem;padding:.9rem 1.1rem;background:rgba(0,0,0,.3);border-radius:12px;border-left:3px solid var(--accent-2);font-size:.82rem;color:#c7d2fe}
+.steps.on{display:block}
+.steps ol{margin-left:1.2rem;margin-top:.4rem}
+details{margin-top:1.5rem;background:rgba(0,0,0,.25);border-radius:14px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
+details summary{padding:.9rem 1.2rem;cursor:pointer;font-weight:600;font-size:.9rem;color:#c7d2fe;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:'▾';transition:.2s;color:var(--text-dim)}
+details[open] summary::after{transform:rotate(180deg)}
+details .content{padding:0 1.2rem 1.2rem;font-size:.85rem;line-height:1.7;color:var(--text-dim)}
+details .content code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.15rem .4rem;border-radius:5px;font-family:'SF Mono',monospace;font-size:.85em}
+.native-slot{margin-top:1.5rem;padding:1rem;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:14px;position:relative;overflow:hidden}
+.native-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.6rem;letter-spacing:.15em;color:#475569;font-weight:700;z-index:1}
+.section-title{margin:3rem 0 1.5rem;text-align:center}
+.section-title h2{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.4rem}
+.section-title p{color:#94a3b8;font-size:.88rem;max-width:520px;margin:0 auto;line-height:1.5}
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem}
+.site-item{padding:.85rem 1rem;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.7rem;transition:.2s}
+.site-item:hover{border-color:rgba(168,85,247,.4);transform:translateY(-2px)}
+.site-item .ico{font-size:1.3rem;line-height:1}
+.site-item .nm{font-size:.85rem;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.site-item .tp{font-size:.66rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em}
+.premium{margin-top:2rem;background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(168,85,247,.08),rgba(236,72,153,.08));border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:1.8rem;position:relative;overflow:hidden}
+.prem-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+.prem-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:grid;place-items:center;font-size:1.5rem}
+.prem-title{font-size:1.2rem;font-weight:800;color:#fff}
+.prem-sub{font-size:.82rem;color:#e9d5ff;margin-top:.15rem}
+.prem-features{list-style:none;margin:1rem 0 1.3rem;display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:640px){.prem-features{grid-template-columns:1fr}}
+.prem-features li{color:#e2e8f0;font-size:.85rem;display:flex;align-items:flex-start;gap:.5rem;line-height:1.4}
+.prem-features li::before{content:'✦';color:#f0abfc;font-weight:800;flex-shrink:0}
+.prem-price{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:1rem 1.2rem;background:rgba(0,0,0,.35);border-radius:14px;border:1px solid rgba(168,85,247,.25)}
+.prem-price-num{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.prem-price-label{font-size:.85rem;color:#c7d2fe;line-height:1.4}
+.prem-price-label strong{color:#fff}
+.btn-premium{width:100%;padding:1rem;border:none;border-radius:14px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 14px 30px -10px #6366f1;transition:.25s}
+.btn-premium:hover{transform:translateY(-2px)}
+.prem-note{font-size:.75rem;color:#94a3b8;margin-top:.7rem;text-align:center;line-height:1.5}
+.free-premium{margin-top:2rem;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(99,102,241,.08));border:1px solid rgba(16,185,129,.35);border-radius:24px;padding:1.8rem;text-align:center}
+.free-premium h3{font-size:1.15rem;font-weight:800;color:#fff;margin-bottom:.5rem}
+.free-premium p{color:#cbd5e1;font-size:.88rem;line-height:1.6;margin-bottom:1.2rem}
+.fp-progress{width:100%;height:14px;background:rgba(0,0,0,.4);border-radius:10px;overflow:hidden;margin:1rem 0;border:1px solid rgba(255,255,255,.1)}
+.fp-fill{height:100%;width:0%;background:linear-gradient(90deg,#10b981,#22d3ee);transition:width .5s;border-radius:10px}
+.fp-count{font-size:.85rem;color:#94a3b8;font-weight:600;margin-bottom:1rem}
+.fp-count strong{color:#6ee7b7}
+.fp-note{font-size:.75rem;color:#94a3b8;margin-top:.8rem;line-height:1.5}
+.terminal-section{margin-top:2rem;background:linear-gradient(180deg,rgba(15,15,35,.9),rgba(10,10,26,.95));border:1px solid rgba(99,102,241,.25);border-radius:24px;padding:1.8rem;position:relative;overflow:hidden}
+.terminal-section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,#a855f7,#ec4899,transparent)}
+.term-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.term-icon{width:52px;height:52px;flex-shrink:0;border-radius:14px;background:linear-gradient(135deg,#0f172a,#1e1b4b);border:1px solid rgba(99,102,241,.3);display:grid;place-items:center;font-size:1.6rem}
+.term-title{font-size:1.2rem;font-weight:800;color:#fff}
+.term-sub{font-size:.8rem;color:#a5b4fc;margin-top:.15rem}
+.term-intro{color:#cbd5e1;font-size:.9rem;line-height:1.65;margin-bottom:1.4rem}
+.term-intro strong{color:#f0abfc}
+.term-details{margin-top:.8rem;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
+.term-details summary{padding:1rem 1.2rem;cursor:pointer;font-weight:700;font-size:.92rem;color:#e0e7ff;list-style:none;display:flex;align-items:center;background:rgba(255,255,255,.02)}
+.term-details summary::-webkit-details-marker{display:none}
+.term-details summary::after{content:'▾';margin-left:auto;color:#818cf8;transition:.2s}
+.term-details[open] summary::after{transform:rotate(180deg)}
+.term-content{padding:.4rem 1.2rem 1.2rem;font-size:.86rem;line-height:1.65;color:#cbd5e1}
+.term-tabs{display:flex;gap:.4rem;margin:.8rem 0 1rem;background:rgba(0,0,0,.35);padding:.3rem;border-radius:10px;width:fit-content}
+.term-tab{padding:.5rem 1rem;border:none;border-radius:8px;background:transparent;color:#94a3b8;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s}
+.term-tab.active{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+.term-pane{display:none}.term-pane.active{display:block}
+.cmd{display:flex;align-items:stretch;background:#0a0a1a;border:1px solid rgba(99,102,241,.25);border-radius:10px;margin:.6rem 0;overflow:hidden;font-family:'SF Mono',monospace}
+.cmd::before{content:'$';color:#22d3ee;padding:.75rem .6rem .75rem .9rem;font-weight:700}
+.cmd code{flex:1;padding:.75rem .6rem;color:#e0e7ff;font-size:.82rem;line-height:1.5;word-break:break-all;display:flex;align-items:center}
+.cmd-copy{background:rgba(255,255,255,.04);border:none;border-left:1px solid rgba(255,255,255,.08);color:#a5b4fc;cursor:pointer;padding:0 1rem;font-size:1rem;transition:.15s}
+.cmd-copy:hover{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+.cmd-copy.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.term-note{font-size:.78rem;color:#94a3b8;margin:.4rem 0 .8rem;padding-left:.8rem;border-left:2px solid rgba(99,102,241,.4);line-height:1.55}
+.term-note code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.1rem .35rem;border-radius:4px}
+.term-warn{margin-top:1.4rem;padding:1rem 1.2rem;background:rgba(251,191,36,.08);border-left:4px solid #fbbf24;border-radius:12px;font-size:.82rem;color:#fde68a;line-height:1.6}
+.support{margin-top:2rem;background:linear-gradient(180deg,rgba(247,147,26,.08),rgba(247,147,26,.02));border:1px solid rgba(247,147,26,.25);border-radius:24px;padding:1.8rem}
+.support-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+.btc-logo{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f7931a,#ffb347);display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#fff}
+.support-title{font-size:1.15rem;font-weight:800;color:#fff}
+.support-sub{font-size:.82rem;color:#fbbf24}
+.support-body{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start}
+@media(max-width:640px){.support-body{flex-direction:column}}
+.qr-wrap{flex:0 0 auto;background:#fff;padding:.7rem;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.qr-wrap img{width:160px;height:160px;display:block;border-radius:6px}
+.qr-wrap small{color:#0a0a1a;font-size:.65rem;font-weight:700}
+.support-info{flex:1 1 280px;min-width:0}
+.support-info p{color:#fde68a;font-size:.85rem;line-height:1.6;margin-bottom:.8rem}
+.addr-box{display:flex;gap:.5rem;background:rgba(0,0,0,.4);border:1px solid rgba(247,147,26,.3);border-radius:12px;padding:.5rem;margin-bottom:.8rem}
+.addr-box code{flex:1;min-width:0;color:#fbbf24;font-family:'SF Mono',monospace;font-size:.75rem;word-break:break-all;padding:.5rem .6rem;display:flex;align-items:center}
+.addr-box button{background:linear-gradient(135deg,#f7931a,#ffb347);border:none;border-radius:8px;padding:0 1rem;color:#fff;font-weight:700;font-size:.8rem;cursor:pointer;transition:.15s;font-family:inherit}
+.addr-box button.ok{background:linear-gradient(135deg,#10b981,#059669)}
+.support-note{font-size:.78rem;color:#94a3b8;line-height:1.6;background:rgba(0,0,0,.25);border-left:3px solid #f7931a;padding:.7rem .9rem;border-radius:8px}
+.illustration{margin-top:1.5rem;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.illustration img{width:100%;display:block;height:auto}
+footer{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);color:#64748b;font-size:.8rem;line-height:1.7}
+footer a{color:#a5b4fc;text-decoration:none}
 </style>
 </head>
 <body class="locked">
 
-<div class="bg-orbs">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
+<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 
-<!-- ═══════════ MENU DÉROULANT ═══════════ -->
-<nav class="topnav" aria-label="Navigation principale">
+<!-- NAV -->
+<nav class="topnav">
   <a href="#top" class="topnav-link">Accueil</a>
-
-  <div class="topnav-menu">
-    <button class="topnav-link" id="sitesMenuBtn" type="button">
-      Sites supportés <span class="caret"></span>
-    </button>
-    <div class="topnav-dropdown" id="sitesMenu">
-      <a href="#sites-section">▶️ YouTube</a>
-      <a href="#sites-section">🎵 TikTok</a>
-      <a href="#sites-section">📷 Instagram</a>
-      <a href="#sites-section">🐦 Twitter / X</a>
-      <a href="#sites-section">🎬 Vimeo</a>
-      <a href="#sites-section">📹 Dailymotion</a>
-      <div class="separator"></div>
-      <a href="#sites-section">Voir les 21 sites →</a>
-    </div>
-  </div>
-
+  <a href="#sites-section" class="topnav-link">Sites</a>
+  <a href="#free-premium-section" class="topnav-link">Premium gratuit</a>
   <a href="#terminal-section" class="topnav-link">yt-dlp</a>
-  <a href="#premium-section" class="topnav-link">Premium</a>
   <a href="#support-section" class="topnav-link">Soutenir</a>
 </nav>
 
-<!-- GATE -->
+<!-- GATE FLOUTÉ AVEC 2 CADRES PUB CÔTE À CÔTE -->
 <div class="gate" id="gate">
   <div class="gate-box">
     <div class="gate-title">🔓 Débloquer l'accès</div>
     <div class="gate-sub">
       <strong>Téléchargeur Universel</strong> est 100% gratuit et financé par la publicité.<br>
-      Pour continuer, laisse-toi guider à travers <strong>4 étapes</strong>.<br>
-      <span style="color:#64748b">(environ 40 secondes)</span>
-    </div>
-    <div class="gate-progress">
-      <div class="step-dot current" data-step="1">1</div>
-      <div class="step-dot" data-step="2">2</div>
-      <div class="step-dot" data-step="3">3</div>
-      <div class="step-dot" data-step="4">4</div>
+      Un seul clic pour accéder à l'outil.
     </div>
 
+    <!-- CADRES PUB CÔTE À CÔTE -->
     <div class="gate-ads">
-      <!-- ═══════════ PUB N°1 — POPUNDER ═══════════ -->
-      <div class="gate-ad" id="gate-ad-1">
-        <script src="https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a815004ce74046d38.js"></script>
+      <div class="gate-ad">
+        <div id="container-gate-1"></div>
       </div>
-
-      <!-- ═══════════ PUB N°2 — SOCIAL BAR ═══════════ -->
-      <div class="gate-ad" id="gate-ad-2">
-        <script src="https://pl31587447.profitableratecpmnetwork.com/71/73/24/71732449ede0dee49315bb61ba1ad0b4.js"></script>
+      <div class="gate-ad">
+        <div id="container-gate-2"></div>
       </div>
     </div>
 
-    <div class="gate-action">
-      <button class="gate-btn" id="gateBtn" disabled>⏳ Patiente un instant…<span class="timer" id="gateTimer">8 s</span></button>
-    </div>
-    <div class="gate-hint">Étape <strong id="stepLabel">1</strong> sur 4 · Merci pour ta patience ❤️</div>
+    <button class="gate-btn" id="gateBtn" disabled>⏳ Patientez <span id="gateTimer">3 s</span></button>
+    <div class="gate-hint">Merci pour ta patience ❤️</div>
   </div>
 </div>
 
 <!-- APP -->
 <div class="wrap" id="top">
 
-  <!-- ═══════════ PUB N°3 — BANNIÈRE 728×90 (HAUT) ═══════════ -->
-  <div class="ad-slot" id="ad-top">
+  <!-- Bannière haut -->
+  <div class="ad-slot">
     <script type="text/javascript">
-      atOptions = {
-        'key' : '581e088cb553c739ca8812abcb681c7a',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
+      atOptions = {'key':'581e088cb553c739ca8812abcb681c7a','format':'iframe','height':90,'width':728,'params':{}};
     </script>
     <script src="https://www.highrevenueformat.com/581e088cb553c739ca8812abcb681c7a/invoke.js"></script>
   </div>
 
   <header>
-    <img src="logo-full.png" alt="Téléchargeur Universel — télécharger des vidéos YouTube, TikTok, Instagram" class="logo-full">
+    <img src="logo-full.png" alt="Téléchargeur Universel" class="logo-full">
     <div class="tagline">
-      Colle <strong>n'importe quel code d'intégration</strong> ou URL vidéo.<br>
-      Télécharge en un clic. <strong>Open source</strong>, gratuit, sans inscription.
+      Colle <strong>une URL vidéo compatible</strong> ou un code d'intégration contenant une URL.<br>
+      Interface gratuite, sans inscription. La disponibilité dépend de l'API et des plateformes.
     </div>
-    <div class="pills" id="pills">
+    <div class="pills">
       <span class="pill checking" id="pill-api">API : vérification…</span>
       <img src="https://img.shields.io/badge/tracking-none-brightgreen" alt="Sans tracking" style="height:22px;border-radius:999px">
-      <img src="https://img.shields.io/badge/sites-1800%2B-purple" alt="1800+ sites" style="height:22px;border-radius:999px">
       <img src="https://img.shields.io/badge/BTC-donations-orange" alt="Dons BTC" style="height:22px;border-radius:999px">
     </div>
   </header>
@@ -405,8 +238,8 @@
   <div class="card">
     <label for="code">Code d'intégration ou URL</label>
     <textarea id="code" placeholder='Colle ici :
-• Un code <iframe src="https://www.tokyvideo.com/fr/embed/875919" ...></iframe>
-• Un lien YouTube, Vimeo, TikTok, Twitter, Instagram…
+• Un code <iframe src="..." ...></iframe>
+• Un lien YouTube, TikTok, Instagram, Twitter/X…
 • Ou une URL directe .mp4 / .m3u8'></textarea>
 
     <div class="grid-2">
@@ -439,9 +272,9 @@
       <strong>💡 Comment faire :</strong>
       <ol>
         <li>Va sur la page de la vidéo</li>
-        <li>Clique sur <strong>Partager → Intégrer</strong> (ou F12 → onglet Réseau)</li>
+        <li>Clique sur <strong>Partager → Intégrer</strong></li>
         <li>Copie le code <code>&lt;iframe&gt;</code> ou l'URL</li>
-        <li>Colle-le ci-dessus et clique <strong>Télécharger</strong></li>
+        <li>Colle-le et clique <strong>Télécharger</strong></li>
       </ol>
     </div>
 
@@ -454,73 +287,65 @@
       </div>
       <div class="dl-bar">
         <a class="btn btn-dl" id="dl" href="#" download>⬇️ Télécharger la vidéo</a>
-        <button class="btn btn-copy" id="copy">📋 Copier le lien</button>
+        <button class="btn btn-ghost" id="copy">📋 Copier le lien</button>
       </div>
     </div>
 
     <details>
-      <summary>🌐 API personnalisée (backend self-hosted)</summary>
+      <summary>🌐 API personnalisée</summary>
       <div class="content">
-        <p>Par défaut, on utilise une instance publique de
-        <a href="https://github.com/imputnet/cobalt" target="_blank" rel="noopener">cobalt</a>.</p>
-        <input id="apiUrl" style="margin-top:.6rem" placeholder="https://api.example.com/">
-        <button class="btn btn-ghost" id="saveApi" style="margin-top:.6rem;flex:0 0 auto;padding:.7rem 1.2rem">💾 Enregistrer</button>
+        <p>Par défaut, on utilise une instance privée de <a href="https://github.com/imputnet/cobalt" target="_blank" style="color:#a5b4fc">cobalt</a>.</p>
+        <input id="apiUrl" style="margin-top:.6rem;width:100%;background:rgba(0,0,0,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:.7rem 1rem;color:#e2e8f0;font-family:inherit" placeholder="https://api.example.com/">
+        <button class="btn btn-ghost" id="saveApi" style="margin-top:.6rem;padding:.7rem 1.2rem">💾 Enregistrer</button>
       </div>
     </details>
 
     <details>
-      <summary>📜 Mentions légales & vie privée</summary>
+      <summary>📜 Mentions légales</summary>
       <div class="content">
-        <p><strong>Aucune donnée n'est collectée.</strong> Ton code et ton IP sont envoyés directement à l'API cobalt choisie.</p>
+        <p>L'URL saisie est transmise à l'API configurée. Le serveur peut traiter des données techniques, notamment l'adresse IP.</p>
         <p style="margin-top:.6rem"><strong>Usage :</strong> télécharge uniquement des vidéos dont tu as les droits, ou pour un usage strictement personnel (copie privée, art. L.122-5 CPI).</p>
-        <p style="margin-top:.6rem"><strong>Licence :</strong> MIT. Code source disponible librement.</p>
+        <p style="margin-top:.6rem"><strong>Licence :</strong> MIT.</p>
       </div>
     </details>
 
-    <!-- ═══════════ PUB N°4 — NATIVE BANNER ═══════════ -->
-    <div class="native-slot" id="native-banner">
+    <div class="native-slot">
       <script async="async" data-cfasync="false" src="https://pl31587449.profitableratecpmnetwork.com/227fdab56b2902f2b1cff6ca6ff50464/invoke.js"></script>
-      <div id="container-227fdab56b2902f2b1cff6ca6ff50464"></div>
+      <div id="container-card"></div>
     </div>
   </div>
 
-  <!-- ═══════════ SITES PRIS EN CHARGE ═══════════ -->
-  <section class="sites-section reveal" id="sites-section">
-    <div class="sites-header">
-      <h2>🌍 21 sites pris en charge</h2>
-      <p>Ces plateformes sont reconnues directement par l'API. Colle simplement leur URL et clique Télécharger.</p>
-    </div>
+  <!-- SITES -->
+  <div class="section-title" id="sites-section">
+    <h2>🌍 Plateformes compatibles selon l'API</h2>
+    <p>Ces plateformes sont reconnues directement par l'API.</p>
+  </div>
 
-    <div class="card">
-      <div class="sites-grid">
-        <div class="site-item"><span class="ico">▶️</span><div class="info"><div class="nm">YouTube</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">🎵</span><div class="info"><div class="nm">TikTok</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">📷</span><div class="info"><div class="nm">Instagram</div><div class="tp">Reels</div></div></div>
-        <div class="site-item"><span class="ico">🐦</span><div class="info"><div class="nm">Twitter / X</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">🎬</span><div class="info"><div class="nm">Vimeo</div><div class="tp">HD</div></div></div>
-        <div class="site-item"><span class="ico">📹</span><div class="info"><div class="nm">Dailymotion</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">👥</span><div class="info"><div class="nm">Facebook</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">👽</span><div class="info"><div class="nm">Reddit</div><div class="tp">Clips</div></div></div>
-        <div class="site-item"><span class="ico">🎧</span><div class="info"><div class="nm">SoundCloud</div><div class="tp">Audio</div></div></div>
-        <div class="site-item"><span class="ico">🎮</span><div class="info"><div class="nm">Twitch</div><div class="tp">Clips</div></div></div>
-        <div class="site-item"><span class="ico">👻</span><div class="info"><div class="nm">Snapchat</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">📌</span><div class="info"><div class="nm">Pinterest</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">🎞️</span><div class="info"><div class="nm">Tumblr</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">🎨</span><div class="info"><div class="nm">Newgrounds</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">📺</span><div class="info"><div class="nm">Bilibili</div><div class="tp">Asie</div></div></div>
-        <div class="site-item"><span class="ico">🦋</span><div class="info"><div class="nm">Bluesky</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">🚀</span><div class="info"><div class="nm">Rutube</div><div class="tp">RU</div></div></div>
-        <div class="site-item"><span class="ico">🔊</span><div class="info"><div class="nm">VK</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">🎥</span><div class="info"><div class="nm">Loom</div><div class="tp">Vidéo</div></div></div>
-        <div class="site-item"><span class="ico">🌐</span><div class="info"><div class="nm">OK.ru</div><div class="tp">RU</div></div></div>
-        <div class="site-item"><span class="ico">📤</span><div class="info"><div class="nm">Streamable</div><div class="tp">Vidéo</div></div></div>
-      </div>
-
-      <div class="term-note" style="margin-top:1.3rem;color:#94a3b8;border-color:rgba(168,85,247,.5)">
-        💡 <strong>Autre site ?</strong> Utilise la méthode yt-dlp ci-dessous (1800+ sites, dont TokyVideo).
-      </div>
+  <div class="card">
+    <div class="sites-grid">
+      <div class="site-item"><span class="ico">▶️</span><div><div class="nm">YouTube</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">🎵</span><div><div class="nm">TikTok</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">📷</span><div><div class="nm">Instagram</div><div class="tp">Reels</div></div></div>
+      <div class="site-item"><span class="ico">🐦</span><div><div class="nm">Twitter / X</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">🎬</span><div><div class="nm">Vimeo</div><div class="tp">HD</div></div></div>
+      <div class="site-item"><span class="ico">📹</span><div><div class="nm">Dailymotion</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">👥</span><div><div class="nm">Facebook</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">👽</span><div><div class="nm">Reddit</div><div class="tp">Clips</div></div></div>
+      <div class="site-item"><span class="ico">🎧</span><div><div class="nm">SoundCloud</div><div class="tp">Audio</div></div></div>
+      <div class="site-item"><span class="ico">🎮</span><div><div class="nm">Twitch</div><div class="tp">Clips</div></div></div>
+      <div class="site-item"><span class="ico">👻</span><div><div class="nm">Snapchat</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">📌</span><div><div class="nm">Pinterest</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">🎞️</span><div><div class="nm">Tumblr</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">🎨</span><div><div class="nm">Newgrounds</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">📺</span><div><div class="nm">Bilibili</div><div class="tp">Asie</div></div></div>
+      <div class="site-item"><span class="ico">🦋</span><div><div class="nm">Bluesky</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">🚀</span><div><div class="nm">Rutube</div><div class="tp">RU</div></div></div>
+      <div class="site-item"><span class="ico">🔊</span><div><div class="nm">VK</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">🎥</span><div><div class="nm">Loom</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">🌐</span><div><div class="nm">OK.ru</div><div class="tp">RU</div></div></div>
+      <div class="site-item"><span class="ico">📤</span><div><div class="nm">Streamable</div><div class="tp">Vidéo</div></div></div>
     </div>
-  </section>
+  </div>
 
   <!-- PREMIUM -->
   <div class="premium" id="premium-section">
@@ -535,16 +360,26 @@
       <li>Vitesse maximale de téléchargement</li>
       <li>Qualité 4K / 8K débloquée</li>
       <li>Code source complet fourni</li>
-      <li>Zéro publicité, zéro gate</li>
+      <li>Zéro publicité</li>
       <li>Support prioritaire par email</li>
       <li>Utilisable sur 4 sessions maximum</li>
     </ul>
     <div class="prem-price">
-      <div class="prem-price-num">20 <span style="font-size:1.2rem">USDT</span></div>
+      <div class="prem-price-num">5 <span style="font-size:1.2rem">USDT</span></div>
       <div class="prem-price-label"><strong>Paiement unique</strong><br>Accès à vie · Pas d'abonnement</div>
     </div>
-    <button class="btn btn-primary" id="buyPremium" style="width:100%">🚀 Acheter maintenant — 20 USDT</button>
-    <div class="prem-note">Après paiement confirmé, tu recevras un <strong>code d'accès unique</strong> par email.<br>Ce code est utilisable sur <strong>4 sessions maximum</strong>.</div>
+    <button class="btn-premium" id="buyPremium">🚀 Acheter maintenant — 5 USDT</button>
+    <div class="prem-note">Après paiement confirmé, tu reçois un code d'accès unique par email.<br>Utilisable sur 4 sessions maximum.</div>
+  </div>
+
+  <!-- PREMIUM GRATUIT -->
+  <div class="free-premium" id="free-premium-section">
+    <h3>🎁 Gagne ton Premium gratuitement</h3>
+    <p>Regarde des vidéos publicitaires volontairement. Une fois le palier atteint, tu obtiens le Premium à vie <strong>gratuitement</strong>.</p>
+    <div class="fp-progress"><div class="fp-fill" id="fpFill"></div></div>
+    <div class="fp-count"><strong id="fpCount">0</strong> / 50 vidéos regardées</div>
+    <button class="btn btn-primary" id="watchVideoBtn" style="width:100%">📺 Regarder une vidéo (+1)</button>
+    <div class="fp-note">Ton compteur est sauvegardé dans ton navigateur.<br>Une fois 50 atteint, contacte-nous pour recevoir ton code Premium gratuit.</div>
   </div>
 
   <!-- TERMINAL -->
@@ -557,12 +392,11 @@
       </div>
     </div>
     <p class="term-intro">
-      Tu veux télécharger en <strong>4K, 8K, playlist entière, audio seul</strong>, ou depuis des sites
-      que les APIs bloquent ? <strong>yt-dlp</strong> est l'outil open source utilisé par tous les pros.
+      Tu veux télécharger en <strong>4K, 8K, playlist entière, audio seul</strong> ? <strong>yt-dlp</strong> est l'outil open source utilisé par tous les pros.
     </p>
 
     <details class="term-details" open>
-      <summary>📦 Étape 1 — Installer yt-dlp</summary>
+      <summary>📦 Installer yt-dlp</summary>
       <div class="term-content">
         <div class="term-tabs">
           <button class="term-tab active" data-os="win">🪟 Windows</button>
@@ -570,48 +404,37 @@
           <button class="term-tab" data-os="linux">🐧 Linux</button>
         </div>
         <div class="term-pane active" data-pane="win">
-          <p>Ouvre <strong>l'invite de commandes</strong> (Windows + R, tape <code>cmd</code>) et colle :</p>
+          <p>Dans <strong>l'invite de commandes</strong> (Windows + R → <code>cmd</code>) :</p>
           <div class="cmd"><code>winget install yt-dlp</code><button class="cmd-copy" data-cmd="winget install yt-dlp">📋</button></div>
-          <p class="term-note">Pour fusionner audio + vidéo :</p>
           <div class="cmd"><code>winget install Gyan.FFmpeg</code><button class="cmd-copy" data-cmd="winget install Gyan.FFmpeg">📋</button></div>
         </div>
         <div class="term-pane" data-pane="mac">
-          <p>Ouvre <strong>Terminal</strong> et colle :</p>
           <div class="cmd"><code>brew install yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="brew install yt-dlp ffmpeg">📋</button></div>
         </div>
         <div class="term-pane" data-pane="linux">
-          <p>Ouvre un terminal et colle :</p>
           <div class="cmd"><code>sudo apt install -y yt-dlp ffmpeg</code><button class="cmd-copy" data-cmd="sudo apt install -y yt-dlp ffmpeg">📋</button></div>
         </div>
       </div>
     </details>
 
     <details class="term-details" open>
-      <summary>🚀 Étape 2 — Télécharger une vidéo</summary>
+      <summary>🚀 Télécharger une vidéo</summary>
       <div class="term-content">
-        <p>Remplace <code>URL</code> par le lien de ta vidéo :</p>
         <div class="cmd"><code>yt-dlp "URL"</code><button class="cmd-copy" data-cmd='yt-dlp "URL"'>📋</button></div>
-        <p style="margin-top:1rem">Exemple concret :</p>
+        <p class="term-note">Exemple :</p>
         <div class="cmd"><code>yt-dlp "https://www.tokyvideo.com/fr/video/l-entorse"</code><button class="cmd-copy" data-cmd='yt-dlp "https://www.tokyvideo.com/fr/video/l-entorse"'>📋</button></div>
       </div>
     </details>
 
     <div class="term-warn">
-      ⚖️ <strong>Rappel légal :</strong> yt-dlp est un outil open source parfaitement légal.
-      L'utiliser pour un <strong>usage strictement personnel</strong> est autorisé.
+      ⚖️ <strong>Rappel légal :</strong> yt-dlp est open source. Le téléchargement doit respecter les droits d'auteur, les conditions des plateformes et la législation applicable.
     </div>
   </div>
 
-  <!-- ═══════════ PUB N°5 — BANNIÈRE 728×90 (BAS) ═══════════ -->
-  <div class="ad-slot" id="ad-bottom" style="margin-top:2rem;margin-bottom:0">
+  <!-- Bannière bas -->
+  <div class="ad-slot" style="margin-top:2rem">
     <script type="text/javascript">
-      atOptions = {
-        'key' : '581e088cb553c739ca8812abcb681c7a',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
+      atOptions = {'key':'581e088cb553c739ca8812abcb681c7a','format':'iframe','height':90,'width':728,'params':{}};
     </script>
     <script src="https://www.highrevenueformat.com/581e088cb553c739ca8812abcb681c7a/invoke.js"></script>
   </div>
@@ -622,12 +445,12 @@
       <div class="btc-logo">₿</div>
       <div>
         <div class="support-title">Soutenir l'initiative ❤️</div>
-        <div class="support-sub">Fait avec passion · 100% gratuit</div>
+        <div class="support-sub">100% gratuit · Fait avec passion</div>
       </div>
     </div>
     <div class="support-body">
       <div class="qr-wrap">
-        <img id="qrImg" alt="QR code Bitcoin" src="">
+        <img id="qrImg" alt="QR Bitcoin" src="">
         <small>SCANNEZ POUR DONNER</small>
       </div>
       <div class="support-info">
@@ -640,12 +463,12 @@
       </div>
     </div>
     <div class="illustration">
-      <img src="illustration.png" alt="Personne téléchargeant une vidéo depuis son ordinateur avec Téléchargeur Universel">
+      <img src="illustration.png" alt="Illustration">
     </div>
   </div>
 
   <footer>
-    Téléchargeur Universel · <a href="https://github.com/imputnet/cobalt" target="_blank" rel="noopener">Propulsé par cobalt</a> · 100% open source<br>
+    Téléchargeur Universel · <a href="https://github.com/imputnet/cobalt" target="_blank">Propulsé par cobalt</a> · 100% open source<br>
     <span style="font-size:.72rem;opacity:.7">Soutien : bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs</span>
   </footer>
 </div>
@@ -654,8 +477,8 @@
 (() => {
   'use strict';
   const DEFAULT_APIS = ['https://mon-cobalt-api.onrender.com/'];
+  const REQUEST_TIMEOUT_MS = 60000;
   const BTC_ADDRESS = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
-  const GATE_STEP_DELAY = 8;
 
   const $ = id => document.getElementById(id);
   const codeEl = $('code'), goBtn = $('go'), clearBtn = $('clear');
@@ -664,199 +487,145 @@
   const resultEl = $('result'), playerEl = $('player'), dlEl = $('dl'), copyBtn = $('copy');
   const apiPill = $('pill-api');
   const gate = $('gate'), gateBtn = $('gateBtn');
-  const stepLabel = $('stepLabel');
-  const stepDots = document.querySelectorAll('.step-dot');
 
   let apiBase = localStorage.getItem('tu_api') || null;
-  let currentDownloadUrl = null;
-  let currentFilename = 'video.mp4';
+  let currentUrl = null;
 
-  /* ═══════════ MENU DÉROULANT ═══════════ */
-  const sitesMenuBtn = $('sitesMenuBtn');
-  const sitesMenu = $('sitesMenu');
-  if (sitesMenuBtn && sitesMenu) {
-    sitesMenuBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const open = sitesMenu.classList.toggle('open');
-      sitesMenuBtn.classList.toggle('open', open);
-    });
-    document.addEventListener('click', () => {
-      sitesMenu.classList.remove('open');
-      sitesMenuBtn.classList.remove('open');
-    });
-    sitesMenu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        sitesMenu.classList.remove('open');
-        sitesMenuBtn.classList.remove('open');
-      });
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        sitesMenu.classList.remove('open');
-        sitesMenuBtn.classList.remove('open');
-      }
-    });
-  }
-
-  /* ═══════════ REVEAL AU SCROLL ═══════════ */
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  /* GATE */
-  let currentStep = 1, timerInterval = null;
+  /* GATE — 1 SEUL CLIC */
   function startGate() {
     document.body.classList.add('locked');
     gate.classList.remove('hidden');
-    currentStep = 1;
-    stepDots.forEach(d => d.classList.remove('done','current'));
-    stepDots[0].classList.add('current');
-    stepLabel.textContent = '1';
-    startStepTimer();
-  }
-  function startStepTimer() {
-    let remaining = GATE_STEP_DELAY;
+    let remaining = 3;
     gateBtn.disabled = true;
-    gateBtn.innerHTML = '⏳ Patiente un instant… <span class="timer" id="gateTimer">' + remaining + ' s</span>';
-    const timerEl = document.getElementById('gateTimer');
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
+    gateBtn.innerHTML = '⏳ Patientez <span id="gateTimer">' + remaining + ' s</span>';
+    const t = setInterval(() => {
       remaining--;
-      if (timerEl) timerEl.textContent = remaining + ' s';
+      const el = document.getElementById('gateTimer');
+      if (el) el.textContent = remaining + ' s';
       if (remaining <= 0) {
-        clearInterval(timerInterval);
+        clearInterval(t);
         gateBtn.disabled = false;
-        gateBtn.innerHTML = currentStep < 4 ? '✅ Continuer (étape ' + currentStep + '/4)' : '🔓 Débloquer';
+        gateBtn.innerHTML = '🔓 Débloquer l\'accès';
       }
     }, 1000);
   }
+
   gateBtn.addEventListener('click', () => {
     if (gateBtn.disabled) return;
-    stepDots[currentStep - 1].classList.remove('current');
-    stepDots[currentStep - 1].classList.add('done');
-    if (currentStep < 4) {
-      currentStep++;
-      stepDots[currentStep - 1].classList.add('current');
-      stepLabel.textContent = String(currentStep);
-      startStepTimer();
-    } else {
-      gateBtn.innerHTML = '🎉 Accès débloqué !';
-      gateBtn.disabled = true;
-      setTimeout(() => {
-        gate.classList.add('hidden');
-        document.body.classList.remove('locked');
-        sessionStorage.setItem('tu_unlocked', '1');
-      }, 700);
-    }
+    gate.classList.add('hidden');
+    document.body.classList.remove('locked');
+    sessionStorage.setItem('tu_unlocked', '1');
   });
+
   if (sessionStorage.getItem('tu_unlocked') === '1') {
     gate.classList.add('hidden');
     document.body.classList.remove('locked');
   } else { startGate(); }
 
   /* APP */
-  function setStatus(msg, cls='') { statusEl.textContent = msg; statusEl.className = 'status on ' + cls; }
-  function hideStatus() { statusEl.className = 'status'; statusEl.textContent = ''; }
-  function logLine(t) { logEl.classList.add('on'); logEl.textContent += t + '\n'; logEl.scrollTop = logEl.scrollHeight; }
-  function resetResult() { resultEl.classList.remove('on'); playerEl.removeAttribute('src'); playerEl.load(); dlEl.href = '#'; currentDownloadUrl = null; }
-  function reset() { hideStatus(); logEl.classList.remove('on'); logEl.textContent = ''; resetResult(); goBtn.disabled = false; }
+  const setStatus = (m,c='') => { statusEl.textContent = m; statusEl.className = 'status on ' + c; };
+  const hideStatus = () => { statusEl.className = 'status'; statusEl.textContent = ''; };
+  const logLine = t => { logEl.classList.add('on'); logEl.textContent += t + '\n'; logEl.scrollTop = logEl.scrollHeight; };
+  const resetResult = () => { resultEl.classList.remove('on'); playerEl.removeAttribute('src'); playerEl.load(); dlEl.href = '#'; currentUrl = null; };
+  const reset = () => { hideStatus(); logEl.classList.remove('on'); logEl.textContent = ''; resetResult(); goBtn.disabled = false; };
 
   function extractUrl(code) {
     if (!code) return null;
     const c = code.trim();
     const pats = [/<iframe[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/<video[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/<source[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/<embed[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,/https?:\/\/[^\s"'<>()]+/];
-    for (const re of pats) { const m = c.match(re); if (m && m[1]) return m[1].trim(); if (m && m[0] && m[0].startsWith('http')) return m[0].trim(); }
+    for (const re of pats) {
+      const m = c.match(re);
+      if (m && (m[1] || m[0])) {
+        const candidate = (m[1] || m[0]).trim().replace(/[.,;!?]+$/, '');
+        try { const u = new URL(candidate); if (['http:', 'https:'].includes(u.protocol)) return u.href; } catch {}
+      }
+    }
     return null;
   }
 
   async function detectApi() {
     if (apiBase) {
       try {
-        const c = new AbortController();
-        const t = setTimeout(() => c.abort(), 5000);
+        const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
         const r = await fetch(apiBase, { method: 'GET', signal: c.signal });
         clearTimeout(t);
-        if (r.ok) {
-          apiPill.textContent = 'API : ' + new URL(apiBase).hostname;
-          apiPill.className = 'pill ok';
-          return apiBase;
-        }
+        if (r.ok) { apiPill.textContent = 'API : ' + new URL(apiBase).hostname; apiPill.className = 'pill ok'; return apiBase; }
       } catch {}
     }
     for (const url of DEFAULT_APIS) {
       try {
-        const c = new AbortController();
-        const t = setTimeout(() => c.abort(), 5000);
+        const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
         const r = await fetch(url, { method: 'GET', signal: c.signal });
         clearTimeout(t);
-        if (r.ok) {
-          apiBase = url;
-          apiPill.textContent = 'API : ' + new URL(url).hostname;
-          apiPill.className = 'pill ok';
-          return url;
-        }
+        if (r.ok) { apiBase = url; apiPill.textContent = 'API : ' + new URL(url).hostname; apiPill.className = 'pill ok'; return url; }
       } catch {}
     }
-    apiPill.textContent = 'API : indisponible';
-    apiPill.className = 'pill ko';
-    return null;
+    apiPill.textContent = 'API : indisponible'; apiPill.className = 'pill ko'; return null;
   }
 
   async function requestDownload(url) {
     if (!apiBase) throw new Error('Aucune API disponible.');
     const isAudio = $('audioOnly').value === 'true';
     const quality = $('quality').value;
-    const r = await fetch(apiBase, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        url,
-        videoQuality: quality === 'max' ? 'max' : quality,
-        audioFormat: isAudio ? 'mp3' : 'best',
-        downloadMode: isAudio ? 'audio' : 'auto',
-        filenameStyle: 'basic'
-      })
-    });
-    if (!r.ok) {
-      let m = 'HTTP ' + r.status;
-      try { const j = await r.json(); m = j.text || j.error?.code || m; } catch {}
-      throw new Error(m);
-    }
-    return r.json();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    let r;
+    try {
+      r = await fetch(apiBase, {
+        signal: controller.signal,
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, videoQuality: quality === 'max' ? 'max' : quality, audioFormat: isAudio ? 'mp3' : 'best', downloadMode: isAudio ? 'audio' : 'auto', filenameStyle: 'basic' })
+      });
+    } catch (e) {
+      throw new Error(e.name === 'AbortError' ? 'Délai de réponse dépassé.' : 'Connexion à l\'API impossible.');
+    } finally { clearTimeout(timeout); }
+    if (!r.ok) { let m = 'HTTP ' + r.status; try { const j = await r.json(); m = j.text || j.error?.code || m; } catch {} throw new Error(m); }
+    try { return await r.json(); } catch { throw new Error('Réponse JSON invalide.'); }
   }
 
-  async function launch() {
-    reset(); stepsEl.classList.remove('on');
+  async function doDownload() {
     const raw = codeEl.value.trim();
     if (!raw) return setStatus('❌ Colle un code ou une URL.', 'err');
     const url = extractUrl(raw);
     if (!url) return setStatus('❌ Aucune URL détectée.', 'err');
     if (!apiBase) { setStatus('⏳ Détection de l\'API…'); await detectApi(); if (!apiBase) return setStatus('❌ Aucune API joignable.', 'err'); }
+
     goBtn.disabled = true;
     setStatus('⏳ Analyse de la vidéo…');
     logLine('→ URL : ' + url);
     logLine('→ Envoi à ' + apiBase);
+
     let data;
-    try { data = await requestDownload(url); } catch (e) { goBtn.disabled = false; setStatus('❌ Erreur : ' + e.message, 'err'); return; }
+    try { data = await requestDownload(url); }
+    catch (e) { goBtn.disabled = false; setStatus('❌ Erreur : ' + e.message, 'err'); return; }
+
     logLine('← Réponse : ' + JSON.stringify(data).slice(0, 300));
-    if (data.status === 'picker' && Array.isArray(data.picker)) { const f = data.picker[0]; data = { status:'redirect', url:f.url, filename:'video.mp4' }; }
-    if ((data.status === 'tunnel' || data.status === 'redirect') && data.url) {
-      currentDownloadUrl = data.url; currentFilename = data.filename || 'video.mp4';
-      playerEl.src = data.url; playerEl.load(); resultEl.classList.add('on');
-      dlEl.href = data.url; dlEl.download = currentFilename;
-      dlEl.textContent = '⬇️ Télécharger « ' + currentFilename + ' »';
-      setStatus('✅ Vidéo prête !', 'ok'); goBtn.disabled = false;
-    } else if (data.status === 'error' || data.error) { setStatus('❌ ' + (data.error?.code || data.text || 'Erreur'), 'err'); goBtn.disabled = false; }
-    else { setStatus('⚠️ Réponse inattendue.', 'warn'); goBtn.disabled = false; }
+
+    if (data.status === 'picker' && Array.isArray(data.picker)) {
+      const choice = data.picker.find(x => x && typeof x.url === 'string');
+      if (choice) data = { status:'redirect', url: choice.url, filename: choice.filename || 'video.mp4' };
+    }
+
+    if ((data.status === 'tunnel' || data.status === 'redirect') && data.url && (() => { try { return ['http:', 'https:'].includes(new URL(data.url).protocol); } catch { return false; } })()) {
+      currentUrl = data.url;
+      const fn = String(data.filename || 'video.mp4').replace(/[\\/:*?"<>|]/g, '_').slice(0, 180);
+      playerEl.src = data.url; playerEl.load();
+      resultEl.classList.add('on');
+      dlEl.href = data.url; dlEl.download = fn;
+      dlEl.textContent = '⬇️ Télécharger « ' + fn + ' »';
+      setStatus('✅ Vidéo prête !', 'ok');
+      goBtn.disabled = false;
+    } else if (data.status === 'error' || data.error) {
+      setStatus('❌ ' + (data.error?.code || data.text || 'Erreur'), 'err'); goBtn.disabled = false;
+    } else {
+      setStatus('⚠️ Réponse inattendue.', 'warn'); goBtn.disabled = false;
+    }
+  }
+
+  function launch() {
+    reset(); stepsEl.classList.remove('on');
+    doDownload();
   }
 
   goBtn.addEventListener('click', launch);
@@ -864,27 +633,53 @@
   codeEl.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); launch(); } });
   codeEl.addEventListener('focus', () => stepsEl.classList.add('on'));
   settingsBtn.addEventListener('click', () => { const d = document.querySelectorAll('details')[0]; d.open = !d.open; if (d.open) $('apiUrl').focus(); });
+
   $('saveApi').addEventListener('click', async () => {
     const v = $('apiUrl').value.trim();
     if (!v) { localStorage.removeItem('tu_api'); apiBase = null; await detectApi(); setStatus('✅ API réinitialisée.', 'ok'); return; }
-    let n = v.endsWith('/') ? v : v + '/';
+    const n = v.endsWith('/') ? v : v + '/';
     try { new URL(n); } catch { setStatus('❌ URL invalide.', 'err'); return; }
     apiBase = n; localStorage.setItem('tu_api', n);
     apiPill.textContent = 'API : ' + new URL(n).hostname; apiPill.className = 'pill ok';
     setStatus('✅ API enregistrée.', 'ok');
   });
-  copyBtn.addEventListener('click', () => { if (!currentDownloadUrl) return; navigator.clipboard.writeText(currentDownloadUrl).then(() => { const o = copyBtn.textContent; copyBtn.textContent = '✅ Copié !'; setTimeout(() => copyBtn.textContent = o, 1500); }); });
 
-  $('buyPremium').addEventListener('click', () => {
-    alert('Pour acheter Téléchargeur Universel PRO (20 USDT),\ncontacte-nous par email avec ta demande.\n\nTu recevras les instructions de paiement et ton code d\'accès.');
+  copyBtn.addEventListener('click', () => {
+    if (!currentUrl) return;
+    navigator.clipboard.writeText(currentUrl).then(() => { const o = copyBtn.textContent; copyBtn.textContent = '✅ Copié !'; setTimeout(() => copyBtn.textContent = o, 1500); });
   });
 
+  $('buyPremium').addEventListener('click', () => {
+    alert('Pour acheter Téléchargeur Universel PRO (5 USDT),\ncontacte-nous par email.\n\nTu recevras les instructions de paiement et ton code d\'accès.');
+  });
+
+  /* PREMIUM GRATUIT */
+  const FP_TARGET = 50;
+  let fpWatched = Number.parseInt(localStorage.getItem('tu_fp_watched') || '0', 10);
+  if (!Number.isSafeInteger(fpWatched) || fpWatched < 0) fpWatched = 0;
+  fpWatched = Math.min(fpWatched, FP_TARGET);
+  function updateFP() {
+    $('fpCount').textContent = fpWatched;
+    $('fpFill').style.width = Math.min((fpWatched / FP_TARGET) * 100, 100) + '%';
+  }
+  updateFP();
+  $('watchVideoBtn').addEventListener('click', () => {
+    fpWatched++;
+    localStorage.setItem('tu_fp_watched', String(fpWatched));
+    updateFP();
+    if (fpWatched >= FP_TARGET) {
+      alert('🎉 Félicitations ! Tu as atteint ' + FP_TARGET + ' vidéos !\n\nContacte-nous par email pour recevoir ton code Premium gratuit à vie.');
+    }
+  });
+
+  /* BITCOIN */
   $('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&data=' + encodeURIComponent('bitcoin:' + BTC_ADDRESS);
   $('copyAddr').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(BTC_ADDRESS); const b = $('copyAddr'); const o = b.textContent; b.textContent = '✅ Copié !'; b.classList.add('ok'); setTimeout(() => { b.textContent = o; b.classList.remove('ok'); }, 1800); }
     catch { alert('Adresse : ' + BTC_ADDRESS); }
   });
 
+  /* TERMINAL */
   document.querySelectorAll('.term-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       const os = tab.dataset.os;
@@ -902,11 +697,55 @@
       try { await navigator.clipboard.writeText(cmd); const o = btn.textContent; btn.textContent = '✅'; btn.classList.add('ok'); setTimeout(() => { btn.textContent = o; btn.classList.remove('ok'); }, 1400); } catch {}
     });
   });
-  (function autoOS(){ const ua = navigator.userAgent.toLowerCase(); let os = 'win'; if (ua.includes('mac')) os = 'mac'; else if (ua.includes('linux') && !ua.includes('android')) os = 'linux'; const t = document.querySelector('.term-tab[data-os="' + os + '"]'); if (t) t.click(); })();
+  (function autoOS() {
+    const ua = navigator.userAgent.toLowerCase();
+    let os = 'win';
+    if (ua.includes('mac')) os = 'mac';
+    else if (ua.includes('linux') && !ua.includes('android')) os = 'linux';
+    const t = document.querySelector('.term-tab[data-os="' + os + '"]');
+    if (t) t.click();
+  })();
 
   if (apiBase) $('apiUrl').value = apiBase;
   detectApi();
 })();
 </script>
+
+<!-- ═══════════════════════════════════════════════════════
+     INJECTION DES PUBS ADSTERRA DANS LES 2 CADRES DU GATE
+     ═══════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  // Cadre 1 : bannière 728x90
+  var c1 = document.getElementById('container-gate-1');
+  if (c1) {
+    var s1 = document.createElement('script');
+    s1.type = 'text/javascript';
+    s1.textContent = "atOptions = {'key':'581e088cb553c739ca8812abcb681c7a','format':'iframe','height':90,'width':728,'params':{}};";
+    c1.appendChild(s1);
+    var s2 = document.createElement('script');
+    s2.src = 'https://www.highrevenueformat.com/581e088cb553c739ca8812abcb681c7a/invoke.js';
+    c1.appendChild(s2);
+  }
+
+  // Cadre 2 : bannière native
+  var c2 = document.getElementById('container-gate-2');
+  if (c2) {
+    var s3 = document.createElement('script');
+    s3.async = true;
+    s3.setAttribute('data-cfasync', 'false');
+    s3.src = 'https://pl31587449.profitableratecpmnetwork.com/227fdab56b2902f2b1cff6ca6ff50464/invoke.js';
+    c2.appendChild(s3);
+    var d = document.createElement('div');
+    d.id = 'container-227fdab56b2902f2b1cff6ca6ff50464';
+    c2.appendChild(d);
+  }
+})();
+</script>
+
+<!-- POPUNDER (invisible, s'ouvre en arrière-plan) -->
+<script src="https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a815004ce74046d38.js"></script>
+<!-- SOCIAL BAR (barre flottante en bas) -->
+<script src="https://pl31587447.profitableratecpmnetwork.com/71/73/24/71732449ede0dee49315bb61ba1ad0b4.js"></script>
 </body>
 </html>
