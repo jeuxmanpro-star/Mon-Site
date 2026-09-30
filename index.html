@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 16 autres sites.">
+<meta name="description" content="Téléchargez gratuitement des vidéos depuis YouTube, TikTok, Instagram, Twitter/X, Vimeo et 1800+ sites.">
 <title>Téléchargeur Universel — Télécharger des vidéos gratuitement</title>
 <link rel="icon" href="favicon.ico">
+<meta name="yozora-api" content="https://mon-yozora.vercel.app">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--accent-1:#6366f1;--accent-2:#a855f7;--accent-3:#ec4899;--ok:#10b981;--err:#ef4444;--warn:#f59e0b;--btc:#f7931a;--text:#e2e8f0;--text-dim:#94a3b8}
@@ -24,7 +25,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .topnav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
 @media(max-width:640px){.topnav{top:.6rem;padding:.3rem .4rem}.topnav-link{padding:.4rem .7rem;font-size:.74rem}}
 
-/* GATE FLOUTÉ */
+/* GATE */
 .gate{position:fixed;inset:0;z-index:9999;background:rgba(10,10,26,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;overflow-y:auto;opacity:1;transition:opacity .5s ease}
 .gate.hidden{opacity:0;pointer-events:none;visibility:hidden}
 .gate-box{width:100%;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:1.8rem 1.4rem;box-shadow:0 40px 100px -30px rgba(0,0,0,.95);text-align:center}
@@ -233,7 +234,7 @@ footer a{color:#a5b4fc;text-decoration:none}
   </div>
 </div>
 
-<!-- MODAL PUB AVANT TÉLÉCHARGEMENT -->
+<!-- MODAL PUB -->
 <div class="ad-modal" id="adModal">
   <div class="ad-modal-box">
     <h3>📢 Une publicité avant votre téléchargement</h3>
@@ -263,11 +264,12 @@ footer a{color:#a5b4fc;text-decoration:none}
     <img src="logo-full.png" alt="Téléchargeur Universel" class="logo-full">
     <div class="tagline">
       Colle <strong>une URL vidéo compatible</strong> ou un code d'intégration contenant une URL.<br>
-      Interface gratuite, sans inscription. La disponibilité dépend de l'API et des plateformes.
+      21 sites via Cobalt + 1800+ sites via yt-dlp. Interface gratuite, sans inscription.
     </div>
     <div class="pills">
       <span class="pill checking" id="pill-api">API : vérification…</span>
       <img src="https://img.shields.io/badge/tracking-none-brightgreen" alt="Sans tracking" style="height:22px;border-radius:999px">
+      <img src="https://img.shields.io/badge/sites-1800%2B-purple" alt="1800+ sites" style="height:22px;border-radius:999px">
       <img src="https://img.shields.io/badge/BTC-donations-orange" alt="Dons BTC" style="height:22px;border-radius:999px">
     </div>
   </header>
@@ -331,7 +333,7 @@ footer a{color:#a5b4fc;text-decoration:none}
     <details>
       <summary>🌐 API personnalisée</summary>
       <div class="content">
-        <p>Par défaut, on utilise une instance privée de <a href="https://github.com/imputnet/cobalt" target="_blank" style="color:#a5b4fc">cobalt</a>.</p>
+        <p>Cobalt : instance privée. Yozora : yt-dlp pour 1800+ sites.</p>
         <input id="apiUrl" style="margin-top:.6rem;width:100%;background:rgba(0,0,0,.4);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:.7rem 1rem;color:#e2e8f0;font-family:inherit" placeholder="https://api.example.com/">
         <button class="btn btn-ghost" id="saveApi" style="margin-top:.6rem;padding:.7rem 1.2rem">💾 Enregistrer</button>
       </div>
@@ -354,8 +356,8 @@ footer a{color:#a5b4fc;text-decoration:none}
 
   <!-- SITES -->
   <div class="section-title" id="sites-section">
-    <h2>🌍 Plateformes compatibles selon l'API</h2>
-    <p>Ces plateformes sont reconnues directement par l'API.</p>
+    <h2>🌍 1800+ sites compatibles</h2>
+    <p>21 sites natifs via Cobalt + 1800+ via yt-dlp (Yozora).</p>
   </div>
 
   <div class="card">
@@ -381,6 +383,7 @@ footer a{color:#a5b4fc;text-decoration:none}
       <div class="site-item"><span class="ico">🎥</span><div><div class="nm">Loom</div><div class="tp">Vidéo</div></div></div>
       <div class="site-item"><span class="ico">🌐</span><div><div class="nm">OK.ru</div><div class="tp">RU</div></div></div>
       <div class="site-item"><span class="ico">📤</span><div><div class="nm">Streamable</div><div class="tp">Vidéo</div></div></div>
+      <div class="site-item"><span class="ico">➕</span><div><div class="nm">1800+ autres</div><div class="tp">yt-dlp</div></div></div>
     </div>
   </div>
 
@@ -514,6 +517,7 @@ footer a{color:#a5b4fc;text-decoration:none}
 (() => {
   'use strict';
   const DEFAULT_APIS = ['https://mon-cobalt-api.onrender.com/'];
+  const YOZORA_API = document.querySelector('meta[name="yozora-api"]')?.content || null;
   const REQUEST_TIMEOUT_MS = 60000;
   const BTC_ADDRESS = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
   const POPUNDER_SCRIPT = 'https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a815004ce74046d38.js';
@@ -531,7 +535,6 @@ footer a{color:#a5b4fc;text-decoration:none}
   let currentUrl = null;
   let pendingDownloadUrl = null;
 
-  /* Déclenche un popunder Adsterra */
   function triggerPopunder() {
     try {
       var s = document.createElement('script');
@@ -640,24 +643,58 @@ footer a{color:#a5b4fc;text-decoration:none}
   }
 
   async function requestDownload(url) {
-    if (!apiBase) throw new Error('Aucune API disponible.');
     const isAudio = $('audioOnly').value === 'true';
     const quality = $('quality').value;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-    let r;
-    try {
-      r = await fetch(apiBase, {
-        signal: controller.signal,
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, videoQuality: quality === 'max' ? 'max' : quality, audioFormat: isAudio ? 'mp3' : 'best', downloadMode: isAudio ? 'audio' : 'auto', filenameStyle: 'basic' })
-      });
-    } catch (e) {
-      throw new Error(e.name === 'AbortError' ? 'Délai de réponse dépassé.' : 'Connexion à l\'API impossible.');
-    } finally { clearTimeout(timeout); }
-    if (!r.ok) { let m = 'HTTP ' + r.status; try { const j = await r.json(); m = j.text || j.error?.code || m; } catch {} throw new Error(m); }
-    try { return await r.json(); } catch { throw new Error('Réponse JSON invalide.'); }
+
+    // 1. Essaie Cobalt d'abord
+    if (apiBase) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+        const r = await fetch(apiBase, {
+          signal: controller.signal,
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url,
+            videoQuality: quality === 'max' ? 'max' : quality,
+            audioFormat: isAudio ? 'mp3' : 'best',
+            downloadMode: isAudio ? 'audio' : 'auto',
+            filenameStyle: 'basic'
+          })
+        });
+        clearTimeout(timeout);
+        if (r.ok) {
+          const data = await r.json();
+          if (data.status !== 'error' && !data.error) return data;
+        }
+      } catch (e) {
+        // Cobalt échoue → on bascule sur Yozora
+      }
+    }
+
+    // 2. Fallback : Yozora (1800+ sites)
+    if (YOZORA_API) {
+      const format = isAudio
+        ? 'bestaudio/best'
+        : (quality === 'max'
+          ? 'bestvideo+bestaudio/best'
+          : `bestvideo[height<=${quality}]+bestaudio/best[height<=${quality}]`);
+      const params = new URLSearchParams({ url, format });
+      const r = await fetch(YOZORA_API + '/api/download?' + params.toString());
+      if (!r.ok) throw new Error('Yozora HTTP ' + r.status);
+      const data = await r.json();
+      if (data.url || data.download_url || data.video_url) {
+        return {
+          status: 'redirect',
+          url: data.url || data.download_url || data.video_url,
+          filename: data.filename || data.title || 'video.mp4'
+        };
+      }
+      throw new Error('Réponse Yozora invalide');
+    }
+
+    throw new Error('Aucune API disponible.');
   }
 
   async function doDownload() {
@@ -665,12 +702,11 @@ footer a{color:#a5b4fc;text-decoration:none}
     if (!raw) return setStatus('❌ Colle un code ou une URL.', 'err');
     const url = extractUrl(raw);
     if (!url) return setStatus('❌ Aucune URL détectée.', 'err');
-    if (!apiBase) { setStatus('⏳ Détection de l\'API…'); await detectApi(); if (!apiBase) return setStatus('❌ Aucune API joignable.', 'err'); }
+    if (!apiBase && !YOZORA_API) { setStatus('⏳ Détection de l\'API…'); await detectApi(); if (!apiBase && !YOZORA_API) return setStatus('❌ Aucune API joignable.', 'err'); }
 
     goBtn.disabled = true;
     setStatus('⏳ Analyse de la vidéo…');
     logLine('→ URL : ' + url);
-    logLine('→ Envoi à ' + apiBase);
 
     let data;
     try { data = await requestDownload(url); }
@@ -752,9 +788,7 @@ footer a{color:#a5b4fc;text-decoration:none}
     btn.disabled = true;
     const originalText = btn.textContent;
     btn.textContent = '⏳ Chargement de la vidéo…';
-
     const ok = triggerPopunder();
-
     setTimeout(() => {
       if (ok) {
         fpWatched++;
@@ -849,7 +883,7 @@ footer a{color:#a5b4fc;text-decoration:none}
 </script>
 
 <!-- POPUNDER initial + SOCIAL BAR -->
-<script src="https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a815004ce74046d38.js"></script>
+<script src="https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a8154004ce74046d38.js"></script>
 <script src="https://pl31587447.profitableratecpmnetwork.com/71/73/24/71732449ede0dee49315bb61ba1ad0b4.js"></script>
 </body>
 </html>
