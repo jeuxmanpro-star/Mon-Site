@@ -535,18 +535,56 @@
   }
 
   async function detectApi() {
-    if (apiBase) { try { await fetch(apiBase, {method:'OPTIONS'}); apiPill.textContent = 'API : ' + new URL(apiBase).hostname; apiPill.className = 'pill ok'; return apiBase; } catch {} }
-    for (const url of DEFAULT_APIS) {
-      try { const c = new AbortController(); const t = setTimeout(() => c.abort(), 3500); await fetch(url, {method:'OPTIONS', signal:c.signal}); clearTimeout(t); apiBase = url; apiPill.textContent = 'API : ' + new URL(url).hostname; apiPill.className = 'pill ok'; return url; } catch {}
+    if (apiBase) {
+        try {
+            const c = new AbortController();
+            const t = setTimeout(() => c.abort(), 5000);
+            const r = await fetch(apiBase, { method: 'GET', signal: c.signal });
+            clearTimeout(t);
+            if (r.ok) {
+                apiPill.textContent = 'API : ' + new URL(apiBase).hostname;
+                apiPill.className = 'pill ok';
+                return apiBase;
+            }
+        } catch {}
     }
-    apiPill.textContent = 'API : indisponible'; apiPill.className = 'pill ko'; return null;
-  }
+    for (const url of DEFAULT_APIS) {
+        try {
+            const c = new AbortController();
+            const t = setTimeout(() => c.abort(), 5000);
+            const r = await fetch(url, { method: 'GET', signal: c.signal });
+            clearTimeout(t);
+            if (r.ok) {
+                apiBase = url;
+                apiPill.textContent = 'API : ' + new URL(url).hostname;
+                apiPill.className = 'pill ok';
+                return url;
+            }
+        } catch {}
+    }
+    apiPill.textContent = 'API : indisponible';
+    apiPill.className = 'pill ko';
+    return null;
+}
 
   async function requestDownload(url) {
     if (!apiBase) throw new Error('Aucune API disponible.');
     const isAudio = $('audioOnly').value === 'true';
     const quality = $('quality').value;
-    const r = await fetch(apiBase, { method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'}, body: JSON.stringify({ url, videoQuality: quality === 'max' ? 'max' : quality, audioFormat: isAudio ? 'mp3' : 'best', downloadMode: isAudio ? 'audio' : 'auto', filenameStyle:'basic' }) });
+    const r = await fetch(apiBase, {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        url,
+        videoQuality: quality === 'max' ? 'max' : quality,
+        audioFormat: isAudio ? 'mp3' : 'best',
+        downloadMode: isAudio ? 'audio' : 'auto',
+        filenameStyle: 'basic'
+    })
+});
     if (!r.ok) { let m = 'HTTP ' + r.status; try { const j = await r.json(); m = j.text || j.error?.code || m; } catch {} throw new Error(m); }
     return r.json();
   }
