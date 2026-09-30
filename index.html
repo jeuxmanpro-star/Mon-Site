@@ -9,6 +9,7 @@
 <meta property="og:image" content="og-image.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://telechargeur-universel.com/">
 <title>Téléchargeur Universel — Télécharger des vidéos YouTube, TikTok, Instagram, Twitter/X gratuitement</title>
 <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -64,9 +65,7 @@
     transform:rotate(45deg);margin-top:-3px;transition:transform .25s;
   }
   .topnav-link.open .caret{transform:rotate(-135deg);margin-top:3px}
-  .topnav-menu{
-    position:relative;
-  }
+  .topnav-menu{position:relative}
   .topnav-dropdown{
     position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-8px);
     background:rgba(10,10,26,.95);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
@@ -89,13 +88,7 @@
   .topnav-dropdown a:hover{
     background:rgba(99,102,241,.14);color:var(--text);text-decoration:none;
   }
-  .topnav-dropdown a .dot{
-    width:5px;height:5px;border-radius:50%;background:var(--accent-2);
-    flex-shrink:0;opacity:.7;
-  }
-  .topnav-dropdown .separator{
-    height:1px;background:rgba(255,255,255,.08);margin:.4rem .5rem;
-  }
+  .topnav-dropdown .separator{height:1px;background:rgba(255,255,255,.08);margin:.4rem .5rem}
   @media(max-width:640px){
     .topnav{top:.6rem;padding:.35rem .4rem}
     .topnav-link{padding:.45rem .8rem;font-size:.76rem}
@@ -112,10 +105,22 @@
   .step-dot.done{background:linear-gradient(135deg,#6366f1,#a855f7);border-color:transparent;color:#fff;box-shadow:0 0 20px rgba(99,102,241,.6);transform:scale(1.05)}
   .step-dot.current{border-color:#a855f7;color:#a855f7;animation:pulse 1.5s infinite}
   @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.6)}50%{box-shadow:0 0 0 12px rgba(168,85,247,0)}}
+
+  /* ═══════════ EMPLACEMENTS PUB GATE ═══════════ */
   .gate-ads{display:grid;grid-template-columns:1fr;gap:.8rem;margin-bottom:1.5rem}
   @media(min-width:640px){.gate-ads{grid-template-columns:1fr 1fr}}
-  .gate-ad{min-height:120px;background:rgba(0,0,0,.35);border:1px dashed rgba(255,255,255,.12);border-radius:14px;padding:1rem;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.75rem;color:#64748b;position:relative}
-  .gate-ad::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.6rem;letter-spacing:.15em;color:#475569;font-weight:700}
+  .gate-ad{
+    min-height:120px;
+    background:rgba(0,0,0,.35);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:1rem;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;font-size:.75rem;color:#64748b;
+    position:relative;overflow:hidden;
+  }
+  .gate-ad::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.6rem;letter-spacing:.15em;color:#475569;font-weight:700;z-index:1}
+
   .gate-action{text-align:center;margin-bottom:1.2rem}
   .gate-btn{padding:1.1rem 2.4rem;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer;transition:.2s;box-shadow:0 16px 40px -12px #6366f1;letter-spacing:.02em;min-width:280px}
   .gate-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 24px 50px -14px #6366f1}
@@ -136,9 +141,17 @@
   .pill.ko{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#f87171}
   .pill.checking{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3);color:#a5b4fc}
 
-  .ad-slot{width:100%;max-width:920px;margin:0 auto 1.5rem;min-height:100px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);border:1px dashed rgba(255,255,255,.12);border-radius:16px;padding:1rem;position:relative;overflow:hidden}
-  .ad-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.62rem;letter-spacing:.15em;color:#64748b;font-weight:700}
-  .ad-slot.placeholder{color:#64748b;font-size:.8rem;text-align:center;line-height:1.6}
+  /* ═══════════ EMPLACEMENTS PUB SITE ═══════════ */
+  .ad-slot{
+    width:100%;max-width:920px;margin:0 auto 1.5rem;
+    min-height:100px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.02);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;padding:1rem;
+    position:relative;overflow:hidden;
+  }
+  .ad-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.62rem;letter-spacing:.15em;color:#64748b;font-weight:700;z-index:1}
 
   .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:1.8rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06)}
   label{display:block;font-size:.78rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
@@ -185,6 +198,16 @@
   details .content{padding:0 1.2rem 1.2rem;font-size:.85rem;line-height:1.7;color:var(--text-dim)}
   details .content code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.15rem .4rem;border-radius:5px;font-family:'SF Mono',monospace;font-size:.85em}
   details .content a{color:#a5b4fc;text-decoration:none;border-bottom:1px dotted}
+
+  /* ═══════════ NATIVE BANNER ═══════════ */
+  .native-slot{
+    margin-top:1.5rem;padding:1rem;
+    background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    position:relative;overflow:hidden;
+  }
+  .native-slot::before{content:'PUBLICITÉ';position:absolute;top:6px;left:12px;font-size:.6rem;letter-spacing:.15em;color:#475569;font-weight:700;z-index:1}
 
   /* ═══════════ SITES SUPPORTÉS ═══════════ */
   .sites-section{margin-top:2.5rem}
@@ -276,7 +299,6 @@
   footer a{color:#a5b4fc;text-decoration:none}
   footer a:hover{text-decoration:underline}
 
-  /* Reveal */
   .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.3,1)}
   .reveal.visible{opacity:1;transform:none}
 </style>
@@ -329,10 +351,19 @@
       <div class="step-dot" data-step="3">3</div>
       <div class="step-dot" data-step="4">4</div>
     </div>
+
     <div class="gate-ads">
-      <div class="gate-ad" id="gate-ad-1"><div>📢 Emplacement pub 1<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div></div>
-      <div class="gate-ad" id="gate-ad-2"><div>📢 Emplacement pub 2<br><small style="opacity:.6">Colle ton code Adsterra ici</small></div></div>
+      <!-- ═══════════ PUB N°1 — POPUNDER ═══════════ -->
+      <div class="gate-ad" id="gate-ad-1">
+        <script src="https://pl31587450.profitableratecpmnetwork.com/e2/51/a2/e251a246d260c02a815004ce74046d38.js"></script>
+      </div>
+
+      <!-- ═══════════ PUB N°2 — SOCIAL BAR ═══════════ -->
+      <div class="gate-ad" id="gate-ad-2">
+        <script src="https://pl31587447.profitableratecpmnetwork.com/71/73/24/71732449ede0dee49315bb61ba1ad0b4.js"></script>
+      </div>
     </div>
+
     <div class="gate-action">
       <button class="gate-btn" id="gateBtn" disabled>⏳ Patiente un instant…<span class="timer" id="gateTimer">8 s</span></button>
     </div>
@@ -343,8 +374,18 @@
 <!-- APP -->
 <div class="wrap" id="top">
 
-  <div class="ad-slot placeholder" id="ad-top">
-    <div>📢 Emplacement publicitaire (728×90)<br><small style="opacity:.7">Colle ton code pub ici</small></div>
+  <!-- ═══════════ PUB N°3 — BANNIÈRE 728×90 (HAUT) ═══════════ -->
+  <div class="ad-slot" id="ad-top">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '581e088cb553c739ca8812abcb681c7a',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highrevenueformat.com/581e088cb553c739ca8812abcb681c7a/invoke.js"></script>
   </div>
 
   <header>
@@ -353,7 +394,7 @@
       Colle <strong>n'importe quel code d'intégration</strong> ou URL vidéo.<br>
       Télécharge en un clic. <strong>Open source</strong>, gratuit, sans inscription.
     </div>
-        <div class="pills" id="pills">
+    <div class="pills" id="pills">
       <span class="pill checking" id="pill-api">API : vérification…</span>
       <img src="https://img.shields.io/badge/tracking-none-brightgreen" alt="Sans tracking" style="height:22px;border-radius:999px">
       <img src="https://img.shields.io/badge/sites-1800%2B-purple" alt="1800+ sites" style="height:22px;border-radius:999px">
@@ -435,6 +476,12 @@
         <p style="margin-top:.6rem"><strong>Licence :</strong> MIT. Code source disponible librement.</p>
       </div>
     </details>
+
+    <!-- ═══════════ PUB N°4 — NATIVE BANNER ═══════════ -->
+    <div class="native-slot" id="native-banner">
+      <script async="async" data-cfasync="false" src="https://pl31587449.profitableratecpmnetwork.com/227fdab56b2902f2b1cff6ca6ff50464/invoke.js"></script>
+      <div id="container-227fdab56b2902f2b1cff6ca6ff50464"></div>
+    </div>
   </div>
 
   <!-- ═══════════ SITES PRIS EN CHARGE ═══════════ -->
@@ -555,8 +602,18 @@
     </div>
   </div>
 
-  <div class="ad-slot placeholder" id="ad-bottom" style="margin-top:2rem;margin-bottom:0">
-    <div>📢 Emplacement publicitaire (728×90)<br><small style="opacity:.7">Colle ton code pub ici</small></div>
+  <!-- ═══════════ PUB N°5 — BANNIÈRE 728×90 (BAS) ═══════════ -->
+  <div class="ad-slot" id="ad-bottom" style="margin-top:2rem;margin-bottom:0">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '581e088cb553c739ca8812abcb681c7a',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highrevenueformat.com/581e088cb553c739ca8812abcb681c7a/invoke.js"></script>
   </div>
 
   <!-- BITCOIN -->
@@ -623,19 +680,16 @@
       const open = sitesMenu.classList.toggle('open');
       sitesMenuBtn.classList.toggle('open', open);
     });
-    // Ferme au clic ailleurs
     document.addEventListener('click', () => {
       sitesMenu.classList.remove('open');
       sitesMenuBtn.classList.remove('open');
     });
-    // Ferme au clic sur un lien
     sitesMenu.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
         sitesMenu.classList.remove('open');
         sitesMenuBtn.classList.remove('open');
       });
     });
-    // Échap
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         sitesMenu.classList.remove('open');
@@ -723,56 +777,60 @@
 
   async function detectApi() {
     if (apiBase) {
-        try {
-            const c = new AbortController();
-            const t = setTimeout(() => c.abort(), 5000);
-            const r = await fetch(apiBase, { method: 'GET', signal: c.signal });
-            clearTimeout(t);
-            if (r.ok) {
-                apiPill.textContent = 'API : ' + new URL(apiBase).hostname;
-                apiPill.className = 'pill ok';
-                return apiBase;
-            }
-        } catch {}
+      try {
+        const c = new AbortController();
+        const t = setTimeout(() => c.abort(), 5000);
+        const r = await fetch(apiBase, { method: 'GET', signal: c.signal });
+        clearTimeout(t);
+        if (r.ok) {
+          apiPill.textContent = 'API : ' + new URL(apiBase).hostname;
+          apiPill.className = 'pill ok';
+          return apiBase;
+        }
+      } catch {}
     }
     for (const url of DEFAULT_APIS) {
-        try {
-            const c = new AbortController();
-            const t = setTimeout(() => c.abort(), 5000);
-            const r = await fetch(url, { method: 'GET', signal: c.signal });
-            clearTimeout(t);
-            if (r.ok) {
-                apiBase = url;
-                apiPill.textContent = 'API : ' + new URL(url).hostname;
-                apiPill.className = 'pill ok';
-                return url;
-            }
-        } catch {}
+      try {
+        const c = new AbortController();
+        const t = setTimeout(() => c.abort(), 5000);
+        const r = await fetch(url, { method: 'GET', signal: c.signal });
+        clearTimeout(t);
+        if (r.ok) {
+          apiBase = url;
+          apiPill.textContent = 'API : ' + new URL(url).hostname;
+          apiPill.className = 'pill ok';
+          return url;
+        }
+      } catch {}
     }
     apiPill.textContent = 'API : indisponible';
     apiPill.className = 'pill ko';
     return null;
-}
+  }
 
   async function requestDownload(url) {
     if (!apiBase) throw new Error('Aucune API disponible.');
     const isAudio = $('audioOnly').value === 'true';
     const quality = $('quality').value;
     const r = await fetch(apiBase, {
-    method: 'POST',
-    headers: {
+      method: 'POST',
+      headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
+      },
+      body: JSON.stringify({
         url,
         videoQuality: quality === 'max' ? 'max' : quality,
         audioFormat: isAudio ? 'mp3' : 'best',
         downloadMode: isAudio ? 'audio' : 'auto',
         filenameStyle: 'basic'
-    })
-});
-    if (!r.ok) { let m = 'HTTP ' + r.status; try { const j = await r.json(); m = j.text || j.error?.code || m; } catch {} throw new Error(m); }
+      })
+    });
+    if (!r.ok) {
+      let m = 'HTTP ' + r.status;
+      try { const j = await r.json(); m = j.text || j.error?.code || m; } catch {}
+      throw new Error(m);
+    }
     return r.json();
   }
 
