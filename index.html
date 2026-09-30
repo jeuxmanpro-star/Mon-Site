@@ -524,6 +524,7 @@ details .content code{background:rgba(99,102,241,.15);color:#c7d2fe;padding:.15r
 // ═══════════════════════════════════════════════════
 const DEFAULT_APIS = ['https://mon-cobalt-api.onrender.com/'];
 const YOZORA_API = 'https://mon-yozora.vercel.app';
+const YOZORA_DIRECT_ENABLED = false;
 const BTC = 'bc1qkqawl78cmz829vdemd6qf3meflynjxz98uuahs';
 const MONETAG_LINK = 'https://omg10.com/4/11928508';
 const PREMIUM_CODES = ['DENIX-PREMIUM-2026', 'VIP-TU-2026-XYZ', 'PREMIUM-5USDT-001'];
@@ -659,141 +660,286 @@ $('buyPremium').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════
-// TÉLÉCHARGEUR
+// TÉLÉCHARGEUR — Cobalt prioritaire + Yozora optionnel
 // ═══════════════════════════════════════════════════
 const codeEl = $('code'), goBtn = $('go'), clearBtn = $('clear');
 const statusEl = $('status'), logEl = $('log');
 const resultEl = $('result'), playerEl = $('player'), dlEl = $('dl'), copyBtn = $('copy');
-const apiPill = null;
 
-let apiBase = localStorage.getItem('tu_api') || null;
+// Cobalt est l'API principale. Le endpoint POST / est celui de l'API Cobalt actuelle.
+const COBALT_API = 'https://mon-cobalt-api.onrender.com/';
+
+// IMPORTANT : Yozora ne doit PAS être appelé directement tant que son serveur
+// n'envoie pas Access-Control-Allow-Origin pour telechargeur-universel.com.
+// Passe à true uniquement après avoir corrigé le CORS de Yozora.
+let apiBase = COBALT_API;
 let currentUrl = null;
+let lastApiUsed = null;
 
-function setTStatus(msg, cls = '') { statusEl.textContent = msg; statusEl.className = 'status on ' + cls; }
-function hideTStatus() { statusEl.className = 'status'; statusEl.textContent = ''; }
-function logLine(t) { logEl.classList.add('on'); logEl.textContent += t + '\n'; logEl.scrollTop = logEl.scrollHeight; }
-function resetResult() { resultEl.classList.remove('on'); playerEl.removeAttribute('src'); playerEl.load(); dlEl.href = '#'; currentUrl = null; }
-function reset() { hideTStatus(); logEl.classList.remove('on'); logEl.textContent = ''; resetResult(); goBtn.disabled = false; }
+function setTStatus(msg, cls = '') {
+  statusEl.textContent = msg;
+  statusEl.className = 'status on ' + cls;
+}
+function hideTStatus() {
+  statusEl.className = 'status';
+  statusEl.textContent = '';
+}
+function logLine(t) {
+  logEl.classList.add('on');
+  logEl.textContent += t + '\n';
+  logEl.scrollTop = logEl.scrollHeight;
+}
+function resetResult() {
+  resultEl.classList.remove('on');
+  playerEl.removeAttribute('src');
+  playerEl.load();
+  dlEl.href = '#';
+  dlEl.removeAttribute('download');
+  currentUrl = null;
+}
+function reset() {
+  hideTStatus();
+  logEl.classList.remove('on');
+  logEl.textContent = '';
+  resetResult();
+  goBtn.disabled = false;
+}
 
 function extractUrl(code) {
   if (!code) return null;
   const c = code.trim();
-  const pats = [/<iframe[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<video[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<source[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /<embed[^>]*\bsrc\s*=\s*["']([^"']+)["']/i, /https?:\/\/[^\s"'<>()]+/];
+  const pats = [
+    /<iframe[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,
+    /<video[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,
+    /<source[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,
+    /<embed[^>]*\bsrc\s*=\s*["']([^"']+)["']/i,
+    /https?:\/\/[^\s"'<>()]+/i
+  ];
   for (const re of pats) {
     const m = c.match(re);
-    if (m && (m[1] || m[0])) {
-      const cand = (m[1] || m[0]).trim().replace(/[.,;!?]+$/, '');
-      try { const u = new URL(cand); if (['http:', 'https:'].includes(u.protocol)) return u.href; } catch {}
+    if (!m) continue;
+    const cand = (m[1] || m[0]).trim().replace(/[.,;!?]+$/, '');
+    try {
+      const u = new URL(cand);
+      if (u.protocol === 'http:' || u.protocol === 'https:') return u.href;
+    } catch {}
+  }
+  return null;
+}
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = 30000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (e) {
+    if (e && e.name === 'AbortError') {
+      throw new Error('Le serveur a mis trop de temps à répondre.');
     }
+    throw new Error('Connexion impossible avec le serveur API. Vérifie le CORS et la disponibilité de l’API.');
+  } finally {
+    clearTimeout(timer);
   }
-  return null;
 }
 
-async function detectApi() {
-  if (apiBase) {
-    try {
-      const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
-      const r = await fetch(apiBase, { method: 'GET', signal: c.signal });
-      clearTimeout(t);
-      if (r.ok) return apiBase;
-    } catch {}
+async function readJsonResponse(response, apiName) {
+  const text = await response.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch {}
+
+  if (!response.ok) {
+    const code = data?.error?.code || data?.error || data?.message || text || ('HTTP ' + response.status);
+    throw new Error(apiName + ' HTTP ' + response.status + ' — ' + String(code).slice(0, 300));
   }
-  for (const url of DEFAULT_APIS) {
-    try {
-      const c = new AbortController(); const t = setTimeout(() => c.abort(), 5000);
-      const r = await fetch(url, { method: 'GET', signal: c.signal });
-      clearTimeout(t);
-      if (r.ok) { apiBase = url; return url; }
-    } catch {}
+  if (!data || typeof data !== 'object') {
+    throw new Error(apiName + ' a renvoyé une réponse JSON invalide.');
   }
-  return null;
+  return data;
 }
 
-async function requestDownload(url) {
+function normalizeCobaltResult(data) {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Réponse Cobalt vide ou invalide.');
+  }
+
+  if (data.status === 'error') {
+    const code = data.error?.code || data.error?.message || data.text || 'Erreur Cobalt inconnue';
+    throw new Error('Cobalt : ' + code);
+  }
+
+  if (data.status === 'picker' && Array.isArray(data.picker)) {
+    const video = data.picker.find(x => x && (x.type === 'video' || x.type === 'gif') && typeof x.url === 'string');
+    const any = data.picker.find(x => x && typeof x.url === 'string');
+    const choice = video || any;
+    if (!choice) throw new Error('Cobalt a renvoyé une liste média vide.');
+    return {
+      status: 'redirect',
+      url: choice.url,
+      filename: choice.filename || (choice.type === 'gif' ? 'media.gif' : 'video.mp4')
+    };
+  }
+
+  if ((data.status === 'redirect' || data.status === 'tunnel') && typeof data.url === 'string') {
+    return data;
+  }
+
+  throw new Error('Réponse Cobalt inattendue : ' + JSON.stringify(data).slice(0, 300));
+}
+
+async function requestCobalt(url) {
   const isAudio = $('audioOnly').value === 'true';
   const quality = $('quality').value;
 
-  if (apiBase) {
-    try {
-      const controller = new AbortController();
-      const t = setTimeout(() => controller.abort(), 30000);
-      const r = await fetch(apiBase, {
-        signal: controller.signal,
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, videoQuality: quality === 'max' ? 'max' : quality, audioFormat: isAudio ? 'mp3' : 'best', downloadMode: isAudio ? 'audio' : 'auto', filenameStyle: 'basic' })
-      });
-      clearTimeout(t);
-      if (r.ok) {
-        const data = await r.json();
-        if (data.status !== 'error' && !data.error) return data;
-      }
-    } catch {}
+  const body = {
+    url,
+    videoQuality: quality === 'max' ? 'max' : quality,
+    audioFormat: isAudio ? 'mp3' : 'best',
+    downloadMode: isAudio ? 'audio' : 'auto',
+    filenameStyle: 'basic',
+    alwaysProxy: true,
+    tiktokFullAudio: true,
+    youtubeVideoCodec: 'h264'
+  };
+
+  logLine('→ Cobalt : POST /');
+  logLine('→ Qualité : ' + body.videoQuality + (isAudio ? ' · audio' : ' · vidéo'));
+
+  const r = await fetchWithTimeout(COBALT_API, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  }, 45000);
+
+  const data = await readJsonResponse(r, 'Cobalt');
+  logLine('← Cobalt : ' + JSON.stringify(data).slice(0, 500));
+  lastApiUsed = 'Cobalt';
+  return normalizeCobaltResult(data);
+}
+
+async function requestYozora(url) {
+  if (!YOZORA_DIRECT_ENABLED) {
+    throw new Error('Yozora est désactivé côté navigateur : son API bloque actuellement les requêtes CORS depuis telechargeur-universel.com.');
   }
 
-  if (YOZORA_API) {
-    const format = isAudio ? 'bestaudio/best' : (quality === 'max' ? 'bestvideo+bestaudio/best' : `bestvideo[height<=${quality}]+bestaudio/best[height<=${quality}]`);
-    const params = new URLSearchParams({ url, format });
-    const r = await fetch(YOZORA_API + '/api/download?' + params.toString());
-    if (!r.ok) throw new Error('Yozora HTTP ' + r.status);
-    const data = await r.json();
-    if (data.url || data.download_url || data.video_url) {
-      return { status: 'redirect', url: data.url || data.download_url || data.video_url, filename: data.filename || data.title || 'video.mp4' };
+  const isAudio = $('audioOnly').value === 'true';
+  const quality = $('quality').value;
+  const format = isAudio
+    ? 'bestaudio/best'
+    : (quality === 'max'
+      ? 'bestvideo+bestaudio/best'
+      : `bestvideo[height<=${quality}]+bestaudio/best[height<=${quality}]`);
+
+  const endpoint = YOZORA_API + '/api/download?' + new URLSearchParams({ url, format }).toString();
+  logLine('→ Yozora : GET /api/download');
+
+  const r = await fetchWithTimeout(endpoint, {
+    method: 'GET',
+    headers: { 'Accept': 'application/json' }
+  }, 45000);
+
+  const data = await readJsonResponse(r, 'Yozora');
+  logLine('← Yozora : ' + JSON.stringify(data).slice(0, 500));
+
+  const mediaUrl = data.url || data.download_url || data.video_url;
+  if (!mediaUrl) throw new Error('Yozora : réponse sans URL média.');
+  lastApiUsed = 'Yozora';
+  return {
+    status: 'redirect',
+    url: mediaUrl,
+    filename: data.filename || data.title || 'video.mp4'
+  };
+}
+
+async function requestDownload(url) {
+  // Cobalt est TOUJOURS essayé en premier.
+  try {
+    return await requestCobalt(url);
+  } catch (cobaltError) {
+    logLine('⚠️ Cobalt : ' + cobaltError.message);
+
+    // Ne tente Yozora que si l'utilisateur a explicitement corrigé son CORS.
+    if (YOZORA_DIRECT_ENABLED) {
+      try {
+        return await requestYozora(url);
+      } catch (yozoraError) {
+        logLine('⚠️ Yozora : ' + yozoraError.message);
+        throw new Error('Cobalt a échoué (' + cobaltError.message + '). Yozora a également échoué (' + yozoraError.message + ').');
+      }
     }
-    throw new Error('Réponse Yozora invalide');
+
+    throw new Error(cobaltError.message + ' Yozora n’est pas utilisé en secours tant que son CORS n’est pas corrigé.');
   }
-  throw new Error('Aucune API disponible.');
+}
+
+function isSafeMediaUrl(value) {
+  try {
+    const u = new URL(value);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
 async function doDownload() {
   const raw = codeEl.value.trim();
   if (!raw) return setTStatus('❌ Colle un code ou une URL.', 'err');
+
   const url = extractUrl(raw);
-  if (!url) return setTStatus('❌ Aucune URL détectée.', 'err');
-  if (!apiBase && !YOZORA_API) {
-    setTStatus('⏳ Détection de l\'API…');
-    await detectApi();
-    if (!apiBase && !YOZORA_API) return setTStatus('❌ Aucune API joignable.', 'err');
-  }
+  if (!url) return setTStatus('❌ Aucune URL HTTP/HTTPS détectée.', 'err');
 
   goBtn.disabled = true;
-  setTStatus('⏳ Analyse de la vidéo…');
+  setTStatus('⏳ Analyse avec Cobalt…');
   logLine('→ URL : ' + url);
 
-  let data;
-  try { data = await requestDownload(url); }
-  catch (e) { goBtn.disabled = false; setTStatus('❌ Erreur : ' + e.message, 'err'); return; }
+  try {
+    const data = await requestDownload(url);
 
-  logLine('← Réponse : ' + JSON.stringify(data).slice(0, 200));
+    if (!isSafeMediaUrl(data.url)) {
+      throw new Error('L’API a renvoyé une URL média invalide.');
+    }
 
-  if (data.status === 'picker' && Array.isArray(data.picker)) {
-    const choice = data.picker.find(x => x && typeof x.url === 'string');
-    if (choice) data = { status: 'redirect', url: choice.url, filename: choice.filename || 'video.mp4' };
-  }
-
-  if ((data.status === 'tunnel' || data.status === 'redirect') && data.url && (() => { try { return ['http:', 'https:'].includes(new URL(data.url).protocol); } catch { return false; } })()) {
     currentUrl = data.url;
-    const fn = String(data.filename || 'video.mp4').replace(/[\\/:*?"<>|]/g, '_').slice(0, 180);
-    playerEl.src = data.url; playerEl.load();
+    const fn = String(data.filename || 'video.mp4')
+      .replace(/[\\/:*?"<>|]/g, '_')
+      .slice(0, 180) || 'video.mp4';
+
+    playerEl.src = data.url;
+    playerEl.load();
     resultEl.classList.add('on');
-    dlEl.href = data.url; dlEl.download = fn;
+
+    dlEl.href = data.url;
+    dlEl.download = fn;
     dlEl.textContent = '⬇️ Télécharger « ' + fn + ' »';
-    setTStatus('✅ Vidéo prête !', 'ok');
+
+    setTStatus('✅ Vidéo prête avec ' + (lastApiUsed || 'API') + ' !', 'ok');
     goBtn.disabled = false;
-  } else if (data.status === 'error' || data.error) {
-    setTStatus('❌ ' + (data.error?.code || data.text || 'Erreur'), 'err'); goBtn.disabled = false;
-  } else {
-    setTStatus('⚠️ Réponse inattendue.', 'warn'); goBtn.disabled = false;
+  } catch (e) {
+    goBtn.disabled = false;
+    setTStatus('❌ ' + (e?.message || 'Erreur inconnue.'), 'err');
+    logLine('✕ ' + (e?.message || 'Erreur inconnue.'));
   }
 }
 
 goBtn.addEventListener('click', () => { reset(); doDownload(); });
 clearBtn.addEventListener('click', () => { codeEl.value = ''; reset(); codeEl.focus(); });
-codeEl.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); reset(); doDownload(); } });
+codeEl.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    reset();
+    doDownload();
+  }
+});
 codeEl.addEventListener('focus', () => $('steps').classList.add('on'));
 copyBtn.addEventListener('click', () => {
   if (!currentUrl) return;
-  navigator.clipboard.writeText(currentUrl).then(() => { const o = copyBtn.textContent; copyBtn.textContent = '✅'; setTimeout(() => copyBtn.textContent = o, 1500); });
+  navigator.clipboard.writeText(currentUrl).then(() => {
+    const old = copyBtn.textContent;
+    copyBtn.textContent = '✅';
+    setTimeout(() => copyBtn.textContent = old, 1500);
+  }).catch(() => showToast('Impossible de copier le lien', 'error'));
 });
 
 // ═══════════════════════════════════════════════════
